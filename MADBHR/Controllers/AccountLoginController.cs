@@ -39,16 +39,18 @@ namespace MADB.Controllers
         {
             try
             {
-                var userInfo = _context.TbUserLogin.Where(x => x.Status == "Enable" && x.UsernameOrEmail == username && x.Password==password).FirstOrDefault();
+                var userInfo = _context.TbUserLogin.Where(x => x.Status == "Enable" && x.UsernameOrEmail == username && x.Password == password).FirstOrDefault();
                 //var pass = MADBHR.Helper.EncryptAndDecrypt.Decrypt(userInfo.Password, username.Trim() + "MADB").Equals(password);
-                if (userInfo !=null)
+                if (userInfo != null)
                 {
                     var claims = new List<Claim>
                     {
-                        new Claim(ClaimTypes.Name, Convert.ToString(userInfo.UserPkid))
-                    };
+                         new Claim(ClaimTypes.NameIdentifier, "NameIdentifire"),
+                         new Claim(ClaimTypes.Name, username),
 
+                    };
                     var claimsIdentity = new ClaimsIdentity(claims, "Login");
+
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
                     return RedirectToAction("Dashboard", "Home");
 
@@ -59,11 +61,11 @@ namespace MADB.Controllers
 
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
             }
-           
+
             return View();
 
         }

@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace MADBHR
@@ -41,7 +42,7 @@ namespace MADBHR
 
             services.AddMvc();
 
-           
+            services.AddScoped<ClaimsPrincipal>(s => s.GetService<IHttpContextAccessor>().HttpContext.User);
             services.Configure<MADBHR_Services.Options.ConnectionStrings>(Configuration.GetSection(nameof(MADBHR_Services.Options.ConnectionStrings)));
             services.AddCors(options =>
             {
@@ -50,6 +51,12 @@ namespace MADBHR
                     .AllowAnyMethod()
                     .AllowAnyHeader());
 
+            });
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.Name = ".AspNetCore.Cookies";
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+                options.SlidingExpiration = true;
             });
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(options =>

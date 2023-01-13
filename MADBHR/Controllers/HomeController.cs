@@ -1,11 +1,14 @@
 ﻿using MADBHR.Models;
 using MADBHR_Data.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace MADBHR.Controllers
@@ -13,10 +16,11 @@ namespace MADBHR.Controllers
     public class HomeController : Controller
     {
         private readonly MADBAdminSolutionContext _context;
-
-        public HomeController(MADBAdminSolutionContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public HomeController(UserManager<ApplicationUser> userManager,MADBAdminSolutionContext context)  
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public IActionResult Index()
@@ -27,8 +31,8 @@ namespace MADBHR.Controllers
         }
         public IActionResult Dashboard()
         {
-            var user = HttpContext.User.Identity;
-            ViewBag.lstLogIn =_context.TbUserLogin.Where(x => x.Status == "Enable" && x.UsernameOrEmail ==user.Name).FirstOrDefault();
+            var user = _userManager.GetUserAsync((ClaimsPrincipal)User);
+            ViewBag.lstLogIn =_context.TbUserLogin.Where(x => x.Status == "Enable" ).FirstOrDefault();
          
             return View();
         }
