@@ -49,13 +49,13 @@ namespace MADBHR_Services.SqlDataAccess
                 cmd.AddParameter("@ProfilePic", employee.ProfilePic);
                 cmd.AddParameter("@NrcPic", employee.Nrcpic);
                 cmd.AddParameter("@Form66Pic", employee.Form66Pic);
-
+                cmd.ExecuteNonQuery();
 
                 return employee;
             }
             catch(Exception ex)
             {
-
+                return ex;
             }
         }
         protected override void ReadRecord(ref IDataReader aDataReader, ref TbEmployee aInfo, string prefix)
