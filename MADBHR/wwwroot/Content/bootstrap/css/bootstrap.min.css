@@ -5395,8 +5395,17 @@ a.badge:focus, a.badge:hover {
         font-size: 63px;
     }
 }
-
 .thumbnail {
+    width: 100px !important;
+    height: 100px !important;
+    object-fit: cover !important;
+    background-image: url(../images/add-image.png);
+    background-repeat: no-repeat;
+    background-size: 50px;
+    background-position: center;
+    cursor: pointer;
+}
+/*.thumbnail {
     display: block;
     padding: 4px;
     margin-bottom: 20px;
@@ -5407,7 +5416,7 @@ a.badge:focus, a.badge:hover {
     -webkit-transition: border .2s ease-in-out;
     -o-transition: border .2s ease-in-out;
     transition: border .2s ease-in-out;
-}
+}*/
 
     .thumbnail a > img, .thumbnail > img {
         margin-right: auto;

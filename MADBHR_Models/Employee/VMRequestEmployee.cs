@@ -1,18 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text;
+using Microsoft.AspNetCore.Http;
 using static MADBHR_Data.Models.Attributes.CustomAttribute;
 
-// Code scaffolded by EF Core assumes nullable reference types (NRTs) are not used or disabled.
-// If you have enabled NRTs for your project, then un-comment the following line:
-// #nullable disable
-
-namespace MADBHR_Data.Models
+namespace MADBHR_Models.Employee
 {
-    public partial class TbEmployee
+   public  class VMRequestEmployee
     {
-        public int EmployeePkid { get; set; }
+        public string EmployeePkid { get; set; }
         public string EmployeeCode { get; set; }
         public string SerialNumber { get; set; }
         public string Name { get; set; }

@@ -12,6 +12,8 @@ namespace MADBHR_Data.Repository
         public readonly MADBAdminSolutionContext _context;
         public bool disposed = false;
         public IGenericRepository<TbUser> _tbUserRepository;
+        public IGenericRepository<TbEmployee> _tbEmployeeRepository;
+
         public UnitOfWork(MADBAdminSolutionContext context)
         {
             _context = context;
@@ -27,8 +29,15 @@ namespace MADBHR_Data.Repository
             }
 
         }
+        public IGenericRepository<TbEmployee> TbEmployeeRepository
+        {
+            get
+            {
+                return _tbEmployeeRepository = _tbEmployeeRepository ?? new GenericRepository<TbEmployee>(_context);
+            }
 
-      
+        }
+
 
         #endregion
 
@@ -49,6 +58,8 @@ namespace MADBHR_Data.Repository
                 }
             }
         }
+
+
         #endregion
 
         #region [Begin, Commit and Rollback Transaction]

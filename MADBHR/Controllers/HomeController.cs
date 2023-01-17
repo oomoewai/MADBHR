@@ -16,11 +16,11 @@ namespace MADBHR.Controllers
     public class HomeController : Controller
     {
         private readonly MADBAdminSolutionContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
-        public HomeController(UserManager<ApplicationUser> userManager,MADBAdminSolutionContext context)  
+       
+        public HomeController(MADBAdminSolutionContext context)  
         {
             _context = context;
-            _userManager = userManager;
+           
         }
 
         public IActionResult Index()
@@ -31,8 +31,8 @@ namespace MADBHR.Controllers
         }
         public IActionResult Dashboard()
         {
-            var user = _userManager.GetUserAsync((ClaimsPrincipal)User);
-            ViewBag.lstLogIn =_context.TbUserLogin.Where(x => x.Status == "Enable" ).FirstOrDefault();
+            var userId = HttpContext.User.Identity.Name;
+            ViewBag.lstLogIn =_context.TbUserLogin.Where(x => x.Status == "Enable" && x.UserPkid==Convert.ToInt64(userId) ).FirstOrDefault();
          
             return View();
         }

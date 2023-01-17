@@ -1,0 +1,243 @@
+﻿@using MADBHR.Enum
+@*@model MADBHR_Models.Employee.VMRequestEmployee*@
+@model MADBHR_Data.Models.TbEmployee
+@{
+    var controller = "Employee";
+    ViewData["Title"] = "All " + controller;
+}
+
+<section class="content">
+
+    <div class="box">
+        <div class="box-header">
+
+            <h4 class="text-blue text-bold">ဝန်ထမ်းတစ်ဦးချင်း၏ ကိုယ်ရေးအချက်အလက်ဖြည့်သွင်းရန်</h4>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <form action="/@controller/@ViewData["Action"]" method="post" enctype="multipart/form-data">
+                    <input asp-for="EmployeePkid" hidden />
+                    <div class="col-xs-12">
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-1">ကိုယ်ပိုင်အမှတ်</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="text" class="form-control" id="field-1" asp-for="SerialNumber">
+                                    <span asp-validation-for="SerialNumber" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-2">အမည်</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="text" class="form-control" id="field-2" asp-for="Name">
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-3">အဖ အမည်</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="text" class="form-control" id="field-3" asp-for="FatherName">
+                                    <span asp-validation-for="FatherName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-4">အမိ အမည်</label>
+                                <input type="text" class="form-control" id="field-4" asp-for="MotherName">
+                                <span asp-validation-for="MotherName" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-5">အနီးစပ်ဆုံး ဆွေမျိုး</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="text" class="form-control" id="field-5" asp-for="DearestPerson">
+                                    <span asp-validation-for="DearestPerson" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-6">အမွေစား အမွေခံ</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="text" class="form-control" id="field-6" asp-for="Ancestor">
+                                    <span asp-validation-for="Ancestor" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-7">နိုင်ငံသားစီစစ်ရေးကဒ်ပြားအမှတ်</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="text" class="form-control" id="field-7" asp-for="Nrcnumber">
+                                    <span asp-validation-for="Nrcnumber" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-8">​မွေးသက္ကရာဇ်</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="date" class="form-control" id="field-8" asp-for="DateOfBirth">
+                                    <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-9">​မွေးဖွားသည့်အရပ်</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <select class="form-control" asp-for="PlaceOfBirth" asp-items="ViewBag.PlaceOfBirth">
+                                        <option selected="selected" value="">မွေးဖွားသည့်အရပ်ကိုရွေးပါ </option>
+                                    </select>
+                                    <span asp-validation-for="PlaceOfBirth" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-10">​ပညာအရည်အချင်း</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="text" class="form-control" id="field-10" asp-for="EducationTypeCode">
+                                    <span asp-validation-for="EducationTypeCode" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-15">​အခြားအမည်</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="text" class="form-control" id="field-15" asp-for="OtherName">
+                                    <span asp-validation-for="OtherName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-16">​စတင်ဝင်ရောက်သည့်နေ့</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="date" class="form-control" id="field-16" asp-for="JoinDate">
+                                    <span asp-validation-for="JoinDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-17">​​နေရပ်လိပ်စာ</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="text" class="form-control" id="field-17" asp-for="Address">
+                                    <span asp-validation-for="Address" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-18">​လက်ရှိတာဝန်ထမ်းဆောင်နေသည့်ဒေသ</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <select class="form-control" asp-for="Occupation" asp-items="ViewBag.PlaceOfBirth">
+                                        <option selected="selected" value="">လက်ရှိတာဝန်ထမ်းဆောင်နေသည့်ဒေသကိုရွေးပါ </option>
+                                    </select>
+                                    <span asp-validation-for="Occupation" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-11">​လူမျိုး</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="text" class="form-control" id="field-11" asp-for="Race">
+                                    <span asp-validation-for="Race" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-12">​ဘာသာ</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="text" class="form-control" id="field-12" asp-for="Religion">
+                                    <span asp-validation-for="Religion" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 form-group">
+                                <label class="form-label" for="field-13">​မျက်စိအရောင်</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="text" class="form-control" id="field-13" asp-for="EyeColor">
+                                    <span asp-validation-for="EyeColor" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <label class="form-label" for="field-14">​အရပ်</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="text" class="form-control" id="field-14" asp-for="Height">
+                                    <span asp-validation-for="Height" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <label class="form-label" for="field-15">​ထင်ရှားအမှတ်အသား</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="text" class="form-control" id="field-15" asp-for="Mark">
+                                    <span asp-validation-for="Mark" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 form-group">
+                                <label class="form-label" for="Name">လိုင်စင်ဓာတ်ပုံ</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input asp-for="ProfilePic" hidden />
+                                    <input asp-for="ImageContent" hidden />
+                                    <input name="ImageFile" id="fileupload" type="file" style="display:none;" />
+                                    <div>
+                                        <img id="dvPreview" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <label class="form-label" for="Name">သန်းခေါင်စာရင်း</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input asp-for="Form66Pic" hidden />
+                                    <input asp-for="ImageContent" hidden />
+                                    <input name="Form66ImageFile" id="fileForm66upload" type="file" style="display:none;" />
+                                    <div>
+                                        <img id="dvForm66Preview" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <label class="form-label" for="Name">မှတ်ပုံတင်</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input asp-for="Nrcpic" hidden />
+                                    <input asp-for="ImageContent" hidden />
+                                    <input name="NRCImageFile" id="fileNRcupload" type="file" style="display:none;" />
+                                    <div>
+                                        <img id="dvNrcPreview" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12  padding-bottom-30">
+                            <div class="text-left">
+                                <button type="submit" class="btn btn-primary gradient-blue">Save</button>
+                                <button type="button" data-href="/@controller/index" class="btn btn-click">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

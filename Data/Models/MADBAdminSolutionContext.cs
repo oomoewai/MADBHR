@@ -432,6 +432,8 @@ namespace MADBHR_Data.Models
                     .HasColumnName("NRCNumber")
                     .HasMaxLength(50);
 
+                entity.Property(e => e.Nrcpic).HasColumnName("NRCPic");
+
                 entity.Property(e => e.Occupation).HasMaxLength(50);
 
                 entity.Property(e => e.OtherName).HasMaxLength(50);

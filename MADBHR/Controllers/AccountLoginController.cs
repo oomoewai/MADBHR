@@ -37,21 +37,22 @@ namespace MADB.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string username, string password)//string username, string password
         {
+           
             try
             {
                 var userInfo = _context.TbUserLogin.Where(x => x.Status == "Enable" && x.UsernameOrEmail == username && x.Password == password).FirstOrDefault();
                 //var pass = MADBHR.Helper.EncryptAndDecrypt.Decrypt(userInfo.Password, username.Trim() + "MADB").Equals(password);
+                
                 if (userInfo != null)
                 {
                     var claims = new List<Claim>
                     {
-                         new Claim(ClaimTypes.NameIdentifier, "NameIdentifire"),
-                         new Claim(ClaimTypes.Name, username),
-
+                        new Claim(ClaimTypes.Name, Convert.ToString(userInfo.UserPkid),ClaimValueTypes.Integer64)
                     };
-                    var claimsIdentity = new ClaimsIdentity(claims, "Login");
 
+                    var claimsIdentity = new ClaimsIdentity(claims, "Login");
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+
                     return RedirectToAction("Dashboard", "Home");
 
                 }

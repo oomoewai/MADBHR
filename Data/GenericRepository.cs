@@ -155,6 +155,7 @@ namespace MADBHR_Data.Repository
             dbSet.Add(entity);
         }
 
+      
         public virtual void InsertList(IEnumerable<TEntity> lstentity)
         {
             dbSet.AddRange(lstentity);

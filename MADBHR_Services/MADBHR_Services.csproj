@@ -14,8 +14,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Base\" />
-    <Folder Include="SqlDataAccess\" />
+    <ProjectReference Include="..\Common\MADBHR_Common.csproj" />
+    <ProjectReference Include="..\Data\MADBHR_Data.csproj" />
+    <ProjectReference Include="..\MADBHR_Models\MADBHR_Models.csproj" />
   </ItemGroup>
 
 </Project>

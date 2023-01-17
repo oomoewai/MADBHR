@@ -10,7 +10,7 @@ namespace MADBHR_Data.Repository.Base
         #region [Repository Declaration]
    
         IGenericRepository<TbUser> TbUserRepository { get; }
-
+        IGenericRepository<TbEmployee> TbEmployeeRepository { get; }
         #endregion
 
         void Commit();

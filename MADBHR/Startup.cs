@@ -1,9 +1,12 @@
 using MADBHR_Data.Models;
+using MADBHR_Data.Repository;
+using MADBHR_Data.Repository.Base;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,20 +41,25 @@ namespace MADBHR
             });
             //services.AddDbContext <MADBSolutionContext>
             //  (opt1ions => opt1ions.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
+            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+              .AddEntityFrameworkStores<MADBAdminSolutionContext>();
+          
 
             services.AddMvc();
 
-            services.AddScoped<ClaimsPrincipal>(s => s.GetService<IHttpContextAccessor>().HttpContext.User);
+            //services.AddScoped<ClaimsPrincipal>(s => s.GetService<IHttpContextAccessor>().HttpContext.User);
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<MADBHR_Services.Base.IEmployeeServices, MADBHR_Services.EmployeeServices>();
             services.Configure<MADBHR_Services.Options.ConnectionStrings>(Configuration.GetSection(nameof(MADBHR_Services.Options.ConnectionStrings)));
-            services.AddCors(options =>
-            {
-                options.AddPolicy("CorsPolicy",
-                    builder => builder.AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader());
+            
+            //services.AddCors(options =>
+            //{
+            //    options.AddPolicy("CorsPolicy",
+            //        builder => builder.AllowAnyOrigin()
+            //        .AllowAnyMethod()
+            //        .AllowAnyHeader());
 
-            });
+            //});
             services.ConfigureApplicationCookie(options =>
             {
                 options.Cookie.Name = ".AspNetCore.Cookies";
@@ -76,15 +84,20 @@ namespace MADBHR
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+            }
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
             app.UseRouting();
-            app.UseCors("CorsPolicy");
+
+            //Note the middleware order.
+            app.UseAuthentication();
             app.UseAuthorization();
-            app.UseStaticFiles();
-            app.UseDeveloperExceptionPage();
-            app.UseDatabaseErrorPage();
 
 
             app.UseEndpoints(endpoints =>

@@ -1,0 +1,96 @@
+﻿@using MADBHR.Enum
+@{
+    ViewData["Title"] = "Create Emplyee";
+    ViewData["Action"] = ViewEnum.Action.Create.ToDescription();
+}
+
+<partial name="_PartialForm" />
+@section Scripts
+{
+    @*<script src="~/js/image-upload.js"></script>*@
+    <link href="~/Content/css/common.css" rel="stylesheet" type="text/css" />
+    <script>
+        $(document).ready(function () {
+
+            $("#dvPreview").attr("src", $('#ImageContent').val());
+            $("#dvPreview").attr("class", "thumbnail");
+
+            $("#dvForm66Preview").attr("src", $('#ImageContent').val());
+            $("#dvForm66Preview").attr("class", "thumbnail");
+
+            $("#dvNrcPreview").attr("src", $('#ImageContent').val());
+            $("#dvNrcPreview").attr("class", "thumbnail");
+
+        });
+
+        $("#dvPreview").click(function (e) {
+            $("#fileupload").click();
+        });
+        $("#dvForm66Preview").click(function (e) {
+            $("#fileForm66upload").click();
+        });
+        $("#dvNrcPreview").click(function (e) {
+            $("#fileNRcupload").click();
+        });
+        $("#fileupload").change(function () {
+            $("#dvPreview").html("");
+            var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.jpg|.jpeg|.gif|.png|.bmp|.svg|.doc|.docx|.xlsx|.xls|.pptx|.kml|.gpx|.shp|.cmz|.pdf|.mp3|.mp4)$/;
+            if (regex.test($(this).val().toLowerCase())) {
+                if (typeof (FileReader) != "undefined") {
+                    $("#dvPreview").show();
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $("#ImageContent").val(e.target.result);
+                        $("#dvPreview").attr("src", e.target.result);
+                    }
+                    reader.readAsDataURL($(this)[0].files[0]);
+                } else {
+                    alert("This browser does not support FileReader.");
+                }
+            } else {
+                alert("Please upload a valid image file.");
+            }
+        });
+        $("#fileForm66upload").change(function () {
+            debugger;
+            $("#dvForm66Preview").html("");
+            var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.jpg|.jpeg|.gif|.png|.bmp|.svg|.doc|.docx|.xlsx|.xls|.pptx|.kml|.gpx|.shp|.cmz|.pdf|.mp3|.mp4)$/;
+            if (regex.test($(this).val().toLowerCase())) {
+                if (typeof (FileReader) != "undefined") {
+                    $("#dvForm66Preview").show();
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $("#ImageContent").val(e.target.result);
+                        $("#dvForm66Preview").attr("src", e.target.result);
+                    }
+                    reader.readAsDataURL($(this)[0].files[0]);
+                } else {
+                    alert("This browser does not support FileReader.");
+                }
+            } else {
+                alert("Please upload a valid image file.");
+            }
+        });
+        $("#fileNRcupload").change(function () {
+            $("#dvNrcPreview").html("");
+            var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.jpg|.jpeg|.gif|.png|.bmp|.svg|.doc|.docx|.xlsx|.xls|.pptx|.kml|.gpx|.shp|.cmz|.pdf|.mp3|.mp4)$/;
+            if (regex.test($(this).val().toLowerCase())) {
+                if (typeof (FileReader) != "undefined") {
+                    $("#dvNrcPreview").show();
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $("#ImageContent").val(e.target.result);
+                        $("#dvNrcPreview").attr("src", e.target.result);
+                    }
+                    reader.readAsDataURL($(this)[0].files[0]);
+                } else {
+                    alert("This browser does not support FileReader.");
+                }
+            } else {
+                alert("Please upload a valid image file.");
+            }
+        });
+
+    </script>
+
+}
