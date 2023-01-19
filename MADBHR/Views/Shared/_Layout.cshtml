@@ -103,36 +103,36 @@
                                             tmpCaption = @Convert.ToString(ViewBag.lstLogIn.Department);
                                         }
                                         <span class="hidden-xs">@Convert.ToString(ViewBag.lstLogIn.Department) </span>
-                                    @*&nbsp;	&nbsp;	 | &nbsp;	&nbsp;	 @Convert.ToString(ViewBag.lstLogIn.SectionName) &nbsp;	&nbsp;	 | &nbsp;	&nbsp;	 @Convert.ToString(ViewBag.lstLogIn.SubSectionName) &nbsp;&nbsp;  | &nbsp;&nbsp; @Convert.ToString(ViewBag.lstLogIn.RoleName) </span>*@
+                                        @*&nbsp;	&nbsp;	 | &nbsp;	&nbsp;	 @Convert.ToString(ViewBag.lstLogIn.SectionName) &nbsp;	&nbsp;	 | &nbsp;	&nbsp;	 @Convert.ToString(ViewBag.lstLogIn.SubSectionName) &nbsp;&nbsp;  | &nbsp;&nbsp; @Convert.ToString(ViewBag.lstLogIn.RoleName) </span>*@
                                         @*if (ViewBag.lstLogIn.DistrictName != null)
-            {
-                tmpCaption = tmpCaption + "  |  " + @Convert.ToString(ViewBag.lstLogIn.DistrictName);
-            }
-            if (ViewBag.lstLogIn.TownshipName != null)
-            {
-                tmpCaption = tmpCaption + "  |  " + @Convert.ToString(ViewBag.lstLogIn.TownshipName);
-            }
+                                            {
+                                                tmpCaption = tmpCaption + "  |  " + @Convert.ToString(ViewBag.lstLogIn.DistrictName);
+                                            }
+                                            if (ViewBag.lstLogIn.TownshipName != null)
+                                            {
+                                                tmpCaption = tmpCaption + "  |  " + @Convert.ToString(ViewBag.lstLogIn.TownshipName);
+                                            }
 
-            if (ViewBag.lstLogIn != null)
-            {
+                                            if (ViewBag.lstLogIn != null)
+                                            {
 
-                @if (ViewBag.lstLogIn.DeptName != null)
-                {
-                    <span class="hidden-xs">@Convert.ToString(ViewBag.lstLogIn.DeptName) &nbsp;	&nbsp;	 | &nbsp;	&nbsp;	 @Convert.ToString(ViewBag.lstLogIn.SectionName) &nbsp;	&nbsp;	 | &nbsp;	&nbsp;	 @Convert.ToString(ViewBag.lstLogIn.SubSectionName) &nbsp;&nbsp;  | &nbsp;&nbsp; @Convert.ToString(ViewBag.lstLogIn.RoleName) </span>
+                                                @if (ViewBag.lstLogIn.DeptName != null)
+                                                {
+                                                    <span class="hidden-xs">@Convert.ToString(ViewBag.lstLogIn.DeptName) &nbsp;	&nbsp;	 | &nbsp;	&nbsp;	 @Convert.ToString(ViewBag.lstLogIn.SectionName) &nbsp;	&nbsp;	 | &nbsp;	&nbsp;	 @Convert.ToString(ViewBag.lstLogIn.SubSectionName) &nbsp;&nbsp;  | &nbsp;&nbsp; @Convert.ToString(ViewBag.lstLogIn.RoleName) </span>
 
-                }
-                else
-                {
-                    <span class="hidden-xs">@tmpCaption</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="hidden-xs">@tmpCaption</span>
 
-                }
+                                                }
 
-            }*@
+                                            }*@
 
                                     }
                                 </a>
                             </li>
-                           
+
                         </ul>
                     </div>
 
@@ -257,26 +257,42 @@
                 <!-- sidebar menu: : style can be found in sidebar.less -->
                 <ul class="sidebar-menu" data-widget="tree" style="margin-top:60px;">
                     @*<li class="active treeview">
-                            <a href="#">
-                                <i class="fa fa-dashboard"></i> <span>Dashboard</span>
-                                <span class="pull-right-container">
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </span>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li class="active"><a href="#"><i class="fa fa-circle-o"></i> Dashboard v1</a></li>
-                                <li><a href="#"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>
-                            </ul>
-                        </li>*@
+            <a href="#">
+                <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                <li class="active"><a href="#"><i class="fa fa-circle-o"></i> Dashboard v1</a></li>
+                <li><a href="#"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>
+            </ul>
+        </li>*@
                     <li><a href="@Url.Action("Dashboard", "Home")"><i class="fa fa-home"></i> <span>ပင်မစာမျက်နှာ</span></a></li>
-                    @*<li><a href="@Url.Action("ProposalApproveList", "ProposalProgress")"><i class="fa fa-inbox"></i> <span>ဝင်စာများ&nbsp;&nbsp;<span style="background-color:red;" class="badge badge-danger">@Context.Session.GetString("countDocIn")</span></span></a></li>
-                    <li><a href="@Url.Action("ProposalCaseOpenList", "ProposalProgress")"><i class="fa fa-paper-plane"></i> <span>ထွက်စာများ&nbsp;&nbsp;<span style="background-color:red;" class="badge badge-danger">@Context.Session.GetString("countDocOut")</span></span></a></li>
-                    <li><a href="@Url.Action("NoteSheetApproveList", "ProposalProgress")"><i class="fa fa-inbox"></i> <span>Note Sheet များ&nbsp;&nbsp;<span style="background-color:red;" class="badge badge-danger">@Context.Session.GetString("noteSheet")</span></span></a></li>
-                    <li><a href="@Url.Action("TrashDocumentList", "Operation")"><i class="fa fa-inbox"></i> <span>ပစ်စာများ</span></a></li>
+                    <li class="treeview active">
+                        <a href="#" class="active">
+                            <i class="fa fa-list"></i>
+                            <span>စာရင်းများထည့်ရန်</span>
 
-                    <li><a href="@Url.Action("DocsOut", "Operation")"><i class="fa fa-pencil"></i> <span>စာမှတ်ပုံတင်ခြင်း</span></a></li>
-                    <li><a href="@Url.Action("TrashDocument", "Operation")"><i class="fa fa-pencil"></i> <span>ပစ်စာမှတ်ပုံတင်ခြင်း</span></a></li>*@
-                    
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li class="active">
+                                <a href="@Url.Action("Index", "Employee")" style="background-color:#fdf59a47 !important;"><i class=""></i>ကိုယ်ရေးအချက်အလက်</a>
+                                @*<a href="" onclick="liActive(@Url.Action(item.ActionName, item.ControllerName), @(lstAllowedModuleGroupName[i].FunctionGroupID)_@(item.FunctionID), liMain_@(lstAllowedModuleGroupName[i].FunctionGroupID)_@(i))"><i class="@iconClass"></i>@item.LinkText</a>*@
+                            </li>
+                        </ul>
+                    </li>
+                        @*<li><a href="@Url.Action("ProposalApproveList", "ProposalProgress")"><i class="fa fa-inbox"></i> <span>ဝင်စာများ&nbsp;&nbsp;<span style="background-color:red;" class="badge badge-danger">@Context.Session.GetString("countDocIn")</span></span></a></li>
+            <li><a href="@Url.Action("ProposalCaseOpenList", "ProposalProgress")"><i class="fa fa-paper-plane"></i> <span>ထွက်စာများ&nbsp;&nbsp;<span style="background-color:red;" class="badge badge-danger">@Context.Session.GetString("countDocOut")</span></span></a></li>
+            <li><a href="@Url.Action("NoteSheetApproveList", "ProposalProgress")"><i class="fa fa-inbox"></i> <span>Note Sheet များ&nbsp;&nbsp;<span style="background-color:red;" class="badge badge-danger">@Context.Session.GetString("noteSheet")</span></span></a></li>
+            <li><a href="@Url.Action("TrashDocumentList", "Operation")"><i class="fa fa-inbox"></i> <span>ပစ်စာများ</span></a></li>
+
+            <li><a href="@Url.Action("DocsOut", "Operation")"><i class="fa fa-pencil"></i> <span>စာမှတ်ပုံတင်ခြင်း</span></a></li>
+            <li><a href="@Url.Action("TrashDocument", "Operation")"><i class="fa fa-pencil"></i> <span>ပစ်စာမှတ်ပုံတင်ခြင်း</span></a></li>*@
+
                 </ul>
             </section>
             <!-- /.sidebar -->
@@ -285,7 +301,7 @@
         <div class="content-wrapper">
             <!-- Content Header (Page header) -->
             <section class="content-header">
-                @*<marquee style="color:white;background-color:#2b580c;font-size:large;font-weight:300;padding:10px;">@ViewBag.AnnouncemnetDesc</marquee>*@
+                @*<marquee style="color:white;background-color:#2b580c;font-size:large;font-weight:300;padding:10px;">@ViewBag.AnnouncemnetDesc</marquee>*@<marquee style="color:white;background-color:#2b580c;font-size:large;font-weight:300;padding:10px;"></marquee>
 
             </section>
             <!-- Main content -->
@@ -375,6 +391,8 @@
     <script src="~/Content/plugins/toastr/toastr.min.js" asp-append-version="true"></script>
 
     <script src="~/Content/bower_components/moment/locale/my.js"></script>
+    <script src="~/js/sweetalert2@11.js"></script>
+
 
     <script>
         function EnToMy(EnStr) {

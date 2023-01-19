@@ -1,3 +1,4 @@
+using MADBHR.Helper;
 using MADBHR_Data.Models;
 using MADBHR_Data.Repository;
 using MADBHR_Data.Repository.Base;
@@ -50,8 +51,11 @@ namespace MADBHR
             //services.AddScoped<ClaimsPrincipal>(s => s.GetService<IHttpContextAccessor>().HttpContext.User);
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<MADBHR_Services.Base.IEmployeeServices, MADBHR_Services.EmployeeServices>();
+            services.AddTransient<MADBHR_Services.Base.IRelationshipServices, MADBHR_Services.RelationshipServices>();
+            services.AddTransient<MADBHR_Services.Base.ISonAndDaughterServices, MADBHR_Services.SonAndDaughterServices>();
             services.Configure<MADBHR_Services.Options.ConnectionStrings>(Configuration.GetSection(nameof(MADBHR_Services.Options.ConnectionStrings)));
-            
+            services.Configure<Pagination>(Configuration.GetSection("Pagination"));
+
             //services.AddCors(options =>
             //{
             //    options.AddPolicy("CorsPolicy",

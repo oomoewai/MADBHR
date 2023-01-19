@@ -47,7 +47,40 @@ namespace MADBHR_Data.Models
         public string Nrcpic { get; set; }
         [NotMapped]
         [SkipProperty]
+        public string CurrentRank { get; set; }
+        [NotMapped]
+        [SkipProperty]
+        public string SerialNumber_Myan { get; set; }
+        [NotMapped]
+        [SkipProperty]
+        public string EducationType { get; set; }
+        [NotMapped]
+        [SkipProperty]
+        public string CurrentRankDate { get; set; }
+        [NotMapped]
+        [SkipProperty]
+        public string Township { get; set; }
+        [NotMapped]
+        [SkipProperty]
+        public int Age { get; set; }
+        [NotMapped]
+        [SkipProperty]
+        public string PlaceOfBirthName { get; set; }
+        [NotMapped]
+        [SkipProperty]
+        public string DateOfBirthString { get; set; }
+        [NotMapped]
+        [SkipProperty]
+        public string JoinDateString { get; set; }
+        [NotMapped]
+        [SkipProperty]
         public string ImageContent { get; set; }
+        [NotMapped]
+        [SkipProperty]
+        public string NRCImageContent { get; set; }
+        [NotMapped]
+        [SkipProperty]
+        public string Form66ImageContent { get; set; }
         [NotMapped]
         [SkipProperty]
         public IFormFile ImageFile { get; set; }

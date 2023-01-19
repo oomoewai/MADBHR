@@ -16,7 +16,14 @@
         <div class="box-body">
             <div class="row">
                 <form action="/@controller/@ViewData["Action"]" method="post" enctype="multipart/form-data">
-                    <input asp-for="EmployeePkid" hidden />
+
+                    @if (ViewData["Action"].ToString() == ViewEnum.Action.Edit.ToDescription())
+                    {
+                        <input asp-for="EmployeeCode" hidden />
+                        
+                    }                  
+                     <input asp-for="EmployeePkid" hidden />
+                    @*}*@
                     <div class="col-xs-12">
                         <div class="row">
                             <div class="col-md-6 form-group">
@@ -102,7 +109,9 @@
                                 <label class="form-label" for="field-10">​ပညာအရည်အချင်း</label>
                                 <span class="desc"></span>
                                 <div class="controls">
-                                    <input type="text" class="form-control" id="field-10" asp-for="EducationTypeCode">
+                                    <select class="form-control" asp-for="EducationTypeCode" asp-items="ViewBag.EducationType">
+                                        <option selected="selected" value="">ပညာအရည်အချင်းကိုရွေးပါ </option>
+                                    </select>
                                     <span asp-validation-for="EducationTypeCode" class="text-danger"></span>
                                 </div>
                             </div>
@@ -207,7 +216,7 @@
                                 <span class="desc"></span>
                                 <div class="controls">
                                     <input asp-for="Form66Pic" hidden />
-                                    <input asp-for="ImageContent" hidden />
+                                    <input asp-for="Form66ImageContent" hidden />
                                     <input name="Form66ImageFile" id="fileForm66upload" type="file" style="display:none;" />
                                     <div>
                                         <img id="dvForm66Preview" />
@@ -219,7 +228,7 @@
                                 <span class="desc"></span>
                                 <div class="controls">
                                     <input asp-for="Nrcpic" hidden />
-                                    <input asp-for="ImageContent" hidden />
+                                    <input asp-for="NRCImageContent" hidden />
                                     <input name="NRCImageFile" id="fileNRcupload" type="file" style="display:none;" />
                                     <div>
                                         <img id="dvNrcPreview" />
@@ -229,7 +238,8 @@
                         </div>
                         <div class="col-xs-12  padding-bottom-30">
                             <div class="text-left">
-                                <button type="submit" class="btn btn-primary gradient-blue">Save</button>
+                                <button type="submit" class="btn btn-primary gradient-blue">သိမ်းမည်</button>
+                                <button type="submit" name="RedirectToRelationship" value="true" class="btn btn-primary gradient-blue">သိမ်းပြီး။ ဇနီး/ခင်ပွန်းအချက်အလက်ထည့်ရန်</button>
                                 <button type="button" data-href="/@controller/index" class="btn btn-click">Cancel</button>
                             </div>
                         </div>

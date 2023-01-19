@@ -9,6 +9,8 @@ namespace MADBHR_Services.Base
 {
     public interface IEmployeeServices
     {
-        Task<dynamic> SaveEmployee(TbEmployee employee);
+        Task<dynamic> SaveEmployee(TbEmployee employee,int userId, int Id);
+        List<TbEmployee> GetEmployee(string? Name = null, DateTime? FromDate = null, DateTime? ToDate = null);
+        void DeleteEmployee(int EmployeePkid, int userId);
     }
 }

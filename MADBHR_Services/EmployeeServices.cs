@@ -4,6 +4,7 @@ using MADBHR_Models.Employee;
 using MADBHR_Services.Base;
 using MADBHR_Services.Options;
 using MADBHR_Services.SqlDataAccess;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
 using System;
@@ -28,7 +29,7 @@ namespace MADBHR_Services
             _employeeDAO = new EmployeeDAO();
             _context = context;
         }
-        public async Task<dynamic> SaveEmployee(TbEmployee employee)
+        public async Task<dynamic> SaveEmployee(TbEmployee employee,int userId,int Id)
         {
             try
             {
@@ -38,7 +39,7 @@ namespace MADBHR_Services
                     IDbConnection connection = new SqlConnection(_connectionStrings.DefaultConnection);
                     IDbConnection mycon = connection;
                     IDbCommand cmd = mycon.CreateCommand();
-                    var emp = _employeeDAO.SaveEmployee(cmd, employee, 1);
+                    var emp = _employeeDAO.SaveEmployee(cmd, employee, userId,Id);
                     //_unitOfwork.TbEmployeeRepository.Insert(employee);
                     //_unitOfwork.Commit();
 
@@ -56,5 +57,39 @@ namespace MADBHR_Services
             }
 
         }
+        public  List<TbEmployee> GetEmployee(string? Name = null, DateTime? FromDate = null, DateTime? ToDate = null)
+        {
+            
+            try
+            {
+                IDbConnection connection = new SqlConnection(_connectionStrings.DefaultConnection);
+                IDbConnection myCon = connection;
+                IDbCommand cmd = myCon.CreateCommand();
+                var employees = _employeeDAO.GetEmployee(cmd,Name,FromDate,ToDate);
+               
+                return employees;
+            }
+            catch (Exception ex)
+            {
+                List<TbEmployee> emps = new List<TbEmployee>();
+                return emps;
+            }
+        }
+        public void DeleteEmployee(int EmployeePkid,int userId)
+        {
+            try
+            {
+                var employeeCode = _context.TbEmployee.Where(x => x.EmployeePkid == EmployeePkid).Select(x => x.EmployeeCode).FirstOrDefault();
+                IDbConnection connection = new SqlConnection(_connectionStrings.DefaultConnection);
+                IDbConnection myCon = connection;
+                IDbCommand cmd = myCon.CreateCommand();
+               _employeeDAO.DeleteEmployee(cmd,employeeCode,userId);
+            }
+            catch(Exception ex)
+            {
+
+            }
+        }
+
     }
 }

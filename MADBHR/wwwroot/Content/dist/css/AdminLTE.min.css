@@ -2354,6 +2354,8 @@ a {
     -webkit-box-shadow: none;
     box-shadow: none;
     border: 1px solid transparent;
+    background-color: #2b580c;
+    color: white;
 }
 
     .btn.uppercase {
@@ -2410,7 +2412,7 @@ a {
     }
 
 .btn-primary {
-    background-color: #3c8dbc;
+    background-color: #2b580c;
     border-color: #367fa9;
 }
 
