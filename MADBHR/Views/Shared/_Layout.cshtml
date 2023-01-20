@@ -269,7 +269,7 @@
             </ul>
         </li>*@
                     <li><a href="@Url.Action("Dashboard", "Home")"><i class="fa fa-home"></i> <span>ပင်မစာမျက်နှာ</span></a></li>
-                    <li class="treeview active">
+                    <li class="treeview active menu-open">
                         <a href="#" class="active">
                             <i class="fa fa-list"></i>
                             <span>စာရင်းများထည့်ရန်</span>
@@ -279,9 +279,21 @@
                             </span>
                         </a>
                         <ul class="treeview-menu">
-                            <li class="active">
-                                <a href="@Url.Action("Index", "Employee")" style="background-color:#fdf59a47 !important;"><i class=""></i>ကိုယ်ရေးအချက်အလက်</a>
+                            <li>
+                                <a class="active" href="@Url.Action("Index", "Employee")" style="background-color:#fdf59a47 !important;"><i class=""></i>ကိုယ်ရေးအချက်အလက်</a>
                                 @*<a href="" onclick="liActive(@Url.Action(item.ActionName, item.ControllerName), @(lstAllowedModuleGroupName[i].FunctionGroupID)_@(item.FunctionID), liMain_@(lstAllowedModuleGroupName[i].FunctionGroupID)_@(i))"><i class="@iconClass"></i>@item.LinkText</a>*@
+                            </li>
+                            <li>
+                                <a class="active" href="@Url.Action("Index", "TrainingHistory")" style="background-color:#fdf59a47 !important;"><i class=""></i>တတ်ရောက်သင်တန်းများ</a>
+
+                            </li>
+                            <li>
+                                <a class="active" href="@Url.Action("Index", "Award")" style="background-color:#fdf59a47 !important;"><i class=""></i>ဂုဏ်ထူးဆောင်ဘွဲ့တံဆိပ်များ</a>
+
+                            </li>
+                            <li>
+                                <a class="active" href="@Url.Action("Index", "Punishment")" style="background-color:#fdf59a47 !important;"><i class=""></i>အပြစ်ပေးခြင်း</a>
+
                             </li>
                         </ul>
                     </li>

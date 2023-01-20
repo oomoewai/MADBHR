@@ -1,71 +1,73 @@
 ﻿@using MADBHR.Enum
 @*@model MADBHR_Models.Employee.VMRequestEmployee*@
-@model MADBHR_Data.Models.TbSonAndDaughter
+@model MADBHR_Data.Models.TbAward
 @{
-    var controller = "SonAndDaughter";
+    var controller = "Award";
     ViewData["Title"] = "All " + controller;
 }
-
 <section class="content">
 
     <div class="box">
         <div class="box-header">
 
-            <h4 class="text-blue text-bold">သား/သမီး၏ ကိုယ်ရေးအချက်အလက်ဖြည့်သွင်းရန်</h4>
+            <h4 class="text-blue text-bold">ဂုဏ်ထူးဆောင်ဘွဲ့တံဆိပ်များ၏အချက်အလက်များဖြည့်သွင်းရန်</h4>
         </div>
         <div class="box-body">
             <div class="row">
                 <form action="/@controller/@ViewData["Action"]" method="post" enctype="multipart/form-data">
-                    <input asp-for="SonAndDaughterPkid" hidden />
+
                     @if (ViewData["Action"].ToString() == ViewEnum.Action.Edit.ToDescription())
                     {
                         <input asp-for="EmployeeCode" hidden />
 
                     }
+                    <input asp-for="AwardPkid" hidden />
+                    @*}*@
                     <div class="col-xs-12">
-
                         <div class="row">
                             <div class="col-md-6 form-group">
                                 <label class="form-label" for="field-1">ကိုယ်ပိုင်အမှတ်</label>
                                 <span class="desc"></span>
                                 <div class="controls">
-                                    <input type="text" class="form-control" id="field-1" value="@ViewBag.SerialNumber">
-                                    @*<span asp-validation-for="SerialNumber" class="text-danger"></span>*@
+                                    <input type="text" class="form-control" id="field-1" asp-for="SerialNumber">
+                                    <span asp-validation-for="SerialNumber" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-6 form-group">
-                                <label class="form-label" for="field-2">သား/သမီးအမည်</label>
+                                <label class="form-label" for="field-2">ချီးမြှင့်ခံရသည့်နေ့စွဲ</label>
                                 <span class="desc"></span>
                                 <div class="controls">
-                                    <input type="text" class="form-control" id="field-2" asp-for="SonAndDaughterName">
-                                    <span asp-validation-for="SonAndDaughterName" class="text-danger"></span>
+                                    <input type="date" class="form-control" id="field-2" asp-for="AwardDate">
+                                    <span asp-validation-for="AwardDate" class="text-danger"></span>
                                 </div>
                             </div>
-
                         </div>
                         <div class="row">
                             <div class="col-md-6 form-group">
-                                <label class="form-label" for="field-8">​မွေးသက္ကရာဇ်</label>
+                                <label class="form-label" for="field-3">ချီးမြှင့်ခံရသည့်နှစ်</label>
                                 <span class="desc"></span>
                                 <div class="controls">
-                                    <input type="date" class="form-control" id="field-8" asp-for="SonAndDaughterDob">
-                                    <span asp-validation-for="SonAndDaughterDob" class="text-danger"></span>
+                                    <input type="text" class="form-control" id="field-3" asp-for="AwardYear">
+                                    <span asp-validation-for="AwardYear" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-6 form-group">
-                                <label class="form-label" for="field-4">အလုပ်အကိုင်</label>
-                                <input type="text" class="form-control" id="field-4" asp-for="SonAndDaughterOccupation">
-                                <span asp-validation-for="SonAndDaughterOccupation" class="text-danger"></span>
-                            </div>
-                        </div>
+                                <label class="form-label" for="field-4">ချီးမြှင့်ခံရသည့်ဘွဲ့တံဆိပ်အမျိုးအစား</label>
+                                <select class="form-control" asp-for="AwardTypeCode" asp-items="ViewBag.AwardType">
+                                    <option selected="selected" value="">တံဆိပ်အမျိုးအစားရွေးပါ </option>
+                                </select>
+                                <span asp-validation-for="AwardTypeCode" class="text-danger"></span>
 
+                            </div>
+                        </div>                       
                         <div class="row">
+
                             <div class="col-md-6 form-group">
-                                <label class="form-label" for="field-7">နေရပ်လိပ်စာ</label>
+                                <label class="form-label" for="field-5">အကြောင်းအရင်း</label>
                                 <span class="desc"></span>
                                 <div class="controls">
-                                    <input type="text" class="form-control" id="field-7" asp-for="SonAndDaughterAddress">
-                                    <span asp-validation-for="SonAndDaughterAddress" class="text-danger"></span>
+                                    <input type="text" class="form-control" id="field-5" asp-for="Reason">
+                                    <span asp-validation-for="Reason" class="text-danger"></span>
                                 </div>
                             </div>
 

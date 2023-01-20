@@ -27,7 +27,7 @@ namespace MADBHR_Services.SqlDataAccess
                 cmd.AddParameter("@RelationAddress", relationship.RelationAddress);
                 cmd.AddParameter("@RelationFatherName", relationship.RelationFatherName);
                 cmd.AddParameter("@RelationMotherName", relationship.RelationMotherName);
-                cmd.AddParameter("@IsDeleted", relationship.IsDeleted);
+                cmd.AddParameter("@IsDeleted", false);
                 cmd.AddParameter("@CreatedBy", userId);
                 cmd.AddParameter("@UploadForTownship", relationship.UploadForTownship);
 

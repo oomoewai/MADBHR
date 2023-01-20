@@ -1,8 +1,8 @@
 ﻿@using MADBHR.Enum
 @*@model MADBHR_Models.Employee.VMRequestEmployee*@
-@model MADBHR_Data.Models.TbRelationship
+@model MADBHR_Data.Models.TbTrainingHistory
 @{
-    var controller = "Relationship";
+    var controller = "TrainingHistory";
     ViewData["Title"] = "All " + controller;
 }
 <section class="content">
@@ -10,88 +10,93 @@
     <div class="box">
         <div class="box-header">
 
-            <h4 class="text-blue text-bold">ဇနီး/ခင်ပွန်း၏ ကိုယ်ရေးအချက်အလက်ဖြည့်သွင်းရန်</h4>
+            <h4 class="text-blue text-bold">တတ်ရောက်ခဲ့သည့်သင်တန်းများ၏အချက်အလက်များဖြည့်သွင်းရန်</h4>
         </div>
         <div class="box-body">
             <div class="row">
                 <form action="/@controller/@ViewData["Action"]" method="post" enctype="multipart/form-data">
-                    <input asp-for="RelationshipPkid" hidden />
+
                     @if (ViewData["Action"].ToString() == ViewEnum.Action.Edit.ToDescription())
                     {
                         <input asp-for="EmployeeCode" hidden />
 
                     }
+                    <input asp-for="TrainingHistoryPkid" hidden />
+                    @*}*@
                     <div class="col-xs-12">
-
                         <div class="row">
                             <div class="col-md-6 form-group">
                                 <label class="form-label" for="field-1">ကိုယ်ပိုင်အမှတ်</label>
                                 <span class="desc"></span>
                                 <div class="controls">
-                                    <input type="text" class="form-control" id="field-1" value="@ViewBag.SerialNumber">
-
-                                    @*<span asp-validation-for="SerialNumber" class="text-danger"></span>*@
+                                    <input type="text" class="form-control" id="field-1" asp-for="SerialNumber">
+                                    <span asp-validation-for="SerialNumber" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-6 form-group">
-                                <label class="form-label" for="field-2">ဇနီး/ခင်ပွန်း အမည်</label>
+                                <label class="form-label" for="field-2">သင်တန်းအမည်/အပတ်စဉ်</label>
                                 <span class="desc"></span>
                                 <div class="controls">
-                                    <input type="text" class="form-control" id="field-2" asp-for="RelationName">
-                                    <span asp-validation-for="RelationName" class="text-danger"></span>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 form-group">
-                                <label class="form-label" for="field-8">​မွေးသက္ကရာဇ်</label>
-                                <span class="desc"></span>
-                                <div class="controls">
-                                    <input type="date" class="form-control" id="field-8" asp-for="RelationDob">
-                                    <span asp-validation-for="RelationDob" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-6 form-group">
-                                <label class="form-label" for="field-4">အလုပ်အကိုင်</label>
-                                <input type="text" class="form-control" id="field-4" asp-for="RelationOccupation">
-                                <span asp-validation-for="RelationOccupation" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 form-group">
-                                <label class="form-label" for="field-5">အဖ အမည်</label>
-                                <span class="desc"></span>
-                                <div class="controls">
-                                    <input type="text" class="form-control" id="field-5" asp-for="RelationFatherName">
-                                    <span asp-validation-for="RelationFatherName" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-6 form-group">
-                                <label class="form-label" for="field-6">အမိ အမည်</label>
-                                <span class="desc"></span>
-                                <div class="controls">
-                                    <input type="text" class="form-control" id="field-6" asp-for="RelationMotherName">
-                                    <span asp-validation-for="RelationMotherName" class="text-danger"></span>
+                                    <input type="text" class="form-control" id="field-2" asp-for="TrainingTitle">
+                                    <span asp-validation-for="TrainingTitle" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6 form-group">
-                                <label class="form-label" for="field-7">နေရပ်လိပ်စာ</label>
+                                <label class="form-label" for="field-3">သင်တန်းကျောင်း/ဌာန</label>
                                 <span class="desc"></span>
                                 <div class="controls">
-                                    <input type="text" class="form-control" id="field-7" asp-for="RelationAddress">
-                                    <span asp-validation-for="RelationAddress" class="text-danger"></span>
+                                    <input type="text" class="form-control" id="field-3" asp-for="SchoolName">
+                                    <span asp-validation-for="SchoolName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-4">တတ်ရောက်ခဲ့သည့်ကျောင်း၏တည်နေရာ</label>
+                                <select class="form-control" asp-for="Location" asp-items="ViewBag.Location">
+                                    <option selected="selected" value="">တည်နေရာရွေးပါ </option>
+                                </select>
+                                <span asp-validation-for="Location" class="text-danger"></span>
+                                
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-6">ကာလ (မှ)</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="date" class="form-control" id="field-6" asp-for="StartDate">
+                                    <span asp-validation-for="StartDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-7">ကာလ (အထိ)</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="date" class="form-control" id="field-7" asp-for="EndDate">
+                                    <span asp-validation-for="EndDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                          
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-5">မှတ်ချက်</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="text" class="form-control" id="field-5" asp-for="Remark">
+                                    <span asp-validation-for="Remark" class="text-danger"></span>
                                 </div>
                             </div>
 
                         </div>
 
+                        
+                     
                         <div class="col-xs-12  padding-bottom-30">
                             <div class="text-left">
                                 <button type="submit" class="btn btn-primary gradient-blue">သိမ်းမည်</button>
-                                <button type="submit" name="RedirectToSonAndDaughter" value="true" class="btn btn-primary gradient-blue">သိမ်းပြီး။ သား/သမီးအချက်အလက်ထည့်ရန်</button>
                                 <button type="button" data-href="/@controller/index" class="btn btn-click">နောက်သို့ပြန်သွားမည်</button>
                             </div>
                         </div>

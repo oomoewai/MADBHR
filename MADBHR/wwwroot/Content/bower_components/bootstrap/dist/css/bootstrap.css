@@ -2530,10 +2530,10 @@ input[type="range"] {
   display: block;
   width: 100%;
 }
-select[multiple],
-select[size] {
+/*select[multiple],*/
+/*select[size] {
   height: auto;
-}
+}*/
 input[type="file"]:focus,
 input[type="radio"]:focus,
 input[type="checkbox"]:focus {
@@ -2717,9 +2717,9 @@ select.input-sm {
   line-height: 30px;
 }
 textarea.input-sm,
-select[multiple].input-sm {
+/*select[multiple].input-sm {
   height: auto;
-}
+}*/
 .form-group-sm .form-control {
   height: 30px;
   padding: 5px 10px;
@@ -2732,7 +2732,7 @@ select[multiple].input-sm {
   line-height: 30px;
 }
 .form-group-sm textarea.form-control,
-.form-group-sm select[multiple].form-control {
+.form-group-sm.form-control {
   height: auto;
 }
 .form-group-sm .form-control-static {
@@ -2754,9 +2754,9 @@ select.input-lg {
   line-height: 46px;
 }
 textarea.input-lg,
-select[multiple].input-lg {
+/*select[multiple].input-lg {
   height: auto;
-}
+}*/
 .form-group-lg .form-control {
   height: 46px;
   padding: 10px 16px;
@@ -2769,7 +2769,7 @@ select[multiple].input-lg {
   line-height: 46px;
 }
 .form-group-lg textarea.form-control,
-.form-group-lg select[multiple].form-control {
+.form-group-lg.form-control {
   height: auto;
 }
 .form-group-lg .form-control-static {
@@ -3852,9 +3852,9 @@ select.input-group-lg > .input-group-btn > .btn {
 textarea.input-group-lg > .form-control,
 textarea.input-group-lg > .input-group-addon,
 textarea.input-group-lg > .input-group-btn > .btn,
-select[multiple].input-group-lg > .form-control,
-select[multiple].input-group-lg > .input-group-addon,
-select[multiple].input-group-lg > .input-group-btn > .btn {
+input-group-lg > .form-control,
+input-group-lg > .input-group-addon,
+input-group-lg > .input-group-btn > .btn {
   height: auto;
 }
 .input-group-sm > .form-control,
@@ -3875,9 +3875,9 @@ select.input-group-sm > .input-group-btn > .btn {
 textarea.input-group-sm > .form-control,
 textarea.input-group-sm > .input-group-addon,
 textarea.input-group-sm > .input-group-btn > .btn,
-select[multiple].input-group-sm > .form-control,
-select[multiple].input-group-sm > .input-group-addon,
-select[multiple].input-group-sm > .input-group-btn > .btn {
+input-group-sm > .form-control,
+input-group-sm > .input-group-addon,
+input-group-sm > .input-group-btn > .btn {
   height: auto;
 }
 .input-group-addon,

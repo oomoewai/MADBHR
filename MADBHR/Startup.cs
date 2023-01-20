@@ -53,6 +53,9 @@ namespace MADBHR
             services.AddTransient<MADBHR_Services.Base.IEmployeeServices, MADBHR_Services.EmployeeServices>();
             services.AddTransient<MADBHR_Services.Base.IRelationshipServices, MADBHR_Services.RelationshipServices>();
             services.AddTransient<MADBHR_Services.Base.ISonAndDaughterServices, MADBHR_Services.SonAndDaughterServices>();
+            services.AddTransient<MADBHR_Services.Base.ITrainingHistoryServices, MADBHR_Services.TrainingHistoryServices>();
+            services.AddTransient<MADBHR_Services.Base.IAwardServices, MADBHR_Services.AwardServices>();
+            services.AddTransient<MADBHR_Services.Base.IPunishmentServices, MADBHR_Services.PunishmentServices>();
             services.Configure<MADBHR_Services.Options.ConnectionStrings>(Configuration.GetSection(nameof(MADBHR_Services.Options.ConnectionStrings)));
             services.Configure<Pagination>(Configuration.GetSection("Pagination"));
 

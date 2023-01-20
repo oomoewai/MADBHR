@@ -25,7 +25,7 @@ namespace MADBHR_Services.SqlDataAccess
                 cmd.AddParameter("@SonAndDaughterDOB", sonAndDaughter.SonAndDaughterDob);
                 cmd.AddParameter("@SonAndDaughterOccupation", sonAndDaughter.SonAndDaughterOccupation);
                 cmd.AddParameter("@SonAndDaughterAddress", sonAndDaughter.SonAndDaughterAddress);
-                cmd.AddParameter("@IsDeleted", sonAndDaughter.IsDeleted);
+                cmd.AddParameter("@IsDeleted", false);
                 cmd.AddParameter("@CreatedBy", userId);
                 cmd.AddParameter("@UploadForTownship", sonAndDaughter.UploadForTownship);
 

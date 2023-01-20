@@ -31,12 +31,12 @@
                     <table id="example" class="display table table-hover table-condensed">
                         <thead>
                             <tr>
-                                <th>No</th>
-                                <th>Name</th>
-                                <th>Father Name</th>
-                                <th>Mother Name</th>
-                                <th>Religion</th>
-                                <th>Race</th>
+                                <th>စဉ်</th>
+                                <th>အမည်</th>
+                                <th>အဖ အမည်</th>
+                                <th>အမိ အမည်</th>
+                                <th>ကိုးကွယ်သည့်ဘာသာ</th>
+                                <th>လူမျိုး</th>
                                 <th></th>
 
                             </tr>
@@ -52,11 +52,11 @@
                                     <td class="text-center">@item.RelationOccupation</td>
                                     <td class="text-center">@item.RelationAddress</td>
                                     <td class="text-center">
-                                        <a asp-controller="SonAndDaughter" asp-action="Index" asp-route-EmployeeCode="@item.EmployeeCode" class="btn btn-xs btn-secondary">Go To SonAndDaughter</a>
-                                        <a asp-controller="@controller" asp-action="Edit" asp-route-Id="@item.RelationshipPkid" class="btn btn-xs btn-secondary">Edit</a>
+                                        <a asp-controller="SonAndDaughter" asp-action="Index" asp-route-EmployeeCode="@item.EmployeeCode" class="btn btn-xs btn-secondary">သား/သမီးအချက်အလက်ကြည့်ရန်</a>
+                                        <a asp-controller="@controller" asp-action="Edit" asp-route-Id="@item.RelationshipPkid" class="btn btn-xs btn-secondary">ပြင်ရန်</a>
                                         <a asp-controller="@controller" asp-action="Delete" asp-route-Id="@item.RelationshipPkid" class="btn btn-xs btn-secondary"
                                                 onclick="DeleteConfirm('/@controller/Delete/',@item.RelationshipPkid)">
-                                            Delete
+                                            ပယ်ဖျက်ရန်
                                         </a>
                                     </td>
 
