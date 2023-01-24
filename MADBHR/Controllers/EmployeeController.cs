@@ -30,18 +30,18 @@ namespace MADBHR.Controllers
         {
             var userId = HttpContext.User.Identity.Name;
             ViewBag.lstLogIn = _context.TbUserLogin.Where(x => x.Status == "Enable" && x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
-            var placeOfBirths = _context.TbPlaceOfBirth.Where(x => x.Active == true).ToList();
+            var placeOfBirths = _context.TbCurrentJobTownship.Where(x => x.Active == true).ToList();
             ViewData["PlaceOfBirth"] = new SelectList(placeOfBirths, "TownshipCode", "Township", employee?.PlaceOfBirth);
             var educationTypeCodes = _context.TbEducationType.Where(x => x.Active == true).ToList();
             ViewData["EducationType"] = new SelectList(educationTypeCodes, "EducationTypeCode", "EducationType", employee?.EducationTypeCode);
         }
-        public IActionResult Index(DateTime? FromDate=null,DateTime? ToDate=null,string? Name=null,int? page=1)
+        public IActionResult Index(DateTime? FromDate=null,DateTime? ToDate=null,string? Name=null,string? SerialNumber=null,int? page=1)
         {
             Initialize();
             var pageSize = _pagination.PageSize;
             ViewData["Page"] = page;
             ViewData["PageSize"] = pageSize;
-            var employees = _employeeServices.GetEmployee(Name,FromDate,ToDate).ToList();          
+            var employees = _employeeServices.GetEmployee(Name,FromDate,ToDate,SerialNumber).ToList();          
             return View(employees.OrderByDescending(x => x.CreatedDate).ToList().ToPagedList((int)page, pageSize));
             
         }

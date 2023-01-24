@@ -32,14 +32,14 @@
                             <div class="form-group">
                                 <label class="form-label" for="FromDate">ကိုယ်ပိုင်အမှတ်</label>
                                 <div class="controls">
-                                    <input type="text" class="form-control" name="@SerialNumber" id="serialNumber">
+                                    <input type="text" class="form-control" name="SerialNumber" value="@SerialNumber" id="serialNumber">
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="form-label" for="field-4">ပြစ်ဒဏ်အမျိုးအစား</label>
-                                <select class="form-control" name="@PunishmentType" asp-items="ViewBag.PunishmentType" id="awardtype">
+                                <select class="form-control" name="PunishmentType" value="@PunishmentType"  asp-items="ViewBag.PunishmentType" id="punishmentType">
                                     <option selected="selected" value="">ပြစ်ဒဏ်အမျိုးအစားရွေးပါ </option>
                                 </select>
                             </div>

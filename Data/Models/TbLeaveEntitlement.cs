@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using static MADBHR_Data.Models.Attributes.CustomAttribute;
 
 // Code scaffolded by EF Core assumes nullable reference types (NRTs) are not used or disabled.
 // If you have enabled NRTs for your project, then un-comment the following line:
@@ -26,5 +28,23 @@ namespace MADBHR_Data.Models
         public DateTime? CreatedDate { get; set; }
         public int? CreatedBy { get; set; }
         public string UploadForTownship { get; set; }
+        [NotMapped]
+        [SkipProperty]
+        public string SerialNumber { get; set; }
+        [NotMapped]
+        [SkipProperty]
+        public string ApproveDateStr { get; set; }
+        [NotMapped]
+        [SkipProperty]
+        public string StartDateStr { get; set; }
+        [NotMapped]
+        [SkipProperty]
+        public string EndDateStr { get; set; }
+        [NotMapped]
+        [SkipProperty]
+        public string EmployeeName { get; set; }
+        [NotMapped]
+        [SkipProperty]
+        public string LeaveType { get; set; }
     }
 }

@@ -1,0 +1,107 @@
+﻿
+@using MADBHR.Enum
+@*@model MADBHR_Models.Employee.VMRequestEmployee*@
+@model MADBHR_Data.Models.TbJobHistory
+@{
+    var controller = "JobHistory";
+    ViewData["Title"] = "All " + controller;
+}
+<section class="content">
+
+    <div class="box">
+        <div class="box-header">
+
+            <h4 class="text-blue text-bold">ယခင်လုပ်ကိုင်ခဲ့ဖူးသော အလုပ်ဌာနများ၏အချက်အလက်များဖြည့်သွင်းရန်</h4>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <form action="/@controller/@ViewData["Action"]" method="post" enctype="multipart/form-data">
+
+                    @if (ViewData["Action"].ToString() == ViewEnum.Action.Edit.ToDescription())
+                    {
+                        <input asp-for="EmployeeCode" hidden />
+
+                    }
+                    <input asp-for="JobHistoryPkid" hidden />
+                    @*}*@
+                <div class="col-xs-12">
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <label class="form-label" for="field-1">ကိုယ်ပိုင်အမှတ်</label>
+                            <span class="desc"></span>
+                            <div class="controls">
+                                <input type="text" class="form-control" id="field-1" asp-for="SerialNumber">
+                                <span asp-validation-for="SerialNumber" class="text-danger"></span>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <label class="form-label" for="field-4">ဌာနအမည်</label>
+                            <select class="form-control" asp-for="UploadForTownship" asp-items="ViewBag.TownshipCode">
+                                <option selected="selected" value="">ဌာနအမည်ရွေးပါ </option>
+                            </select>
+                            <span asp-validation-for="UploadForTownship" class="text-danger"></span>
+
+                        </div>
+
+
+                        <div class="col-md-6 form-group">
+                            <label class="form-label" for="field-4">ရာထူး အဆင့်</label>
+                            <select class="form-control" asp-for="RankTypeCode" asp-items="ViewBag.RankType">
+                                <option selected="selected" value="">ရာထူးအဆင့်ရွေးပါ </option>
+                            </select>
+                            <span asp-validation-for="RankTypeCode" class="text-danger"></span>
+                            <input type="checkbox" id="chkCurrentRank" asp-for="IsCurrent" />လက်ရှိရာထူး
+
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <label class="form-label" for="field-2">အချိန်ကာလ (မှ)</label>
+                            <span class="desc"></span>
+                            <div class="controls">
+                                <input type="date" class="form-control" id="field-2" asp-for="FromDate">
+                                <span asp-validation-for="FromDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label class="form-label" for="field-3">အချိန်ကာလ (ထိ)</label>
+                            <span class="desc"></span>
+                            <div class="controls">
+                                <input type="date" class="form-control" id="field-3" asp-for="ToDate">
+                                <span asp-validation-for="ToDate" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+
+                        <div class="col-md-6 form-group">
+                            <label class="form-label" for="field-5">မှတ်ချက်</label>
+                            <span class="desc"></span>
+                            <div class="controls">
+                                <input type="text" class="form-control" id="field-5" asp-for="Remark">
+                                <span asp-validation-for="Remark" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-xs-12  padding-bottom-30">
+                        <div class="text-left">
+                            <button type="submit" class="btn btn-primary gradient-blue">သိမ်းမည်</button>
+                            <button type="button" data-href="/@controller/index" class="btn btn-click">နောက်သို့ပြန်သွားမည်</button>
+                        </div>
+                    </div>
+                </div>
+
+
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

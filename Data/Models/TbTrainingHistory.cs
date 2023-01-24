@@ -33,12 +33,13 @@ namespace MADBHR_Data.Models
         public string SerialNumber { get; set; }
         [NotMapped]
         [SkipProperty]
-        public string EmployeeName { get; set; }
-        [NotMapped]
-        [SkipProperty]
         public string StartDateStr { get; set; }
         [NotMapped]
         [SkipProperty]
         public string EndDateStr { get; set; }
+        [NotMapped]
+        [SkipProperty]
+        public string EmployeeName { get; set; }
+
     }
 }

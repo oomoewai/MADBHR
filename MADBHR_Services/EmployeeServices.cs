@@ -57,7 +57,7 @@ namespace MADBHR_Services
             }
 
         }
-        public  List<TbEmployee> GetEmployee(string? Name = null, DateTime? FromDate = null, DateTime? ToDate = null)
+        public  List<TbEmployee> GetEmployee(string? Name = null, DateTime? FromDate = null, DateTime? ToDate = null,string? SerialNumber=null)
         {
             
             try

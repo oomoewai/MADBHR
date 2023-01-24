@@ -60,7 +60,7 @@ namespace MADBHR_Services.SqlDataAccess
                 return ex;
             }
         }
-        public List<TbEmployee> GetEmployee(IDbCommand cmd, string? Name = null, DateTime? FromDate = null, DateTime? ToDate = null)
+        public List<TbEmployee> GetEmployee(IDbCommand cmd, string? Name = null, DateTime? FromDate = null, DateTime? ToDate = null,string? SerialNumber=null)
         {
 
             cmd.CommandText = "Sp_Employee_Select";
@@ -70,6 +70,7 @@ namespace MADBHR_Services.SqlDataAccess
             cmd.AddParameter("@Name", Name);
             cmd.AddParameter("@FromDate", FromDate);
             cmd.AddParameter("@ToDate", ToDate);
+            cmd.AddParameter("@SerialNumber", SerialNumber);
            
             SqlDataAdapter ResAdapter = new SqlDataAdapter((SqlCommand)cmd);
             DataSet ResDs = new DataSet();

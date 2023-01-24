@@ -1,0 +1,134 @@
+﻿@using MADBHR.Enum
+@*@model MADBHR_Models.Employee.VMRequestEmployee*@
+@model MADBHR_Data.Models.TbDisposal
+@{
+    var controller = "EmployeeDisposal";
+    ViewData["Title"] = "All " + controller;
+}
+
+<section class="content">
+
+    <div class="box">
+        <div class="box-header">
+
+            <h4 class="text-blue text-bold">ပြုန်းတီးအင်အားစာရင်းများဖြည့်သွင်းရန်</h4>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <form action="/@controller/@ViewData["Action"]" method="post" enctype="multipart/form-data">
+
+                    @if (ViewData["Action"].ToString() == ViewEnum.Action.Edit.ToDescription())
+                    {
+                        <input asp-for="EmployeeCode" hidden />
+
+                    }
+                    <input asp-for="DisposalPkid" hidden />
+                    @*}*@
+                <div class="col-xs-12">
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <label class="form-label" for="field-1">ကိုယ်ပိုင်အမှတ်</label>
+                            <span class="desc"></span>
+                            <div class="controls">
+                                <input type="text" class="form-control" id="field-1" asp-for="SerialNumber" onchange="ChangeNumber()">
+                                <span asp-validation-for="SerialNumber" class="text-danger"></span>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 form-group">
+                            <label class="form-label" for="field-name">အမည်</label>
+                            <span class="desc"></span>
+                            <div class="controls">
+                                <input type="text" class="form-control" id="field-name">
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-4 form-group">
+                            <label class="form-label" for="field-2">ရာထူး</label>
+                            <span class="desc"></span>
+                            <div class="controls">
+                                <input type="text" class="form-control" id="field-rank">
+                            </div>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label class="form-label" for="field-4">ပညာအရည်အချင်း</label>
+                            <input type="text" class="form-control" id="field-education">
+                        </div>
+
+                    </div>
+                    <div class="row">
+
+                        <div class="col-md-4 form-group">
+                            <label class="form-label" for="field-2">မွေးသက္ကရာဇ်</label>
+                            <span class="desc"></span>
+                            <div class="controls">
+                                <input type="text" class="form-control" id="field-dob">
+                            </div>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label class="form-label" for="field-3">အမြဲတမ်းဝန်ထမ်းစတင်ဖြစ်သည့်နေ့</label>
+                            <span class="desc"></span>
+                            <div class="controls">
+                                <input type="text" class="form-control" id="field-joindate">
+                            </div>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label class="form-label" for="field-3">လက်ရှိရာထူးရသည့်နေ့</label>
+                            <span class="desc"></span>
+                            <div class="controls">
+                                <input type="text" class="form-control" id="field-fromdate">
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <label class="form-label" for="field-18">​ပြုန်းတီးအမျိုးအစား</label>
+                            <span class="desc"></span>
+                            <div class="controls">
+                                <select class="form-control" asp-for="DisposalTypeCode" asp-items="ViewBag.DisposalTypeCode">
+                                    <option selected="selected" value="">ပြုန်းတီးအမျိုးအစားရွေးပါ </option>
+                                </select>
+                                <span asp-validation-for="DisposalTypeCode" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label class="form-label" for="field-18">ပြုန်းတီးရက်စွဲ</label>
+                            <span class="desc"></span>
+                            <div class="controls">
+                                <input type="date" class="form-control" id="field-5" asp-for="DisposalDate">
+                                <span asp-validation-for="DisposalDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <label class="form-label" for="field-18">မှတ်ချက်</label>
+                            <span class="desc"></span>
+                            <div class="controls">
+                                <input type="text" class="form-control" id="field-6" asp-for="Remark">
+                                <span asp-validation-for="Remark" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                        <div class="col-xs-12  padding-bottom-30">
+                            <div class="text-left">
+                                <button type="submit" class="btn btn-primary gradient-blue">သိမ်းမည်</button>
+                                <button type="button" data-href="/@controller/index" class="btn btn-click">နောက်သို့ပြန်သွားမည်</button>
+                            </div>
+                        </div>
+                    </div>
+
+
+</form>
+            </div>
+        </div>
+    </div>
+</section>

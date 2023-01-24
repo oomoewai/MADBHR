@@ -7,6 +7,7 @@
     var count = 1;
     var query = Context.Request.Query;
     var SerialNumber = query["SerialNumber"];
+    var Name = query["Name"];
     var FromDate = query["FromDate"];
     var ToDate = query["ToDate"];
     ViewData["Query"] = query;
@@ -28,12 +29,27 @@
                         <div class="panel-body">
                             <form method="get" action="/@controller/Index">
                                 <div class="row">
-
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="form-label" for="ToDate">ကိုယ်ပိုင်အမှတ်</label>
+                                            <div class="controls">
+                                                <input type="text" class="form-control" name="SerialNumber" value="@SerialNumber" id="serialNumber">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="form-label" for="ToDate">အမည်</label>
+                                            <div class="controls">
+                                                <input type="text" class="form-control" name="EmpName" value="@Name" id="name">
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label class="form-label" for="FromDate">From Date</label>
                                             <div class="controls">
-                                                <input type="date" class="form-control" name="@FromDate" id="FromDate" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+                                                <input type="date" class="form-control" asp-for="@FromDate" id="FromDate" value="@DateTime.Now.ToString("yyyy-MM-dd")">
                                             </div>
                                         </div>
                                     </div>
@@ -41,10 +57,11 @@
                                         <div class="form-group">
                                             <label class="form-label" for="ToDate">To Date</label>
                                             <div class="controls">
-                                                <input type="date" class="form-control" name="@ToDate" id="ToDate" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+                                                <input type="date" class="form-control" asp-for="@ToDate" id="ToDate" value="@DateTime.Now.ToString("yyyy-MM-dd")">
                                             </div>
                                         </div>
                                     </div>
+
 
                                     <div class="col-md-3">
                                         <div class="form-group">

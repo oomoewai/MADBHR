@@ -1,19 +1,16 @@
 ﻿@using MADBHR.Enum
 @using X.PagedList
-@model IPagedList<MADBHR_Data.Models.TbTrainingHistory>
+@model IPagedList<MADBHR_Data.Models.TbDisposal>
 @{
-    var controller = "TrainingHistory";
+    var controller = "EmployeeDisposal";
     ViewData["Title"] = "All " + controller;
     var count = 1;
     var query = Context.Request.Query;
     var SerialNumber = query["SerialNumber"];
-    var SchoolName = query["SchoolName"];
-    //var FromDate = query["FromDate"];
-    //var ToDate = query["ToDate"];
+    var DisposalTypeCode = query["DisposalTypeCode"];
     ViewData["Query"] = query;
 
 }
-
 <div class="panel-group" id="accordion" role="tablist" aria -multiselectable="true">
     <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="headingOne1">
@@ -32,18 +29,21 @@
                             <div class="form-group">
                                 <label class="form-label" for="FromDate">ကိုယ်ပိုင်အမှတ်</label>
                                 <div class="controls">
-                                    <input type="text" class="form-control" name="SerialNumber" value="@SerialNumber" id="serialNumber" >
+                                    <input type="text" class="form-control" name="SerialNumber" value="@SerialNumber" id="serialNumber">
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label class="form-label" for="ToDate">သင်းတန်း/ကျောင်းအမည်</label>
+                                <label class="form-label" for="field-4">ပြုန်းတီးအမျိုးအစား</label>
                                 <div class="controls">
-                                    <input type="text" class="form-control" name="SchoolName" value="@SchoolName" id="schoolname">
+                                    <select class="form-control" name="DisposalType" value="@DisposalTypeCode" asp-items="ViewBag.DisposalTypeCode" id="disposalType">
+                                        <option selected="selected" value="">ပြုန်းတီးအမျိုးအစားရွေးပါ </option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
+
 
                         <div class="col-md-3">
                             <div class="form-group">
@@ -78,11 +78,9 @@
                             <tr>
                                 <th>စဉ်</th>
                                 <th>အမည်</th>
-                                <th>သင်တန်းအမည်/အပတ်စဉ်</th>
-                                <th>သင်တန်း/ကျောင်းအမည်</th>
-                                <th>သင်တန်း/ကျောင်း၏တည်နေရာ</th>
-                                <th>ကာလ (မှ)</th>
-                                <th>ကာလ (ထိ)</th>
+                                <th>ပြုန်းတီးအမျိုးအစား</th>
+                                <th>ပြုန်းတီးရက်စွဲ</th>
+                                <th>မှတ်ချက်</th>                               
                                 <th></th>
 
                             </tr>
@@ -90,23 +88,22 @@
                         <tbody>
                             @foreach (var item in Model)
                             {
-                            <tr>
-                                <td class="text-center">@((((int)ViewBag.Page - 1) * (int)ViewBag.PageSize) + count)</td>
-                                <td class="text-center">@item.EmployeeName</td>
-                                <td class="text-center">@item.TrainingTitle</td>
-                                <td class="text-center">@item.SchoolName</td>
-                                <td class="text-center">@item.Location</td>
-                                <td class="text-center">@item.StartDateStr</td>
-                                <td class="text-center">@item.EndDateStr</td>
-                                <td class="text-center">
-                                    <a asp-controller="@controller" asp-action="Edit" asp-route-Id="@item.TrainingHistoryPkid" class="btn btn-xs btn-secondary">ပြင်ရန်</a>
-                                    <button asp-controller="@controller" asp-action="Delete" asp-route-Id="@item.TrainingHistoryPkid" class="btn btn-xs btn-secondary"
-                                            onclick="DeleteConfirm('/@controller/Delete/',@item.TrainingHistoryPkid)">
-                                        ပယ်ဖျက်ရန်
-                                    </button>
-                                </td>
+                                <tr>
+                                    <td class="text-center">@((((int)ViewBag.Page - 1) * (int)ViewBag.PageSize) + count)</td>
+                                    <td class="text-center">@item.EmployeeName</td>
+                                    <td class="text-center">@item.DisposalType</td>
+                                    <td class="text-center">@item.DisposalDateStr</td>
+                                    <td class="text-center">@item.Remark</td>
 
-                            </tr>
+                                    <td class="text-center">
+                                        <a asp-controller="@controller" asp-action="Edit" asp-route-Id="@item.DisposalPkid" class="btn btn-xs btn-secondary">ပြင်ရန်</a>
+                                        <button asp-controller="@controller" asp-action="Delete" asp-route-Id="@item.DisposalPkid" class="btn btn-xs btn-secondary"
+                                                onclick="DeleteConfirm('/@controller/Delete/',@item.DisposalPkid)">
+                                            ပယ်ဖျက်ရန်
+                                        </button>
+                                    </td>
+
+                                </tr>
                                 count++;
                             }
                         </tbody>
