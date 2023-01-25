@@ -1,31 +1,29 @@
 ﻿@using MADBHR.Enum
 @{
-    ViewData["Title"] = "Create EmployeeDisposal";
-    ViewData["Action"] = ViewEnum.Action.Create.ToDescription();
+    ViewData["Title"] = "Create Pension";
+    ViewData["Action"] = ViewEnum.Action.Edit.ToDescription();
 }
-
 <partial name="_PartialForm" />
 @section Scripts
 {
-<script>
+    <script>
     $(document).ready(function () {
 
     });
     function ChangeNumber() {
         var serialNumber = $("#field-1").val();
-        console.log("serialnumber:", serialNumber); 
+        console.log("serialnumber:", serialNumber);
         $.ajax({
 
             url: `/EmployeeDisposal/GetEmployeeInformation?SerialNumber=${serialNumber}`,
             type: 'get',
             success: function (res) {
-                if (res) {                 
+                if (res) {
                     $("#field-name").val(res.name);
                     $("#field-rank").val(res.rankType);
-                    $("#field-education").val(res.educationType);
+                    $("#field-fathername").val(res.fatherName);
                     $("#field-dob").val(res.dateOfBirth);
-                    $("#field-joindate").val(res.joindate);
-                    $("#field-fromdate").val(res.fromDate);
+                    $("#field-department").val(res.township);
 
                 }
 
@@ -34,5 +32,5 @@
         });
 
     }
-</script>
+    </script>
 }

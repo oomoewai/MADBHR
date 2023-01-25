@@ -41,17 +41,17 @@
                     <div class="row">
                         <div class="col-md-6 form-group">
                             <label class="form-label" for="field-4">ဌာနအမည်</label>
-                            <select class="form-control" asp-for="UploadForTownship" asp-items="ViewBag.TownshipCode">
+                            <select class="form-control" asp-for="DepartmentName" asp-items="ViewBag.TownshipCode">
                                 <option selected="selected" value="">ဌာနအမည်ရွေးပါ </option>
                             </select>
-                            <span asp-validation-for="UploadForTownship" class="text-danger"></span>
+                            <span asp-validation-for="DepartmentName" class="text-danger"></span>
 
                         </div>
 
 
                         <div class="col-md-6 form-group">
                             <label class="form-label" for="field-4">ရာထူး အဆင့်</label>
-                            <select class="form-control" asp-for="RankTypeCode" asp-items="ViewBag.RankType">
+                            <select class="form-control" asp-for="RankTypeCode1" asp-items="ViewBag.RankType">
                                 <option selected="selected" value="">ရာထူးအဆင့်ရွေးပါ </option>
                             </select>
                             <span asp-validation-for="RankTypeCode" class="text-danger"></span>

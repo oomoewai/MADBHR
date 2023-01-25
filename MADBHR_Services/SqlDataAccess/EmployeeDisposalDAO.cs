@@ -36,12 +36,14 @@ namespace MADBHR_Services.SqlDataAccess
                             {
 
                                 empInfo.Name = ResDs.Tables[0].Rows[i]["Name"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Name"].ToString() : "";
+                                empInfo.FatherName = ResDs.Tables[0].Rows[i]["Father_Name"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Father_Name"].ToString() : "";
                                 empInfo.DateOfBirth = ResDs.Tables[0].Rows[i]["DateOfBirth"] != DBNull.Value ? Convert.ToDateTime(ResDs.Tables[0].Rows[i]["DateOfBirth"]).ToString("dd/MM/yyyy") : "";
                                 empInfo.EducationType = ResDs.Tables[0].Rows[i]["EducationType"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["EducationType"].ToString() : "";
                                 empInfo.Township = ResDs.Tables[0].Rows[i]["Township"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Township"].ToString() : "";
                                 empInfo.joindate = ResDs.Tables[0].Rows[i]["joindate"] != DBNull.Value ? Convert.ToDateTime(ResDs.Tables[0].Rows[i]["joindate"]).ToString("dd/MM/yyyy") : "";
                                 empInfo.FromDate = ResDs.Tables[0].Rows[i]["FromDate"] != DBNull.Value ? Convert.ToDateTime(ResDs.Tables[0].Rows[i]["FromDate"]).ToString("dd/MM/yyyy") : "";
-                               
+                                empInfo.RankType = ResDs.Tables[0].Rows[i]["RankType"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["RankType"].ToString() : "";
+
 
                             }
                         }

@@ -1,0 +1,123 @@
+﻿@using MADBHR.Enum
+@using X.PagedList
+@model IPagedList<MADBHR_Data.Models.TbDepartment>
+@{
+    var controller = "Department";
+    ViewData["Title"] = "All " + controller;
+    var count = 1;
+    var query = Context.Request.Query;
+    var Department = query["Department"];
+    //var FromDate = query["FromDate"];
+    //var ToDate = query["ToDate"];
+    ViewData["Query"] = query;
+
+}
+
+<div class="panel-group" id="accordion" role="tablist" aria -multiselectable="true">
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingOne1">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <i class='fa fa-search'></i> Search
+                </a>
+            </h4>
+        </div>
+        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne1">
+            <div class="panel-body">
+                <form method="get" action="/@controller/Index">
+                    <div class="row">
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="form-label" for="FromDate">ကိုယ်ပိုင်အမှတ်</label>
+                                <div class="controls">
+                                    <input type="text" class="form-control" name="@Department" id="department">
+                                </div>
+                            </div>
+                        </div>
+                     
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="form-label">&nbsp;</label>
+                                <div class="controls">
+                                    <button type="submit" class="btn btn-primary gradient-blue">ရှာဖွေရန်</button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<section class="content">
+    <div class="box">
+        <header class="panel-heading">
+            @*<h2 class="title pull-left"></h2>*@
+            <div class="pull-right">
+                @*<button type="button" data-href="/@controller/Create" class="btn btn-click">Create</button>*@
+                <a asp-controller="@controller" asp-action="Create" class="btn btn-xs btn-secondary" style="width: 80px; height: 25px; padding: 3px;">အသစ်ထည့်ရန်</a>
+            </div>
+        </header>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-xs-12">
+
+                    <table id="example" class="display table table-hover table-condensed">
+                        <thead>
+                            <tr>
+                                <th>စဉ်</th>
+                                <th>ဌာနအမည်</th>                             
+                                <th></th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="text-center">@((((int)ViewBag.Page - 1) * (int)ViewBag.PageSize) + count)</td>
+                                    <td class="text-center">@item.Department</td>                                  
+                                    <td class="text-center">
+                                        <a asp-controller="@controller" asp-action="Edit" asp-route-Id="@item.DepartmentPkid" class="btn btn-xs btn-secondary">ပြင်ရန်</a>
+                                        <button asp-controller="@controller" asp-action="Delete" asp-route-Id="@item.DepartmentPkid" class="btn btn-xs btn-secondary"
+                                                onclick="DeleteConfirm('/@controller/Delete/',@item.DepartmentPkid)">
+                                            ပယ်ဖျက်ရန်
+                                        </button>
+                                    </td>
+
+                                </tr>
+                                count++;
+                            }
+                        </tbody>
+                    </table>
+                    <partial name="_Pagination" model="Model" view-data="ViewData" />
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@*</div>
+        </div>
+    </div>*@
+@section Scripts{
+    <script>
+        function DeleteConfirm(url, id) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url + id;
+                }
+            })
+        }
+    </script>
+}

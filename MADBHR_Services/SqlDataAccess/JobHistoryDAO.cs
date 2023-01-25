@@ -49,7 +49,7 @@ namespace MADBHR_Services.SqlDataAccess
         public List<TbJobHistory> GetJobHistory(IDbCommand cmd, string? EmployeeCode = null, DateTime? FromDate = null, DateTime? ToDate = null)
         {
 
-            cmd.CommandText = "Sp_GetJobPosting";
+            cmd.CommandText = "Sp_JobPosting_SelectByEmployeeCode";
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.Clear();
             cmd.Connection.Open();
