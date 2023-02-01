@@ -10,6 +10,9 @@
     var Name = query["Name"];
     var FromDate = query["FromDate"];
     var ToDate = query["ToDate"];
+    var FatherName = query["FatherName"];
+    var CurrentJobTownship = query["CurrentJobTownship"];
+    var RankTypeCode = query["RankTypeCode"];
     ViewData["Query"] = query;
 
 }
@@ -61,8 +64,34 @@
                                             </div>
                                         </div>
                                     </div>
-
-
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="form-label" for="fatherName">အဘအမည်</label>
+                                            <div class="controls">
+                                                <input type="date" class="form-control" asp-for="@FatherName" id="FatherName">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="form-label" for="CurrentJobTownship">လက်ရှိတာဝန်ထမ်းဆောင်နေသည့်ဒေသ</label>
+                                            <div class="controls">
+                                                <select class="form-control" name="CurrentJobTownship" value="@CurrentJobTownship" asp-items="ViewBag.PalceOfBirth" id="currentJob">
+                                                    <option selected="selected" value="">လက်ရှိတာဝန်ထမ်းဆောင်နေသည့်ဒေသရွေးပါ </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="form-label" for="RankTypeCode">လက်ရှိရာထူး</label>
+                                            <div class="controls">
+                                                <select class="form-control" name="RankTypeCode" value="@RankTypeCode" asp-items="ViewBag.RankType" id="rankType">
+                                                    <option selected="selected" value="">လက်ရှိရာထူးရွေးပါ </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label class="form-label">&nbsp;</label>

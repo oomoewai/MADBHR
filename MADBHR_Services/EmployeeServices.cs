@@ -75,6 +75,42 @@ namespace MADBHR_Services
                 return emps;
             }
         }
+        public List<VMEmployeeCount> GetEmployeeCount(string? StateDivisionCode = null)
+        {
+
+            try
+            {
+                IDbConnection connection = new SqlConnection(_connectionStrings.DefaultConnection);
+                IDbConnection myCon = connection;
+                IDbCommand cmd = myCon.CreateCommand();
+                var employees = _employeeDAO.GetEmployeeCounts(cmd, StateDivisionCode);
+
+                return employees;
+            }
+            catch (Exception ex)
+            {
+                List<VMEmployeeCount> emps = new List<VMEmployeeCount>();
+                return emps;
+            }
+        }
+        public List<TbEmployee> GetEmployeeForAdmin(string? StateDivisionCode = null,string? TownshipCode=null)
+        {
+
+            try
+            {
+                IDbConnection connection = new SqlConnection(_connectionStrings.DefaultConnection);
+                IDbConnection myCon = connection;
+                IDbCommand cmd = myCon.CreateCommand();
+                var employees = _employeeDAO.GetEmployeeForAdmin(cmd, StateDivisionCode,TownshipCode);
+
+                return employees;
+            }
+            catch (Exception ex)
+            {
+                List<TbEmployee> emps = new List<TbEmployee>();
+                return emps;
+            }
+        }
         public void DeleteEmployee(int EmployeePkid,int userId)
         {
             try

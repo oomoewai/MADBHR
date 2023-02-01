@@ -10,6 +10,6 @@ namespace MADBHR_Services.Base
     {
         Task<dynamic> SaveDepartment(TbDepartment department, int userId, int Id);
         List<TbDepartment> GetDepartment(string? Department = null, DateTime? FromDate = null, DateTime? ToDate = null);
-        void DeleteAward(string departmentCode, int userId);
+        void DeleteDepartment(string departmentCode);
     }
 }

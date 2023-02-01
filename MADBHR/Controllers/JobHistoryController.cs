@@ -27,20 +27,46 @@ namespace MADBHR.Controllers
         {
             var userId = HttpContext.User.Identity.Name;
             ViewBag.lstLogIn = _context.TbUserLogin.Where(x => x.Status == "Enable" && x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
+           
             var currentJobTownship = _context.TbCurrentJobTownship.Where(x => x.Active == true).ToList();
             ViewData["TownshipCode"] = new SelectList(currentJobTownship, "TownshipCode", "Township", tbJobHistory?.UploadForTownship);
             var rankType = _context.TbRankType.Select(x => new { x.RankTypeCode,x.RankType }).ToList();
             ViewData["RankType"] = new SelectList(rankType, "RankTypeCode", "RankType", tbJobHistory?.RankTypeCode1);
 
         }
-        public IActionResult Index(string? SerialNumber = null, DateTime? FromDate = null, DateTime? ToDate = null, int? page = 1)
+        public IActionResult Index(string? SerialNumber = null, DateTime? FromDate = null, DateTime? ToDate = null,string? StateDivisionCode=null,string? TownshipCode=null, int? page = 1)
+        {
+            Initialize();
+            var userId = HttpContext.User.Identity.Name;
+            var userInfo = _context.TbUserLogin.Where(x => x.Status == "Enable" && x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
+            ViewBag.lstLogIn = userInfo;
+            ViewBag.AccountType = userInfo.AccountType;
+            if (userInfo.AccountType == "Super Admin")
+            {
+                StateDivisionCode = userInfo.StateDivisionId;
+                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).ToList();
+                ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision", stateDivisionCodes[0].StateDivisionCode);
+            }
+            else if(userInfo.AccountType == "Head Admin")
+            {
+                var stateDivisionCodes = _context.TbStateDivision.Select(x => new { x.StateDivision, x.StateDivisionCode }).ToList();
+                ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision");
+            }
+            var pageSize = _pagination.PageSize;
+            ViewData["Page"] = page;
+            ViewData["PageSize"] = pageSize;
+            var EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == SerialNumber).Select(x => x.EmployeeCode).FirstOrDefault();
+            var jobHistories = _jobHistoryServices.GetCurrentJobHistory(EmployeeCode,StateDivisionCode,TownshipCode).ToList();
+            return View(jobHistories.OrderByDescending(x => x.CreatedDate).ToList().ToPagedList((int)page, pageSize));
+        }
+        public IActionResult Detail(string EmployeeCode, DateTime? FromDate = null, DateTime? ToDate = null,  int? page = 1)
         {
             Initialize();
             var pageSize = _pagination.PageSize;
             ViewData["Page"] = page;
             ViewData["PageSize"] = pageSize;
-            var EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == SerialNumber).Select(x => x.EmployeeCode).FirstOrDefault();
-            var jobHistories = _jobHistoryServices.GetJobHistory(EmployeeCode, FromDate, ToDate).ToList();
+            //var EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == SerialNumber).Select(x => x.EmployeeCode).FirstOrDefault();
+            var jobHistories = _jobHistoryServices.GetJobHistory(EmployeeCode,FromDate,ToDate).ToList();
             return View(jobHistories.OrderByDescending(x => x.CreatedDate).ToList().ToPagedList((int)page, pageSize));
         }
         public IActionResult Create()

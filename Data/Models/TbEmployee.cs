@@ -85,10 +85,16 @@ namespace MADBHR_Data.Models
         [NotMapped]
         [SkipProperty]
         public string CurrentRankDate { get; set; }
-        
+        [NotMapped]
+        [SkipProperty]
+        public string StateDivision { get; set; }
+
         [NotMapped]
         [SkipProperty]
         public string Township { get; set; }
+        [NotMapped]
+        [SkipProperty]
+        public string OccupationName { get; set; }
         [NotMapped]
         [SkipProperty]
         public int Age { get; set; }

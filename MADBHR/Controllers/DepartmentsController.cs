@@ -12,12 +12,12 @@ using X.PagedList;
 
 namespace MADBHR.Controllers
 {
-    public class DepartmentController : Controller
+    public class DepartmentsController : Controller
     {
         private readonly MADBAdminSolutionContext _context;
         private readonly IDepartmentServices _departmentServices;
         private readonly Pagination _pagination;
-        public DepartmentController(MADBAdminSolutionContext context, IDepartmentServices departmentServices, IOptions<Pagination> pagination)
+        public DepartmentsController(MADBAdminSolutionContext context, IDepartmentServices departmentServices, IOptions<Pagination> pagination)
         {
             _context = context;
             _departmentServices = departmentServices;
@@ -58,6 +58,7 @@ namespace MADBHR.Controllers
                     //{
                     var userId = HttpContext.User.Identity.Name;
                     var userInfo = _context.TbUserLogin.Where(x => x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
+                    department.Department = department.DepartmentName;
                     //department.UploadForTownship = userInfo.TownshipId == null || userInfo.TownshipId == "" ? userInfo.StateDivisionId : userInfo.TownshipId;
 
                     //department.EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == award.SerialNumber).Select(x => x.EmployeeCode).FirstOrDefault();
@@ -95,6 +96,7 @@ namespace MADBHR.Controllers
                     //{
                     var userId = HttpContext.User.Identity.Name;
                     var userInfo = _context.TbUserLogin.Where(x => x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
+                    department.Department = department.DepartmentName;
                     var emp = await _departmentServices.SaveDepartment(department, Convert.ToInt32(userId), department.DepartmentPkid);
 
                     return RedirectToAction("Index");
@@ -115,7 +117,7 @@ namespace MADBHR.Controllers
             {
                 var userId = HttpContext.User.Identity.Name;
                 var department = _context.TbDepartment.Where(x => x.DepartmentPkid == id).FirstOrDefault();
-                _departmentServices.GetDepartment(department.DepartmentCode);
+                _departmentServices.DeleteDepartment(department.DepartmentCode);
                 //TempData["notice"] = StatusEnum.NoticeStatus.Delete;
 
             }

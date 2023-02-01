@@ -1,5 +1,6 @@
 ﻿using MADBHR_Common.Extensions;
 using MADBHR_Data.Models;
+using MADBHR_Models.Employee;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
@@ -31,6 +32,7 @@ namespace MADBHR_Services.SqlDataAccess
                 cmd.AddParameter("@Religion", employee.Religion);
                 cmd.AddParameter("@Race", employee.Race);
                 cmd.AddParameter("@NRCNumber", employee.Nrcnumber);
+                cmd.AddParameter("@PlaceOfBirth", employee.PlaceOfBirth);
                 cmd.AddParameter("@Education", employee.EducationTypeCode);
                 cmd.AddParameter("@Occupation", employee.Occupation);
                 cmd.AddParameter("@DateOfBirth", employee.DateOfBirth);
@@ -112,6 +114,122 @@ namespace MADBHR_Services.SqlDataAccess
                                     JoinDateString = ResDs.Tables[0].Rows[i]["JoinDate"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["JoinDate"].ToString() : "",
                                     CurrentRankDate = ResDs.Tables[0].Rows[i]["CurrentRankDate"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["CurrentRankDate"].ToString() : "",
                                     TownshipCode = ResDs.Tables[0].Rows[i]["TownshipCode"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["TownshipCode"].ToString() : "",
+                                    Township = ResDs.Tables[0].Rows[i]["Township"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Township"].ToString() : "",
+                                    Age = ResDs.Tables[0].Rows[i]["Age"] != DBNull.Value ? Convert.ToInt32(ResDs.Tables[0].Rows[i]["Age"]) : 0,
+                                    Address = ResDs.Tables[0].Rows[i]["Address"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Address"].ToString() : "",
+                                    DearestPerson = ResDs.Tables[0].Rows[i]["DearestPerson"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["DearestPerson"].ToString() : "",
+                                    Ancestor = ResDs.Tables[0].Rows[i]["Ancestor"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Ancestor"].ToString() : "",
+                                    IsActive = ResDs.Tables[0].Rows[i]["IsActive"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["IsActive"].ToString() : "",
+                                    IsDeleted = ResDs.Tables[0].Rows[i]["IsDeleted"] != DBNull.Value ? Convert.ToBoolean(ResDs.Tables[0].Rows[i]["IsDeleted"]) : false,
+                                    IsRecordEdited = ResDs.Tables[0].Rows[i]["IsRecordEdited"] != DBNull.Value ? Convert.ToBoolean(ResDs.Tables[0].Rows[i]["IsRecordEdited"]) : false,
+                                    CreatedDate = ResDs.Tables[0].Rows[i]["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(ResDs.Tables[0].Rows[i]["CreatedDate"]) : DateTime.Now,
+                                    CreatedBy = ResDs.Tables[0].Rows[i]["CreatedBy"] != DBNull.Value ? Convert.ToInt32(ResDs.Tables[0].Rows[i]["CreatedBy"]) : 0
+                                };
+
+                                emps.Add(employee);
+                            }
+                        }
+                    }
+                }
+            }
+            cmd.Connection.Close();
+            return emps;
+
+        }
+
+        public List<VMEmployeeCount> GetEmployeeCounts(IDbCommand cmd,string? StateDivisionCode=null)
+        {
+            cmd.CommandText = "SP_GetEmpCountByStateDivision";
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Clear();
+            cmd.Connection.Open();
+            cmd.AddParameter("@StateDivisionCode", StateDivisionCode);
+            SqlDataAdapter ResAdapter = new SqlDataAdapter((SqlCommand)cmd);
+            DataSet ResDs = new DataSet();
+            ResAdapter.Fill(ResDs);
+            List<VMEmployeeCount> emps = new List<VMEmployeeCount>();
+            if (ResDs != null)
+            {
+                if (ResDs.Tables.Count > 0)
+                {
+                    if (ResDs.Tables[0] != null)
+                    {
+                        if (ResDs.Tables[0].Rows.Count > 0)
+                        {
+                            for (int i = 0; i < ResDs.Tables[0].Rows.Count; i++)
+                            {
+                                VMEmployeeCount employee = new VMEmployeeCount();
+
+                                employee.StateDivisionCode = ResDs.Tables[0].Rows[i]["StateDivisionCode"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["StateDivisionCode"].ToString() : "";
+                                employee.StateDivision = ResDs.Tables[0].Rows[i]["StateDivision"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["StateDivision"].ToString() : "";
+                                employee.TownshipCount = ResDs.Tables[0].Rows[i]["TownshipCount"] != DBNull.Value ? Convert.ToInt32(ResDs.Tables[0].Rows[i]["TownshipCount"]) : 0;
+                                employee.EmployeeCount = ResDs.Tables[0].Rows[i]["EmployeeCount"] != DBNull.Value ? Convert.ToInt32(ResDs.Tables[0].Rows[i]["EmployeeCount"]) : 0;
+                                
+
+                                emps.Add(employee);
+                            }
+                        }
+                    }
+                }
+            }
+            cmd.Connection.Close();
+            return emps;
+
+        }
+
+        public List<TbEmployee> GetEmployeeForAdmin(IDbCommand cmd, string? SateDivisionCode=null,string? TownshipCode=null)
+        {
+
+            cmd.CommandText = "SP_GetEmployeeForAdmin";
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Clear();
+            cmd.Connection.Open();
+            cmd.AddParameter("@DivisionCode", SateDivisionCode);
+            cmd.AddParameter("@TownshipCode", TownshipCode);
+
+            SqlDataAdapter ResAdapter = new SqlDataAdapter((SqlCommand)cmd);
+            DataSet ResDs = new DataSet();
+            ResAdapter.Fill(ResDs);
+            List<TbEmployee> emps = new List<TbEmployee>();
+            if (ResDs != null)
+            {
+                if (ResDs.Tables.Count > 0)
+                {
+                    if (ResDs.Tables[0] != null)
+                    {
+                        if (ResDs.Tables[0].Rows.Count > 0)
+                        {
+                            for (int i = 0; i < ResDs.Tables[0].Rows.Count; i++)
+                            {
+                                TbEmployee employee = new TbEmployee
+                                {
+                                    EmployeePkid = ResDs.Tables[0].Rows[i]["EmployeePkid"] != DBNull.Value ? Convert.ToInt32(ResDs.Tables[0].Rows[i]["EmployeePkid"]) : 0,
+                                    EmployeeCode = ResDs.Tables[0].Rows[i]["EmployeeCode"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["EmployeeCode"].ToString() : "",
+                                    CurrentRank = ResDs.Tables[0].Rows[i]["CurrentRank"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["CurrentRank"].ToString() : "",
+                                    SerialNumber = ResDs.Tables[0].Rows[i]["SerialNumber"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["SerialNumber"].ToString() : "",
+                                    SerialNumber_Myan = ResDs.Tables[0].Rows[i]["SerialNumber_Myan"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["SerialNumber_Myan"].ToString() : "",
+                                    Name = ResDs.Tables[0].Rows[i]["Name"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Name"].ToString() : "",
+                                    FatherName = ResDs.Tables[0].Rows[i]["Father_Name"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Father_Name"].ToString() : "",
+                                    MotherName = ResDs.Tables[0].Rows[i]["Mother_Name"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Mother_Name"].ToString() : "",
+                                    Gender = ResDs.Tables[0].Rows[i]["Gender"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Gender"].ToString() : "",
+                                    Religion = ResDs.Tables[0].Rows[i]["Religion"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Religion"].ToString() : "",
+                                    Race = ResDs.Tables[0].Rows[i]["Race"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Race"].ToString() : "",
+                                    Nrcnumber = ResDs.Tables[0].Rows[i]["Nrcnumber"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Nrcnumber"].ToString() : "",
+                                    PlaceOfBirth = ResDs.Tables[0].Rows[i]["PlaceOfBirth"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["PlaceOfBirth"].ToString() : "",
+                                    EducationType = ResDs.Tables[0].Rows[i]["EducationType"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["EducationType"].ToString() : "",
+                                    EducationTypeCode = ResDs.Tables[0].Rows[i]["EducationTypeCode"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["EducationTypeCode"].ToString() : "",
+                                    PlaceOfBirthName = ResDs.Tables[0].Rows[i]["PlaceOfBirthName"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["PlaceOfBirthName"].ToString() : "",
+                                    Occupation = ResDs.Tables[0].Rows[i]["Occupation"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Occupation"].ToString() : "",
+                                    OccupationName = ResDs.Tables[0].Rows[i]["OccupationName"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["OccupationName"].ToString() : "",
+                                    DateOfBirthString = ResDs.Tables[0].Rows[i]["DateOfBirth"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["DateOfBirth"].ToString() : "",
+                                    EyeColor = ResDs.Tables[0].Rows[i]["EyeColor"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["EyeColor"].ToString() : "",
+                                    Height = ResDs.Tables[0].Rows[i]["Height"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Height"].ToString() : "",
+                                    Mark = ResDs.Tables[0].Rows[i]["Mark"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Mark"].ToString() : "",
+                                    OtherName = ResDs.Tables[0].Rows[i]["OtherName"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["OtherName"].ToString() : "",
+                                    JoinDateString = ResDs.Tables[0].Rows[i]["JoinDate"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["JoinDate"].ToString() : "",
+                                    CurrentRankDate = ResDs.Tables[0].Rows[i]["CurrentRankDate"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["CurrentRankDate"].ToString() : "",
+                                    TownshipCode = ResDs.Tables[0].Rows[i]["TownshipCode"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["TownshipCode"].ToString() : "",
+                                    StateDivision = ResDs.Tables[0].Rows[i]["StateDivision"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["StateDivision"].ToString() : "",
                                     Township = ResDs.Tables[0].Rows[i]["Township"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Township"].ToString() : "",
                                     Age = ResDs.Tables[0].Rows[i]["Age"] != DBNull.Value ? Convert.ToInt32(ResDs.Tables[0].Rows[i]["Age"]) : 0,
                                     Address = ResDs.Tables[0].Rows[i]["Address"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Address"].ToString() : "",

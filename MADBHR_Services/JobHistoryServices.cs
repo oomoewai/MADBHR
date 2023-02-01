@@ -65,6 +65,24 @@ namespace MADBHR_Services
                 return emps;
             }
         }
+        public List<TbJobHistory> GetCurrentJobHistory(string? EmployeeCode = null, string? StateDivisionCode = null, string? TownshipCode = null)
+        {
+
+            try
+            {
+                IDbConnection connection = new SqlConnection(_connectionStrings.DefaultConnection);
+                IDbConnection myCon = connection;
+                IDbCommand cmd = myCon.CreateCommand();
+                var jobHistories = _jobHistoryDAO.GetCurrentJobHistory(cmd, EmployeeCode, StateDivisionCode, TownshipCode);
+
+                return jobHistories;
+            }
+            catch (Exception ex)
+            {
+                List<TbJobHistory> emps = new List<TbJobHistory>();
+                return emps;
+            }
+        }
         public void DeleteJobHistory(int jobHistoryPkid, int userId)
         {
             try

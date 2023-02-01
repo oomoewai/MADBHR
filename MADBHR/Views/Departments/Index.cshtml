@@ -2,11 +2,11 @@
 @using X.PagedList
 @model IPagedList<MADBHR_Data.Models.TbDepartment>
 @{
-    var controller = "Department";
+    var controller = "Departments";
     ViewData["Title"] = "All " + controller;
     var count = 1;
     var query = Context.Request.Query;
-    var Department = query["Department"];
+    var DepartmentName = query["DepartmentName"];
     //var FromDate = query["FromDate"];
     //var ToDate = query["ToDate"];
     ViewData["Query"] = query;
@@ -29,14 +29,13 @@
 
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label class="form-label" for="FromDate">ကိုယ်ပိုင်အမှတ်</label>
+                                <label class="form-label" for="FromDate">ဌာနအမည်</label>
                                 <div class="controls">
-                                    <input type="text" class="form-control" name="@Department" id="department">
+                                    <input type="text" class="form-control" name="@DepartmentName" id="departmentName">
                                 </div>
                             </div>
                         </div>
-                     
-
+                       
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="form-label">&nbsp;</label>
@@ -69,7 +68,7 @@
                         <thead>
                             <tr>
                                 <th>စဉ်</th>
-                                <th>ဌာနအမည်</th>                             
+                                <th>ဌာနအမည်</th>                          
                                 <th></th>
 
                             </tr>
@@ -79,7 +78,8 @@
                             {
                                 <tr>
                                     <td class="text-center">@((((int)ViewBag.Page - 1) * (int)ViewBag.PageSize) + count)</td>
-                                    <td class="text-center">@item.Department</td>                                  
+                                    <td class="text-center">@item.Department</td>
+                        
                                     <td class="text-center">
                                         <a asp-controller="@controller" asp-action="Edit" asp-route-Id="@item.DepartmentPkid" class="btn btn-xs btn-secondary">ပြင်ရန်</a>
                                         <button asp-controller="@controller" asp-action="Delete" asp-route-Id="@item.DepartmentPkid" class="btn btn-xs btn-secondary"

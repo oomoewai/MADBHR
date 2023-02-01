@@ -11,6 +11,8 @@ namespace MADBHR_Services.Base
     {
         Task<dynamic> SaveEmployee(TbEmployee employee,int userId, int Id);
         List<TbEmployee> GetEmployee(string? Name = null, DateTime? FromDate = null, DateTime? ToDate = null,string? SerialNumber=null);
+        List<VMEmployeeCount> GetEmployeeCount(string? StateDivisionCode = null);
+        List<TbEmployee> GetEmployeeForAdmin(string? StateDivisionCode = null, string? TownshipCode = null);
         void DeleteEmployee(int EmployeePkid, int userId);
     }
 }

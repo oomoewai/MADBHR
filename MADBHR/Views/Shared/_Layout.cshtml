@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>မြန်မာ့လယ်ယာ စီးပွားရေးဘဏ်</title>
+    <title>မြန်မာ့လယ်ယာ ဖွံ့ဖြိုးရေးဘဏ်</title>
     <link rel="icon" href="~/Content/images/MADB Logo.png" type="image/png">
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
@@ -102,7 +102,7 @@
                                         {
                                             tmpCaption = @Convert.ToString(ViewBag.lstLogIn.Department);
                                         }
-                                        <span class="hidden-xs">@Convert.ToString(ViewBag.lstLogIn.Department) </span>
+                                        <span class="hidden-xs" style="font-size:15px;">@Convert.ToString(ViewBag.lstLogIn.Department) </span>
                                         @*&nbsp;	&nbsp;	 | &nbsp;	&nbsp;	 @Convert.ToString(ViewBag.lstLogIn.SectionName) &nbsp;	&nbsp;	 | &nbsp;	&nbsp;	 @Convert.ToString(ViewBag.lstLogIn.SubSectionName) &nbsp;&nbsp;  | &nbsp;&nbsp; @Convert.ToString(ViewBag.lstLogIn.RoleName) </span>*@
                                         @*if (ViewBag.lstLogIn.DistrictName != null)
                                             {
@@ -217,7 +217,7 @@
                                     <!-- Menu Footer-->
                                     <li class="user-footer">
 
-                                        @using (Html.BeginForm("LogOut", "Login", FormMethod.Post, new { id = "logoutForm" }))
+                                        @using (Html.BeginForm("LogOut", "AccountLogin", FormMethod.Post, new { id = "logoutForm" }))
                                         {
                                             @Html.AntiForgeryToken()
                                             <div class="pull-right">
@@ -257,106 +257,125 @@
                 <!-- sidebar menu: : style can be found in sidebar.less -->
                 <ul class="sidebar-menu" data-widget="tree" style="margin-top:60px;">
                     @*<li class="active treeview">
-            <a href="#">
-                <i class="fa fa-dashboard"></i> <span>Dashboard</span>
-                <span class="pull-right-container">
-                    <i class="fa fa-angle-left pull-right"></i>
-                </span>
-            </a>
-            <ul class="treeview-menu">
-                <li class="active"><a href="#"><i class="fa fa-circle-o"></i> Dashboard v1</a></li>
-                <li><a href="#"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>
-            </ul>
-        </li>*@
+                            <a href="#">
+                                <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li class="active"><a href="#"><i class="fa fa-circle-o"></i> Dashboard v1</a></li>
+                                <li><a href="#"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>
+                            </ul>
+                        </li>*@
                     <li><a href="@Url.Action("Dashboard", "Home")"><i class="fa fa-home"></i> <span>ပင်မစာမျက်နှာ</span></a></li>
-                    <li class="treeview active menu-open">
-                        <a href="#" class="active">
-                            <i class="fa fa-list"></i>
-                            <span>စာရင်းများထည့်ရန်</span>
+                    @{
+                       
+                      
+                            <li class="treeview active menu-open">
+                                <a href="#" class="active">
+                                    <i class="fa fa-list"></i>
+                                    <span>စာရင်းများထည့်ရန်</span>
 
-                            <span class="pull-right-container">
-                                <i class="fa fa-angle-left pull-right"></i>
-                            </span>
-                        </a>
-                        <ul class="treeview-menu">
-                            <li>
-                                <a class="active" href="@Url.Action("Index", "Employee")" style="background-color:#fdf59a47 !important;"><i class=""></i>ကိုယ်ရေးအချက်အလက်</a>
-                                @*<a href="" onclick="liActive(@Url.Action(item.ActionName, item.ControllerName), @(lstAllowedModuleGroupName[i].FunctionGroupID)_@(item.FunctionID), liMain_@(lstAllowedModuleGroupName[i].FunctionGroupID)_@(i))"><i class="@iconClass"></i>@item.LinkText</a>*@
-                            </li>
-                            <li>
-                                <a class="active" href="@Url.Action("Index", "TrainingHistory")" style="background-color:#fdf59a47 !important;"><i class=""></i>တတ်ရောက်သင်တန်းများ</a>
+                                    <span class="pull-right-container">
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
+                                </a>
 
-                            </li>
-                            <li>
-                                <a class="active" href="@Url.Action("Index", "Award")" style="background-color:#fdf59a47 !important;"><i class=""></i>ဂုဏ်ထူးဆောင်ဘွဲ့တံဆိပ်များ</a>
+                                <ul class="treeview-menu">
+                                    @if (ViewBag.lstLogIn.AccountType == "Head Admin" || ViewBag.lstLogIn.AccountType == "Super Admin")
+                                    {
+                                        <li>
+                                            <a class="active" href="@Url.Action("AdminDivisionIndex", "Employee")" style="background-color:#fdf59a47 !important;"><i class=""></i>ကိုယ်ရေးအချက်အလက်</a>
+                                            @*<a href="" onclick="liActive(@Url.Action(item.ActionName, item.ControllerName), @(lstAllowedModuleGroupName[i].FunctionGroupID)_@(item.FunctionID), liMain_@(lstAllowedModuleGroupName[i].FunctionGroupID)_@(i))"><i class="@iconClass"></i>@item.LinkText</a>*@
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li>
+                                            <a class="active" href="@Url.Action("AdminIndex", "Employee")" style="background-color:#fdf59a47 !important;"><i class=""></i>ကိုယ်ရေးအချက်အလက်</a>
+                                            @*<a href="" onclick="liActive(@Url.Action(item.ActionName, item.ControllerName), @(lstAllowedModuleGroupName[i].FunctionGroupID)_@(item.FunctionID), liMain_@(lstAllowedModuleGroupName[i].FunctionGroupID)_@(i))"><i class="@iconClass"></i>@item.LinkText</a>*@
+                                        </li>
+                                    }
 
-                            </li>
-                            <li>
-                                <a class="active" href="@Url.Action("Index", "Punishment")" style="background-color:#fdf59a47 !important;"><i class=""></i>အပြစ်ပေးခြင်း</a>
+                                    <li>
+                                        <a class="active" href="@Url.Action("Index", "JobHistory")" style="background-color:#fdf59a47 !important;"><i class=""></i>ယခင်လုပ်ကိုင်ခဲ့ဖူးသော အလုပ်ဌာနများ</a>
 
-                            </li>
-                            <li>
-                                <a class="active" href="@Url.Action("Index", "InternationalKnowledge")" style="background-color:#fdf59a47 !important;"><i class=""></i>နိုင်ငံခြားဗဟုသုတဆိုင်ရာအချက်အလက်များ</a>
+                                    </li>
+                                    <li>
+                                        <a class="active" href="@Url.Action("Index", "TrainingHistory")" style="background-color:#fdf59a47 !important;"><i class=""></i>တတ်ရောက်သင်တန်းများ</a>
 
-                            </li>
-                            <li>
-                                <a class="active" href="@Url.Action("Index", "JobHistory")" style="background-color:#fdf59a47 !important;"><i class=""></i>ယခင်လုပ်ကိုင်ခဲ့ဖူးသော အလုပ်ဌာနများ</a>
+                                    </li>
+                                    <li>
+                                        <a class="active" href="@Url.Action("Index", "Award")" style="background-color:#fdf59a47 !important;"><i class=""></i>ဂုဏ်ထူးဆောင်ဘွဲ့တံဆိပ်များ</a>
 
-                            </li>
-                            <li>
-                                <a class="active" href="@Url.Action("Index", "LeaveEntitlement")" style="background-color:#fdf59a47 !important;"><i class=""></i>ခွင့်ခံစားခြင်း</a>
+                                    </li>
+                                    <li>
+                                        <a class="active" href="@Url.Action("Index", "Punishment")" style="background-color:#fdf59a47 !important;"><i class=""></i>အပြစ်ပေးခြင်း</a>
 
-                            </li>
-                            <li>
-                                <a class="active" href="@Url.Action("Index", "YearlyBonus")" style="background-color:#fdf59a47 !important;"><i class=""></i>နှစ်တိုးခံစားခြင်း</a>
+                                    </li>
+                                    <li>
+                                        <a class="active" href="@Url.Action("Index", "InternationalKnowledge")" style="background-color:#fdf59a47 !important;"><i class=""></i>နိုင်ငံခြားဗဟုသုတဆိုင်ရာအချက်အလက်များ</a>
 
-                            </li>
-                            <li>
-                                <a class="active" href="@Url.Action("Index", "EmployeeDisposal")" style="background-color:#fdf59a47 !important;"><i class=""></i>ပြုန်းတီးအင်အားစာရင်း</a>
+                                    </li>
 
-                            </li>
-                        </ul>
+                                    <li>
+                                        <a class="active" href="@Url.Action("Index", "LeaveEntitlement")" style="background-color:#fdf59a47 !important;"><i class=""></i>ခွင့်ခံစားခြင်း</a>
 
-                    </li>
-                    <li class="treeview active menu-open">
-                        <a href="#" class="active">
-                            <i class="fa fa-list"></i>
-                            <span>ပင်စင်</span>
+                                    </li>
+                                    <li>
+                                        <a class="active" href="@Url.Action("Index", "YearlyBonus")" style="background-color:#fdf59a47 !important;"><i class=""></i>နှစ်တိုးခံစားခြင်း</a>
 
-                            <span class="pull-right-container">
-                                <i class="fa fa-angle-left pull-right"></i>
-                            </span>
-                        </a>
-                        <ul class="treeview-menu">
-                            <li>
-                                <a class="active" href="@Url.Action("Index", "Pension")" style="background-color:#fdf59a47 !important;"><i class=""></i>ပင်စင်စားအမည်စာရင်းများထည့်ရန်</a>
+                                    </li>
+                                    <li>
+                                        <a class="active" href="@Url.Action("Index", "EmployeeDisposal")" style="background-color:#fdf59a47 !important;"><i class=""></i>ပြုန်းတီးအင်အားစာရင်း</a>
 
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="treeview active menu-open">
-                        <a href="#" class="active">
-                            <i class="fa fa-list"></i>
-                            <span>Main Entry</span>
-
-                            <span class="pull-right-container">
-                                <i class="fa fa-angle-left pull-right"></i>
-                            </span>
-                        </a>
-                        <ul class="treeview-menu">
-                            <li>
-                                <a class="active" href="@Url.Action("Index", "Department")" style="background-color:#fdf59a47 !important;"><i class=""></i>ဌာန</a>
+                                    </li>
+                                </ul>
 
                             </li>
-                        </ul>
-                    </li>
+                            <li class="treeview active menu-open">
+                                <a href="#" class="active">
+                                    <i class="fa fa-list"></i>
+                                    <span>ပင်စင်</span>
+
+                                    <span class="pull-right-container">
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li>
+                                        <a class="active" href="@Url.Action("Index", "Pension")" style="background-color:#fdf59a47 !important;"><i class=""></i>ပင်စင်စားအမည်စာရင်းများထည့်ရန်</a>
+
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="treeview active menu-open">
+                                <a href="#" class="active">
+                                    <i class="fa fa-list"></i>
+                                    <span>Main Entry</span>
+
+                                    <span class="pull-right-container">
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li>
+                                        <a class="active" href="@Url.Action("Index", "Departments")" style="background-color:#fdf59a47 !important;"><i class=""></i>ဌာနများထည့်ရန်</a>
+
+                                    </li>
+                                </ul>
+                            </li>
+                        
+                    }
+
                     @*<li><a href="@Url.Action("ProposalApproveList", "ProposalProgress")"><i class="fa fa-inbox"></i> <span>ဝင်စာများ&nbsp;&nbsp;<span style="background-color:red;" class="badge badge-danger">@Context.Session.GetString("countDocIn")</span></span></a></li>
-        <li><a href="@Url.Action("ProposalCaseOpenList", "ProposalProgress")"><i class="fa fa-paper-plane"></i> <span>ထွက်စာများ&nbsp;&nbsp;<span style="background-color:red;" class="badge badge-danger">@Context.Session.GetString("countDocOut")</span></span></a></li>
-        <li><a href="@Url.Action("NoteSheetApproveList", "ProposalProgress")"><i class="fa fa-inbox"></i> <span>Note Sheet များ&nbsp;&nbsp;<span style="background-color:red;" class="badge badge-danger">@Context.Session.GetString("noteSheet")</span></span></a></li>
-        <li><a href="@Url.Action("TrashDocumentList", "Operation")"><i class="fa fa-inbox"></i> <span>ပစ်စာများ</span></a></li>
+                        <li><a href="@Url.Action("ProposalCaseOpenList", "ProposalProgress")"><i class="fa fa-paper-plane"></i> <span>ထွက်စာများ&nbsp;&nbsp;<span style="background-color:red;" class="badge badge-danger">@Context.Session.GetString("countDocOut")</span></span></a></li>
+                        <li><a href="@Url.Action("NoteSheetApproveList", "ProposalProgress")"><i class="fa fa-inbox"></i> <span>Note Sheet များ&nbsp;&nbsp;<span style="background-color:red;" class="badge badge-danger">@Context.Session.GetString("noteSheet")</span></span></a></li>
+                        <li><a href="@Url.Action("TrashDocumentList", "Operation")"><i class="fa fa-inbox"></i> <span>ပစ်စာများ</span></a></li>
 
-        <li><a href="@Url.Action("DocsOut", "Operation")"><i class="fa fa-pencil"></i> <span>စာမှတ်ပုံတင်ခြင်း</span></a></li>
-        <li><a href="@Url.Action("TrashDocument", "Operation")"><i class="fa fa-pencil"></i> <span>ပစ်စာမှတ်ပုံတင်ခြင်း</span></a></li>*@
+                        <li><a href="@Url.Action("DocsOut", "Operation")"><i class="fa fa-pencil"></i> <span>စာမှတ်ပုံတင်ခြင်း</span></a></li>
+                        <li><a href="@Url.Action("TrashDocument", "Operation")"><i class="fa fa-pencil"></i> <span>ပစ်စာမှတ်ပုံတင်ခြင်း</span></a></li>*@
 
                 </ul>
             </section>
@@ -365,10 +384,9 @@
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <!-- Content Header (Page header) -->
-            <section class="content-header">
-                @*<marquee style="color:white;background-color:#2b580c;font-size:large;font-weight:300;padding:10px;">@ViewBag.AnnouncemnetDesc</marquee>*@<marquee style="color:white;background-color:#2b580c;font-size:large;font-weight:300;padding:10px;"></marquee>
-
-            </section>
+            @*<section class="content-header">*@
+            @*<marquee style="color:white;background-color:#2b580c;font-size:large;font-weight:300;padding:10px;">@ViewBag.AnnouncemnetDesc</marquee>*@<!--<marquee style="color:white;background-color:#2b580c;font-size:large;font-weight:300;padding:10px;"></marquee>-->
+            @*</section>*@
             <!-- Main content -->
             <section class="content">
 
@@ -381,7 +399,7 @@
             <div class="pull-right hidden-xs">
                 <b>Version</b> 1.1.0
             </div>
-            <strong>Copyright &copy; @DateTime.Now.Year <a href="http://acedatasystems.com/" target="_blank">မြန်မာ့လယ်ယာ စီးပွားရေးဘဏ်</a>.</strong> All rights
+            <strong>Copyright &copy; @DateTime.Now.Year <a href="http://acedatasystems.com/" target="_blank">မြန်မာ့လယ်ယာ ဖွံ့ဖြိုးရေးဘဏ်</a>.</strong> All rights
             reserved.
         </footer>
         <!-- Control Sidebar -->

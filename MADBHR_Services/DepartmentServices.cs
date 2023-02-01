@@ -65,7 +65,7 @@ namespace MADBHR_Services
                 return emps;
             }
         }
-        public void DeleteAward(string departmentCode, int userId)
+        public void DeleteDepartment(string departmentCode)
         {
             try
             {

@@ -59,6 +59,7 @@ namespace MADBHR_Data.Models
         public virtual DbSet<TbStateDivision> TbStateDivision { get; set; }
         public virtual DbSet<TbStateDivisionSetUp> TbStateDivisionSetUp { get; set; }
         public virtual DbSet<TbSubjects> TbSubjects { get; set; }
+        public virtual DbSet<TbTownAndDivision> TbTownAndDivision { get; set; }
         public virtual DbSet<TbTownshipSetup> TbTownshipSetup { get; set; }
         public virtual DbSet<TbTrainingHistory> TbTrainingHistory { get; set; }
         public virtual DbSet<TbTrainingType> TbTrainingType { get; set; }
@@ -125,8 +126,8 @@ namespace MADBHR_Data.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=MKTMGR\\SQLEXPRESS; Database=MADBAdminSolution; User Id=sa; Password=admin@123;");
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+//                optionsBuilder.UseSqlServer("Server=MKTMGR\\SQLEXPRESS; Database=MADBAdminSolution; User Id=sa; Password=admin@123;");
             }
         }
 
@@ -1127,6 +1128,27 @@ namespace MADBHR_Data.Models
                 entity.Property(e => e.Subject).HasMaxLength(50);
 
                 entity.Property(e => e.SubjectCode).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<TbTownAndDivision>(entity =>
+            {
+                entity.HasKey(e => e.TownId);
+
+                entity.ToTable("TB_TownAndDivision");
+
+                entity.Property(e => e.TownId).HasColumnName("TownID");
+
+                entity.Property(e => e.DiviSionName).HasMaxLength(150);
+
+                entity.Property(e => e.DivisionCode).HasMaxLength(4);
+
+                entity.Property(e => e.GroupNumber).HasMaxLength(50);
+
+                entity.Property(e => e.TownCode).HasMaxLength(10);
+
+                entity.Property(e => e.TownName).HasMaxLength(150);
+
+                entity.Property(e => e.TownOrderCode).HasMaxLength(3);
             });
 
             modelBuilder.Entity<TbTownshipSetup>(entity =>

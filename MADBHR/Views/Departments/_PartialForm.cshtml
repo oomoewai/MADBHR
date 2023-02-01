@@ -2,7 +2,7 @@
 @*@model MADBHR_Models.Employee.VMRequestEmployee*@
 @model MADBHR_Data.Models.TbDepartment
 @{
-    var controller = "Department";
+    var controller = "Departments";
     ViewData["Title"] = "All " + controller;
 }
 <section class="content">
@@ -10,13 +10,17 @@
     <div class="box">
         <div class="box-header">
 
-            <h4 class="text-blue text-bold">ဌာနအမည်စာရင်းများဖြည့်သွင်းရန်</h4>
+            <h4 class="text-blue text-bold">ဌာနများဖြည့်သွင်းရန်</h4>
         </div>
         <div class="box-body">
             <div class="row">
                 <form action="/@controller/@ViewData["Action"]" method="post" enctype="multipart/form-data">
 
-                  
+                    @if (ViewData["Action"].ToString() == ViewEnum.Action.Edit.ToDescription())
+                    {
+                        <input asp-for="DepartmentCode" hidden />
+
+                    }
                     <input asp-for="DepartmentPkid" hidden />
                     @*}*@
                     <div class="col-xs-12">
@@ -25,18 +29,17 @@
                                 <label class="form-label" for="field-1">ဌာနအမည်</label>
                                 <span class="desc"></span>
                                 <div class="controls">
-                                    <input type="text" class="form-control" id="field-1" asp-for="Department">
-                                    <span asp-validation-for="Department" class="text-danger"></span>
+                                    <input type="text" class="form-control" id="field-1" asp-for="DepartmentName">
+                                    <span asp-validation-for="DepartmentName" class="text-danger"></span>
                                 </div>
                             </div>
-                            
+                           
                         </div>
-                     
 
                         <div class="col-xs-12  padding-bottom-30">
                             <div class="text-left">
                                 <button type="submit" class="btn btn-primary gradient-blue">သိမ်းမည်</button>
-                                <button type="button" data-href="/@controller/index" class="btn btn-click">ရှေ့သို့ပြန်သွားမည်</button>
+                                <button type="button" data-href="/@controller/index" class="btn btn-click">နောက်သို့ပြန်သွားမည်</button>
                             </div>
                         </div>
                     </div>

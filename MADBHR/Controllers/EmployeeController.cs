@@ -29,22 +29,102 @@ namespace MADBHR.Controllers
         public void Initialize(TbEmployee employee = null)
         {
             var userId = HttpContext.User.Identity.Name;
-            ViewBag.lstLogIn = _context.TbUserLogin.Where(x => x.Status == "Enable" && x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
-            var placeOfBirths = _context.TbCurrentJobTownship.Where(x => x.Active == true).ToList();
-            ViewData["PlaceOfBirth"] = new SelectList(placeOfBirths, "TownshipCode", "Township", employee?.PlaceOfBirth);
+            var userInfo = _context.TbUserLogin.Where(x => x.Status == "Enable" && x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
+            ViewBag.lstLogIn = userInfo;
+            var placeOfBirths = _context.TbTownAndDivision.Select(x => new { x.TownCode, x.TownName }).ToList();
+            ViewData["PlaceOfBirth"] = new SelectList(placeOfBirths, "TownCode", "TownName", employee?.PlaceOfBirth);
+            if (userInfo.AccountType == "Head Admin")
+            {
+                var currentJobTownships = _context.TbCurrentJobTownship.Where(x => x.Active == true).ToList();
+                ViewData["CurrentJobTownship"] = new SelectList(currentJobTownships, "TownshipCode", "Township", employee?.PlaceOfBirth);
+            }
+            else if (userInfo.AccountType == "Super Admin")
+            {
+                var currentJobTownships = _context.TbCurrentJobTownship.Where(x => x.Active == true && x.StateDivisionId == userInfo.StateDivisionId).ToList();
+                ViewData["CurrentJobTownship"] = new SelectList(currentJobTownships, "TownshipCode", "Township", employee?.PlaceOfBirth);
+            }
+            else if (userInfo.AccountType == "User")
+            {
+                var currentJobTownships = _context.TbCurrentJobTownship.Where(x => x.Active == true && x.StateDivisionId == userInfo.StateDivisionId && x.UploadForTownship == userInfo.TownshipId).ToList();
+                ViewData["CurrentJobTownship"] = new SelectList(currentJobTownships, "TownshipCode", "Township", employee?.PlaceOfBirth);
+            }
             var educationTypeCodes = _context.TbEducationType.Where(x => x.Active == true).ToList();
             ViewData["EducationType"] = new SelectList(educationTypeCodes, "EducationTypeCode", "EducationType", employee?.EducationTypeCode);
+
+
         }
-        public IActionResult Index(DateTime? FromDate=null,DateTime? ToDate=null,string? Name=null,string? SerialNumber=null,int? page=1)
+        public IActionResult Index(DateTime? FromDate = null, DateTime? ToDate = null, string? Name = null, string? SerialNumber = null, string? FatherName = null, int? page = 1)
         {
             Initialize();
             var pageSize = _pagination.PageSize;
             ViewData["Page"] = page;
             ViewData["PageSize"] = pageSize;
-            var employees = _employeeServices.GetEmployee(Name,FromDate,ToDate,SerialNumber).ToList();          
+            var employees = _employeeServices.GetEmployee(Name, FromDate, ToDate, SerialNumber).ToList();
             return View(employees.OrderByDescending(x => x.CreatedDate).ToList().ToPagedList((int)page, pageSize));
-            
+
         }
+        public IActionResult AdminIndex(string? StateDivisionCode = null, string? TownshipCode = null, int? page = 1)
+        {
+            Initialize();
+            var userId = HttpContext.User.Identity.Name;
+            var userInfo = _context.TbUserLogin.Where(x => x.Status == "Enable" && x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
+            ViewBag.lstLogIn = userInfo;
+            //StateDivisionCode = userInfo.StateDivisionId;            
+            if (userInfo.AccountType == "User")
+            {
+                TownshipCode = _context.TbCurrentJobTownship.Where(x => x.Active == true && x.UploadForTownship == userInfo.TownshipId).Select(x => x.TownshipCode).FirstOrDefault();
+                var townshipCodes = _context.TbCurrentJobTownship.Where(x => x.StateDivisionId == userInfo.StateDivisionId && x.UploadForTownship == userInfo.TownshipId).ToList();
+                ViewData["TownshipCode"] = new SelectList(townshipCodes, "TownshipCode", "Township");
+            }
+            else
+            {
+                var townshipCodes = _context.TbCurrentJobTownship.Where(x => x.StateDivisionId == StateDivisionCode).ToList();
+                ViewData["TownshipCode"] = new SelectList(townshipCodes, "TownshipCode", "Township");
+            }
+            var pageSize = _pagination.PageSize;
+            ViewData["Page"] = page;
+            ViewData["PageSize"] = pageSize;
+            var employees = _employeeServices.GetEmployeeForAdmin(StateDivisionCode, TownshipCode).ToList();
+            StateDivisionCode = null;
+            TownshipCode = null;
+            return View(employees.OrderByDescending(x => x.CreatedDate).ToList().ToPagedList((int)page, pageSize));
+
+        }
+        public IActionResult AdminDivisionIndex(string? StateDivisionCode = null, int? page = 1)
+        {
+            var userId = HttpContext.User.Identity.Name;
+            var userInfo = _context.TbUserLogin.Where(x => x.Status == "Enable" && x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
+            ViewBag.lstLogIn = userInfo;
+
+            if (userInfo.AccountType == "Super Admin")
+            {
+                StateDivisionCode = userInfo.StateDivisionId;
+                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).ToList();
+                ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision", stateDivisionCodes[0].StateDivisionCode);
+            }
+            else
+            {
+                var stateDivisionCodes = _context.TbStateDivision.Select(x => new { x.StateDivision, x.StateDivisionCode }).ToList();
+                ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision");
+            }
+
+            var pageSize = _pagination.PageSize;
+            ViewData["Page"] = page;
+            ViewData["PageSize"] = pageSize;
+            var employees = _employeeServices.GetEmployeeCount(StateDivisionCode).ToList();
+
+            return View(employees.ToPagedList((int)page, pageSize));
+
+        }
+
+        [HttpGet]
+        public IActionResult GetTownhsipByDivision(string divisonCode)
+        {
+            var townships = _context.TbCurrentJobTownship.Where(x => x.Active == true && x.StateDivisionId == divisonCode).ToList();
+            //ViewData["PlaceOfBirth"] = new SelectList(townships, "TownshipCode", "Township");
+            return Json(townships);
+        }
+
         public IActionResult Create()
         {
             Initialize();
@@ -100,14 +180,17 @@ namespace MADBHR.Controllers
                     if (didUploaded)
                     {
                         employee.UploadForTownship = userInfo.TownshipId == null || userInfo.TownshipId == "" ? userInfo.StateDivisionId : userInfo.TownshipId;
-                        var emp = await _employeeServices.SaveEmployee(employee,Convert.ToInt32(userId),0);
+                        var emp = await _employeeServices.SaveEmployee(employee, Convert.ToInt32(userId), 0);
                         if (RedirectToRelationship == true)
                         {
                             return RedirectToAction("Create", "Relationship", new { SerialNumber = emp.SerialNumber });
                         }
                         else
                         {
-                            return RedirectToAction("Index");
+                            if (userInfo.AccountType == "Head Admin" || userInfo.AccountType == "Super Admin")
+                                return RedirectToAction("AdminDivisionIndex");
+                            else
+                                return RedirectToAction("AdminIndex");
                         }
                     }
                     throw new Exception();
@@ -124,7 +207,7 @@ namespace MADBHR.Controllers
         }
 
         public IActionResult Edit(int Id)
-        {         
+        {
             var employeeInfo = _context.TbEmployee.Where(x => x.EmployeePkid == Id).FirstOrDefault();
             employeeInfo.ImageContent = employeeInfo.ProfilePic.GetBase64();
             employeeInfo.NRCImageContent = employeeInfo.Nrcpic.GetBase64();
@@ -133,7 +216,7 @@ namespace MADBHR.Controllers
             return View(employeeInfo);
         }
 
-        [HttpPost]      
+        [HttpPost]
         public async Task<IActionResult> Edit(TbEmployee employee, bool? RedirectToRelationship = null)
         {
             try
@@ -227,13 +310,13 @@ namespace MADBHR.Controllers
                         {
                             return RedirectToAction("Index");
                         }
-                        
+
                     }
                 }
             }
             catch (Exception e)
             {
-                
+
             }
             Initialize(employee);
             return View(employee);
@@ -249,7 +332,7 @@ namespace MADBHR.Controllers
             }
             catch (Exception e)
             {
-                
+
             }
 
             return RedirectToAction(nameof(Index));

@@ -100,7 +100,7 @@
                                 <span class="desc"></span>
                                 <div class="controls">
                                     <select class="form-control" asp-for="PlaceOfBirth" asp-items="ViewBag.PlaceOfBirth">
-                                        <option selected="selected" value="">မွေးဖွားသည့်အရပ်ကိုရွေးပါ </option>
+                                        <option selected="selected" value="">---ရွေးရန်---</option>
                                     </select>
                                     <span asp-validation-for="PlaceOfBirth" class="text-danger"></span>
                                 </div>
@@ -110,7 +110,7 @@
                                 <span class="desc"></span>
                                 <div class="controls">
                                     <select class="form-control" asp-for="EducationTypeCode" asp-items="ViewBag.EducationType">
-                                        <option selected="selected" value="">ပညာအရည်အချင်းကိုရွေးပါ </option>
+                                        <option selected="selected" value="">---ရွေးရန်---</option>
                                     </select>
                                     <span asp-validation-for="EducationTypeCode" class="text-danger"></span>
                                 </div>
@@ -147,8 +147,8 @@
                                 <label class="form-label" for="field-18">​လက်ရှိတာဝန်ထမ်းဆောင်နေသည့်ဒေသ</label>
                                 <span class="desc"></span>
                                 <div class="controls">
-                                    <select class="form-control" asp-for="Occupation" asp-items="ViewBag.PlaceOfBirth">
-                                        <option selected="selected" value="">လက်ရှိတာဝန်ထမ်းဆောင်နေသည့်ဒေသကိုရွေးပါ </option>
+                                    <select class="form-control" asp-for="Occupation" asp-items="ViewBag.CurrentJobTownship">
+                                        <option selected="selected" value="">---ရွေးရန်---</option>
                                     </select>
                                     <span asp-validation-for="Occupation" class="text-danger"></span>
                                 </div>

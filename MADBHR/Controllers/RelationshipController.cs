@@ -61,6 +61,7 @@ namespace MADBHR.Controllers
                     //if (ModelState.IsValid)
                     //{
                     var userId = HttpContext.User.Identity.Name;
+                    var userInfo = _context.TbUserLogin.Where(x => x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
                     relationship.EmployeeCode = TempData["EmployeeCode"].ToString();
                     var emp = await _relationshipServices.SaveRelationShip(relationship, Convert.ToInt32(userId),0);
                     if (RedirectToSonAndDaughter == true)
@@ -69,7 +70,10 @@ namespace MADBHR.Controllers
                     }
                     else
                     {
-                        return RedirectToAction("Index","Employee");
+                        if (userInfo.AccountType == "Head Admin" || userInfo.AccountType == "Super Admin")
+                            return RedirectToAction("AdminDivisionIndex","Employee");
+                        else
+                            return RedirectToAction("AdminIndex", "Employee");
                     }
 
 
