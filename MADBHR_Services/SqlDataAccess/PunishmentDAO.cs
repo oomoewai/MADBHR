@@ -76,12 +76,100 @@ namespace MADBHR_Services.SqlDataAccess
                                     PunishmentTypeCode = ResDs.Tables[0].Rows[i]["PunishmentTypeCode"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["PunishmentTypeCode"].ToString() : "",
                                     PunishmentType = ResDs.Tables[0].Rows[i]["PunishmentType"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["PunishmentType"].ToString() : "",
                                     EmployeeName = ResDs.Tables[0].Rows[i]["Name"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Name"].ToString() : "",
+                                    Department = ResDs.Tables[0].Rows[i]["Department"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Department"].ToString() : "",
+                                    RankType = ResDs.Tables[0].Rows[i]["RankType"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["RankType"].ToString() : "",
                                     IsDeleted = ResDs.Tables[0].Rows[i]["IsDeleted"] != DBNull.Value ? Convert.ToBoolean(ResDs.Tables[0].Rows[i]["IsDeleted"]) : false,
                                     CreatedDate = ResDs.Tables[0].Rows[i]["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(ResDs.Tables[0].Rows[i]["CreatedDate"]) : DateTime.Now,
                                     CreatedBy = ResDs.Tables[0].Rows[i]["CreatedBy"] != DBNull.Value ? Convert.ToInt32(ResDs.Tables[0].Rows[i]["CreatedBy"]) : 0
                                 };
 
                                 lstPunishments.Add(award);
+                            }
+                        }
+                    }
+                }
+            }
+            cmd.Connection.Close();
+            return lstPunishments;
+
+        }
+        public List<TbPunishment> GetPunishmentForAdmin(IDbCommand cmd, string? StateDivisionCode = null, string? TownshipCode = null)
+        {
+
+            cmd.CommandText = "SP_GetPunishmentForAdmin";
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Clear();
+            cmd.Connection.Open();
+            cmd.AddParameter("@DivisionCode", StateDivisionCode);
+            cmd.AddParameter("@TownshipCode", TownshipCode);
+
+            SqlDataAdapter ResAdapter = new SqlDataAdapter((SqlCommand)cmd);
+            DataSet ResDs = new DataSet();
+            ResAdapter.Fill(ResDs);
+            List<TbPunishment> lstPunishments = new List<TbPunishment>();
+            List<string> lstEmpCode = new List<string>();
+            if (ResDs != null)
+            {
+                if (ResDs.Tables.Count > 0)
+                {
+                    if (ResDs.Tables[0] != null)
+                    {
+                        if (ResDs.Tables[0].Rows.Count > 0)
+                        {
+                            for (int i = 0; i < ResDs.Tables[0].Rows.Count; i++)
+                            {
+                                if (lstEmpCode.Count > 0)
+                                {
+                                    if (!lstEmpCode.Contains(ResDs.Tables[0].Rows[i]["EmployeeCode"].ToString()))
+                                    {
+                                        TbPunishment award = new TbPunishment
+                                        {
+                                            PunishmentPkid = ResDs.Tables[0].Rows[i]["PunishmentPkid"] != DBNull.Value ? Convert.ToInt32(ResDs.Tables[0].Rows[i]["PunishmentPkid"]) : 0,
+                                            EmployeeCode = ResDs.Tables[0].Rows[i]["EmployeeCode"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["EmployeeCode"].ToString() : "",
+                                            OrderDateStr = ResDs.Tables[0].Rows[i]["OrderDate"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["OrderDate"].ToString() : "",
+                                            OrderNo = ResDs.Tables[0].Rows[i]["OrderNo"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["OrderNo"].ToString() : "",
+                                            CrimeYear = ResDs.Tables[0].Rows[i]["CrimeYear"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["CrimeYear"].ToString() : "",
+                                            Description = ResDs.Tables[0].Rows[i]["Description"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Description"].ToString() : "",
+                                            PunishmentTypeCode = ResDs.Tables[0].Rows[i]["PunishmentTypeCode"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["PunishmentTypeCode"].ToString() : "",
+                                            PunishmentType = ResDs.Tables[0].Rows[i]["PunishmentType"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["PunishmentType"].ToString() : "",
+                                            StateDivision = ResDs.Tables[0].Rows[i]["StateDivision"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["StateDivision"].ToString() : "",
+                                            Township = ResDs.Tables[0].Rows[i]["Township"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Township"].ToString() : "",
+                                            EmployeeName = ResDs.Tables[0].Rows[i]["Name"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Name"].ToString() : "",
+                                            Department = ResDs.Tables[0].Rows[i]["Department"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Department"].ToString() : "",
+                                            RankType = ResDs.Tables[0].Rows[i]["RankType"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["RankType"].ToString() : "",
+                                            IsDeleted = ResDs.Tables[0].Rows[i]["IsDeleted"] != DBNull.Value ? Convert.ToBoolean(ResDs.Tables[0].Rows[i]["IsDeleted"]) : false,
+                                            CreatedDate = ResDs.Tables[0].Rows[i]["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(ResDs.Tables[0].Rows[i]["CreatedDate"]) : DateTime.Now,
+                                            CreatedBy = ResDs.Tables[0].Rows[i]["CreatedBy"] != DBNull.Value ? Convert.ToInt32(ResDs.Tables[0].Rows[i]["CreatedBy"]) : 0
+                                        };
+                                        lstEmpCode.Add(award.EmployeeCode);
+                                        lstPunishments.Add(award);
+                                    }
+                                    
+                                }
+                                else
+                                {
+                                    TbPunishment award = new TbPunishment
+                                    {
+                                        PunishmentPkid = ResDs.Tables[0].Rows[i]["PunishmentPkid"] != DBNull.Value ? Convert.ToInt32(ResDs.Tables[0].Rows[i]["PunishmentPkid"]) : 0,
+                                        EmployeeCode = ResDs.Tables[0].Rows[i]["EmployeeCode"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["EmployeeCode"].ToString() : "",
+                                        OrderDateStr = ResDs.Tables[0].Rows[i]["OrderDate"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["OrderDate"].ToString() : "",
+                                        OrderNo = ResDs.Tables[0].Rows[i]["OrderNo"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["OrderNo"].ToString() : "",
+                                        CrimeYear = ResDs.Tables[0].Rows[i]["CrimeYear"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["CrimeYear"].ToString() : "",
+                                        Description = ResDs.Tables[0].Rows[i]["Description"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Description"].ToString() : "",
+                                        PunishmentTypeCode = ResDs.Tables[0].Rows[i]["PunishmentTypeCode"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["PunishmentTypeCode"].ToString() : "",
+                                        PunishmentType = ResDs.Tables[0].Rows[i]["PunishmentType"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["PunishmentType"].ToString() : "",
+                                        StateDivision = ResDs.Tables[0].Rows[i]["StateDivision"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["StateDivision"].ToString() : "",
+                                        Township = ResDs.Tables[0].Rows[i]["Township"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Township"].ToString() : "",
+                                        EmployeeName = ResDs.Tables[0].Rows[i]["Name"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Name"].ToString() : "",
+                                        Department = ResDs.Tables[0].Rows[i]["Department"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Department"].ToString() : "",
+                                        RankType = ResDs.Tables[0].Rows[i]["RankType"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["RankType"].ToString() : "",
+                                        IsDeleted = ResDs.Tables[0].Rows[i]["IsDeleted"] != DBNull.Value ? Convert.ToBoolean(ResDs.Tables[0].Rows[i]["IsDeleted"]) : false,
+                                        CreatedDate = ResDs.Tables[0].Rows[i]["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(ResDs.Tables[0].Rows[i]["CreatedDate"]) : DateTime.Now,
+                                        CreatedBy = ResDs.Tables[0].Rows[i]["CreatedBy"] != DBNull.Value ? Convert.ToInt32(ResDs.Tables[0].Rows[i]["CreatedBy"]) : 0
+                                    };
+                                    lstEmpCode.Add(award.EmployeeCode);
+                                    lstPunishments.Add(award);
+                                }
                             }
                         }
                     }

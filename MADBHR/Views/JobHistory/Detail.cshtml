@@ -27,14 +27,7 @@
                 <form method="get" action="/@controller/Index">
                     <div class="row">
 
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="form-label" for="FromDate">ကိုယ်ပိုင်အမှတ်</label>
-                                <div class="controls">
-                                    <input type="text" class="form-control" name="SerialNumber" value="@SerialNumber" id="serialNumber">
-                                </div>
-                            </div>
-                        </div>
+                       
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="form-label" for="field-4">အချိန်ကာလ (မှ)</label>
@@ -70,13 +63,13 @@
 <section class="content">
     <div class="box">
         <header class="panel-heading">
-            @*<h2 class="title pull-left"></h2>*@
-            <div class="pull-right">
-                @*<button type="button" data-href="/@controller/Create" class="btn btn-click">Create</button>*@
+            <h5 class="title pull-left" style="font-weight:bold">ယခင်လုပ်ကိုင်ခဲ့ဖူးသော အလုပ်ဌာနများကိုအသေးစိတ်ကြည့်ရန်</h5>
+            <div class="pull-right" style="padding:3px;margin-top:9px;">
+                <a asp-controller="@controller" asp-action="ExcelExportForDetail" class="btn btn-xs btn-secondary" style="width: 80px; height: 25px; padding: 3px;">Excel ထုတ်ရန်</a>
                 <a asp-controller="@controller" asp-action="Create" class="btn btn-xs btn-secondary" style="width: 80px; height: 25px; padding: 3px;">အသစ်ထည့်ရန်</a>
             </div>
         </header>
-        <div class="box-body">
+        <div class="box-body" style="margin-top: 30px;">
             <div class="row">
                 <div class="col-xs-12">
 

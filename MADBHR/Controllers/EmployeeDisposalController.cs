@@ -4,8 +4,10 @@ using MADBHR_Services.Base;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Options;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using X.PagedList;
@@ -38,13 +40,52 @@ namespace MADBHR.Controllers
             return Json(empInfo);
         }
 
-        public IActionResult Index(string? SerialNumber = null, string? DisposalTypeCode = null, int? page = 1)
+        public IActionResult Index(string? StateDivisionCode = null, string? TownshipCode = null, int? page = 1)
+        {
+            Initialize();
+            var userId = HttpContext.User.Identity.Name;
+            var userInfo = _context.TbUserLogin.Where(x => x.Status == "Enable" && x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
+            ViewBag.lstLogIn = userInfo;
+            ViewBag.AccountType = userInfo.AccountType;
+            ViewBag.TownshipId = userInfo.TownshipId;
+            if (userInfo.AccountType == "Super Admin")
+            {
+                StateDivisionCode = userInfo.StateDivisionId;
+                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).ToList();
+                ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision", stateDivisionCodes[0].StateDivisionCode);
+            }
+            else if (userInfo.AccountType == "Head Admin")
+            {
+                var stateDivisionCodes = _context.TbStateDivision.Select(x => new { x.StateDivision, x.StateDivisionCode }).ToList();
+                ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision");
+            }
+            else if (userInfo.AccountType == "User")
+            {
+                TownshipCode = _context.TbCurrentJobTownship.Where(x => x.UploadForTownship == userInfo.TownshipId).Select(x => x.TownshipCode).FirstOrDefault();
+                StateDivisionCode = userInfo.StateDivisionId;
+                TownshipCode = TownshipCode == null ? "0" : TownshipCode;
+                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).ToList();
+                ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision", stateDivisionCodes[0].StateDivisionCode);
+
+            }
+            var pageSize = _pagination.PageSize;
+            ViewData["Page"] = page;
+            ViewData["PageSize"] = pageSize;
+            TempData["TownshipCode"] = TownshipCode;
+            TempData["StateDivisionCode"] = StateDivisionCode;
+            //var EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == SerialNumber).Select(x => x.EmployeeCode).FirstOrDefault();
+            var disposals = _employeeDisposalServices.GetEmployeeDisposalForAdmin(StateDivisionCode, TownshipCode).ToList();
+            return View(disposals.OrderByDescending(x => x.CreatedDate).ToList().ToPagedList((int)page, pageSize));
+        }
+        public IActionResult Detail(string EmployeeCode = null, string? DisposalTypeCode = null, int? page = 1)
         {
             Initialize();
             var pageSize = _pagination.PageSize;
             ViewData["Page"] = page;
             ViewData["PageSize"] = pageSize;
-            var EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == SerialNumber).Select(x => x.EmployeeCode).FirstOrDefault();
+            TempData["EmployeeCode"] = EmployeeCode;
+            TempData["DisposalTypeCode"] = DisposalTypeCode;
+            //var EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == SerialNumber).Select(x => x.EmployeeCode).FirstOrDefault();
             var disposals = _employeeDisposalServices.GetEmployeeDisposal(DisposalTypeCode, EmployeeCode).ToList();
             return View(disposals.OrderByDescending(x => x.CreatedDate).ToList().ToPagedList((int)page, pageSize));
         }
@@ -142,6 +183,76 @@ namespace MADBHR.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+        [HttpGet]
+        public async Task<IActionResult> ExcelExportForIndex()
+        {
+
+            string? TownshipCode = TempData["TownshipCode"] == null ? null : TempData["TownshipCode"].ToString();
+            string? StateDivisionCode = TempData["StateDivisionCode"] == null ? null : TempData["StateDivisionCode"].ToString();
+            var disposals = _employeeDisposalServices.GetEmployeeDisposalForAdmin(StateDivisionCode, TownshipCode).ToList();
+            var package = new ExcelPackage();
+
+            // Add a new worksheet to the package
+            var worksheet = package.Workbook.Worksheets.Add("Data");
+            worksheet.Cells[1, 1].Value = "တိုင်းဒေသကြီး";
+            worksheet.Cells[1, 2].Value = "မြို့နယ်";
+            worksheet.Cells[1, 3].Value = "အမည်";
+            worksheet.Cells[1, 4].Value = "ပြုန်းတီးအမျိုးအစား";
+            worksheet.Cells[1, 5].Value = "ပြုန်းတီးရက်စွဲ";
+            worksheet.Cells[1, 6].Value = "မှတ်ချက်";
+
+            for (int i = 0; i < disposals.Count; i++)
+            {
+                worksheet.Cells[i + 2, 1].Value = disposals[i].StateDivision;
+                worksheet.Cells[i + 2, 2].Value = disposals[i].Township;
+                worksheet.Cells[i + 2, 3].Value = disposals[i].EmployeeName;
+                worksheet.Cells[i + 2, 4].Value = disposals[i].DisposalType;
+                worksheet.Cells[i + 2, 5].Value = disposals[i].DisposalDateStr;
+                worksheet.Cells[i + 2, 6].Value = disposals[i].Remark;
+            }
+            var stream = new MemoryStream();
+            package.SaveAs(stream);
+
+            // Return the stream as a file
+            stream.Position = 0;
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "AwardForIndex.xlsx");
+        }
+        [HttpGet]
+        public async Task<IActionResult> ExcelExportForDetail()
+        {
+
+
+            string? EmployeeCode = TempData["EmployeeCode"] == null ? null : TempData["EmployeeCode"].ToString();
+            string? DisposalTypeCode = TempData["DisposalTypeCode"] == null ? null : TempData["DisposalTypeCode"].ToString();
+            var disposals = _employeeDisposalServices.GetEmployeeDisposal(DisposalTypeCode, EmployeeCode).ToList();
+            var package = new ExcelPackage();
+
+            // Add a new worksheet to the package
+            var worksheet = package.Workbook.Worksheets.Add("Data");
+            worksheet.Cells[1, 1].Value = "တိုင်းဒေသကြီး";
+            worksheet.Cells[1, 2].Value = "မြို့နယ်";
+            worksheet.Cells[1, 3].Value = "အမည်";
+            worksheet.Cells[1, 4].Value = "ပြုန်းတီးအမျိုးအစား";
+            worksheet.Cells[1, 5].Value = "ပြုန်းတီးရက်စွဲ";
+            worksheet.Cells[1, 6].Value = "မှတ်ချက်";
+
+
+            for (int i = 0; i < disposals.Count; i++)
+            {
+                worksheet.Cells[i + 2, 1].Value = disposals[i].StateDivision;
+                worksheet.Cells[i + 2, 2].Value = disposals[i].Township;
+                worksheet.Cells[i + 2, 3].Value = disposals[i].EmployeeName;
+                worksheet.Cells[i + 2, 4].Value = disposals[i].DisposalType;
+                worksheet.Cells[i + 2, 5].Value = disposals[i].DisposalDateStr;
+                worksheet.Cells[i + 2, 6].Value = disposals[i].Remark;
+            }
+            var stream = new MemoryStream();
+            package.SaveAs(stream);
+
+            // Return the stream as a file
+            stream.Position = 0;
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "AwardForDetail.xlsx");
         }
     }
 }

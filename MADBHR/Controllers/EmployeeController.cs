@@ -5,8 +5,10 @@ using MADBHR_Services.Base;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Options;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using X.PagedList;
@@ -36,17 +38,17 @@ namespace MADBHR.Controllers
             if (userInfo.AccountType == "Head Admin")
             {
                 var currentJobTownships = _context.TbCurrentJobTownship.Where(x => x.Active == true).ToList();
-                ViewData["CurrentJobTownship"] = new SelectList(currentJobTownships, "TownshipCode", "Township", employee?.PlaceOfBirth);
+                ViewData["CurrentJobTownship"] = new SelectList(currentJobTownships, "TownshipCode", "Township", employee?.Occupation);
             }
             else if (userInfo.AccountType == "Super Admin")
             {
                 var currentJobTownships = _context.TbCurrentJobTownship.Where(x => x.Active == true && x.StateDivisionId == userInfo.StateDivisionId).ToList();
-                ViewData["CurrentJobTownship"] = new SelectList(currentJobTownships, "TownshipCode", "Township", employee?.PlaceOfBirth);
+                ViewData["CurrentJobTownship"] = new SelectList(currentJobTownships, "TownshipCode", "Township", employee?.Occupation);
             }
             else if (userInfo.AccountType == "User")
             {
                 var currentJobTownships = _context.TbCurrentJobTownship.Where(x => x.Active == true && x.StateDivisionId == userInfo.StateDivisionId && x.UploadForTownship == userInfo.TownshipId).ToList();
-                ViewData["CurrentJobTownship"] = new SelectList(currentJobTownships, "TownshipCode", "Township", employee?.PlaceOfBirth);
+                ViewData["CurrentJobTownship"] = new SelectList(currentJobTownships, "TownshipCode", "Township", employee?.Occupation);
             }
             var educationTypeCodes = _context.TbEducationType.Where(x => x.Active == true).ToList();
             ViewData["EducationType"] = new SelectList(educationTypeCodes, "EducationTypeCode", "EducationType", employee?.EducationTypeCode);
@@ -59,11 +61,18 @@ namespace MADBHR.Controllers
             var pageSize = _pagination.PageSize;
             ViewData["Page"] = page;
             ViewData["PageSize"] = pageSize;
+
+            TempData["FromDate"] = FromDate;
+            TempData["ToDate"] = ToDate;
+            TempData["Name"] = Name;
+            TempData["SerialNumber"] = SerialNumber;
+            TempData["FatherName"] = FatherName;
+
             var employees = _employeeServices.GetEmployee(Name, FromDate, ToDate, SerialNumber).ToList();
             return View(employees.OrderByDescending(x => x.CreatedDate).ToList().ToPagedList((int)page, pageSize));
 
         }
-        public IActionResult AdminIndex(string? StateDivisionCode = null, string? TownshipCode = null, int? page = 1)
+        public IActionResult AdminIndex(string StateDivisionCode = null, string TownshipCode = null, int? page = 1)
         {
             Initialize();
             var userId = HttpContext.User.Identity.Name;
@@ -73,14 +82,18 @@ namespace MADBHR.Controllers
             if (userInfo.AccountType == "User")
             {
                 TownshipCode = _context.TbCurrentJobTownship.Where(x => x.Active == true && x.UploadForTownship == userInfo.TownshipId).Select(x => x.TownshipCode).FirstOrDefault();
+                TownshipCode = TownshipCode == null ? "0" : TownshipCode;
+                TempData["TownshipCode"] = TownshipCode;
                 var townshipCodes = _context.TbCurrentJobTownship.Where(x => x.StateDivisionId == userInfo.StateDivisionId && x.UploadForTownship == userInfo.TownshipId).ToList();
                 ViewData["TownshipCode"] = new SelectList(townshipCodes, "TownshipCode", "Township");
             }
             else
             {
+                TempData["TownshipCode"] = TownshipCode;
                 var townshipCodes = _context.TbCurrentJobTownship.Where(x => x.StateDivisionId == StateDivisionCode).ToList();
                 ViewData["TownshipCode"] = new SelectList(townshipCodes, "TownshipCode", "Township");
             }
+            TempData["StateDivisionCode"] = StateDivisionCode;
             var pageSize = _pagination.PageSize;
             ViewData["Page"] = page;
             ViewData["PageSize"] = pageSize;
@@ -125,6 +138,13 @@ namespace MADBHR.Controllers
             return Json(townships);
         }
 
+        [HttpGet]
+        public  IActionResult GetTownship(string divisonCode,string TownshipCode)
+        {
+            var townships = _context.TbCurrentJobTownship.Where(x => x.Active == true && x.StateDivisionId == divisonCode && x.UploadForTownship==TownshipCode).ToList();
+            //ViewData["PlaceOfBirth"] = new SelectList(townships, "TownshipCode", "Township");
+            return Json(townships);
+        }
         public IActionResult Create()
         {
             Initialize();
@@ -337,6 +357,72 @@ namespace MADBHR.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        [HttpGet]
+        public IActionResult ExcelExport()
+        {
+           
+            string? StateDivisionCode = TempData["StateDivisionCode"]==null?null:TempData["StateDivisionCode"].ToString();
+            string? TownshipCode= TempData["TownshipCode"] == null ? null : TempData["TownshipCode"].ToString();
+            var employees = _employeeServices.GetEmployeeForAdmin(StateDivisionCode, TownshipCode).ToList();
+            var package = new ExcelPackage();
+
+            // Add a new worksheet to the package
+            var worksheet = package.Workbook.Worksheets.Add("Data");
+            worksheet.Cells[1, 1].Value = "တိုင်းဒေသကြီး";
+            worksheet.Cells[1, 2].Value = "မြို့နယ်";
+            worksheet.Cells[1, 3].Value = "အမည်";
+            worksheet.Cells[1, 4].Value = "ဌာနအမည်";
+            worksheet.Cells[1, 5].Value = "ရာထူး";
+            worksheet.Cells[1, 6].Value = "အဖ အမည်";
+            worksheet.Cells[1, 7].Value = "အမိ အမည်";
+            worksheet.Cells[1, 8].Value = "ကိုးကွယ်သည့်ဘာသာ";
+            worksheet.Cells[1, 9].Value = "လူမျိုး";
+            worksheet.Cells[1, 10].Value = "အနီးစပ်ဆုံး ဆွေမျိုး";
+            worksheet.Cells[1, 11].Value = "အမွေစား အမွေခံ";
+            worksheet.Cells[1, 12].Value = "နိုင်ငံသားစီစစ်ရေးကဒ်ပြားအမှတ်";
+            worksheet.Cells[1, 13].Value = "မွေးသက္ကရာဇ်";
+            worksheet.Cells[1, 14].Value = "မွေးဖွားသည့်အရပ်";
+            worksheet.Cells[1, 15].Value = "ပညာအရည်အချင်း";
+            worksheet.Cells[1, 16].Value = "စတင်ဝင်ရောက်သည့်နေ့";
+            worksheet.Cells[1, 17].Value = "နေရပ်လိပ်စာ";
+            worksheet.Cells[1, 18].Value = "မျက်စိအရောင်";
+            worksheet.Cells[1, 19].Value = "အရပ်";
+            worksheet.Cells[1, 20].Value = "ထင်ရှားအမှတ်အသား";
+
+            for (int i = 0; i < employees.Count; i++)
+            {
+                worksheet.Cells[i + 2, 1].Value = employees[i].StateDivision;
+                worksheet.Cells[i + 2, 2].Value = employees[i].Township;
+                worksheet.Cells[i + 2, 3].Value = employees[i].Name;
+                worksheet.Cells[i + 2, 4].Value = employees[i].OccupationName;
+                worksheet.Cells[i + 2, 5].Value = employees[i].CurrentRank;
+                worksheet.Cells[i + 2, 6].Value = employees[i].FatherName;
+                worksheet.Cells[i + 2, 7].Value = employees[i].MotherName;
+                worksheet.Cells[i + 2, 8].Value = employees[i].Religion;
+                worksheet.Cells[i + 2, 9].Value = employees[i].Race;
+                worksheet.Cells[i + 2, 10].Value = employees[i].DearestPerson;
+                worksheet.Cells[i + 2, 11].Value = employees[i].Ancestor;
+                worksheet.Cells[i + 2, 12].Value = employees[i].Nrcnumber;
+                worksheet.Cells[i + 2, 13].Value = employees[i].DateOfBirthString;
+                worksheet.Cells[i + 2, 14].Value = employees[i].PlaceOfBirth;
+                worksheet.Cells[i + 2, 15].Value = employees[i].EducationType;
+                worksheet.Cells[i + 2, 16].Value = employees[i].JoinDateString;
+                worksheet.Cells[i + 2, 17].Value = employees[i].Address;
+                worksheet.Cells[i + 2, 18].Value = employees[i].EyeColor;
+                worksheet.Cells[i + 2, 19].Value = employees[i].Height;
+                worksheet.Cells[i + 2, 20].Value = employees[i].Mark;
+
+
+            }
+            var stream = new MemoryStream();
+            package.SaveAs(stream);
+
+            // Return the stream as a file
+            stream.Position = 0;
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "EmployeeData.xlsx");
+        }
+
 
     }
 }

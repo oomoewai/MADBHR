@@ -65,6 +65,24 @@ namespace MADBHR_Services
                 return emps;
             }
         }
+        public List<TbIntKnowledge> GetIntKnowledgeForAdmin(string? StateDivisionCode = null, string? TownshipCode = null)
+        {
+
+            try
+            {
+                IDbConnection connection = new SqlConnection(_connectionStrings.DefaultConnection);
+                IDbConnection myCon = connection;
+                IDbCommand cmd = myCon.CreateCommand();
+                var knowledges = _internationalKnowledgeDAO.GetIntKnowledgeForAdmn(cmd, StateDivisionCode, TownshipCode);
+
+                return knowledges;
+            }
+            catch (Exception ex)
+            {
+                List<TbIntKnowledge> emps = new List<TbIntKnowledge>();
+                return emps;
+            }
+        }
         public void DeleteIntKnowledge(int intKnowledgePkid, int userId)
         {
             try

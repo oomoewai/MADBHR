@@ -10,6 +10,7 @@ namespace MADBHR_Services.Base
     {
         Task<dynamic> SaveIntKnowledge(TbIntKnowledge intKnowledge, int userId, int Id);
         List<TbIntKnowledge> GetIntKnowledge(string? EmployeeCode = null, DateTime? FromDate = null, DateTime? ToDate = null);
+        List<TbIntKnowledge> GetIntKnowledgeForAdmin(string? StateDivisionCode = null, string? TownshipCode = null);
         void DeleteIntKnowledge(int intKnowledgePkid, int userId);
     }
 }

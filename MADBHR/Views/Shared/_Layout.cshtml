@@ -268,105 +268,114 @@
                                 <li><a href="#"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>
                             </ul>
                         </li>*@
-                    <li><a href="@Url.Action("Dashboard", "Home")"><i class="fa fa-home"></i> <span>ပင်မစာမျက်နှာ</span></a></li>
+                    @*<li><a href="@Url.Action("Dashboard", "Home")"><i class="fa fa-home" style="font-size:20px;"></i> <span>ပင်မစာမျက်နှာ</span></a></li>*@
                     @{
-                       
-                      
-                            <li class="treeview active menu-open">
-                                <a href="#" class="active">
-                                    <i class="fa fa-list"></i>
-                                    <span>စာရင်းများထည့်ရန်</span>
 
-                                    <span class="pull-right-container">
-                                        <i class="fa fa-angle-left pull-right"></i>
-                                    </span>
-                                </a>
 
-                                <ul class="treeview-menu">
-                                    @if (ViewBag.lstLogIn.AccountType == "Head Admin" || ViewBag.lstLogIn.AccountType == "Super Admin")
-                                    {
-                                        <li>
-                                            <a class="active" href="@Url.Action("AdminDivisionIndex", "Employee")" style="background-color:#fdf59a47 !important;"><i class=""></i>ကိုယ်ရေးအချက်အလက်</a>
-                                            @*<a href="" onclick="liActive(@Url.Action(item.ActionName, item.ControllerName), @(lstAllowedModuleGroupName[i].FunctionGroupID)_@(item.FunctionID), liMain_@(lstAllowedModuleGroupName[i].FunctionGroupID)_@(i))"><i class="@iconClass"></i>@item.LinkText</a>*@
-                                        </li>
-                                    }
-                                    else
-                                    {
-                                        <li>
-                                            <a class="active" href="@Url.Action("AdminIndex", "Employee")" style="background-color:#fdf59a47 !important;"><i class=""></i>ကိုယ်ရေးအချက်အလက်</a>
-                                            @*<a href="" onclick="liActive(@Url.Action(item.ActionName, item.ControllerName), @(lstAllowedModuleGroupName[i].FunctionGroupID)_@(item.FunctionID), liMain_@(lstAllowedModuleGroupName[i].FunctionGroupID)_@(i))"><i class="@iconClass"></i>@item.LinkText</a>*@
-                                        </li>
-                                    }
+                        <li class="treeview active menu-open">
+                            <a href="#" class="active">
+                                <i class="fa fa-list"></i>
+                                <span style="font-size:20px;">စာရင်းများထည့်ရန်</span>
 
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+
+                            <ul class="treeview-menu">
+                                @if (ViewBag.lstLogIn.AccountType == "Head Admin" || ViewBag.lstLogIn.AccountType == "Super Admin")
+                                {
                                     <li>
-                                        <a class="active" href="@Url.Action("Index", "JobHistory")" style="background-color:#fdf59a47 !important;"><i class=""></i>ယခင်လုပ်ကိုင်ခဲ့ဖူးသော အလုပ်ဌာနများ</a>
+                                        <a class="active" href="@Url.Action("AdminDivisionIndex", "Employee")" style="font-size:16px;"><i class=""></i>ကိုယ်ရေးအချက်အလက်</a>
+                                        @*<a href="" onclick="liActive(@Url.Action(item.ActionName, item.ControllerName), @(lstAllowedModuleGroupName[i].FunctionGroupID)_@(item.FunctionID), liMain_@(lstAllowedModuleGroupName[i].FunctionGroupID)_@(i))"><i class="@iconClass"></i>@item.LinkText</a>*@
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li>
+                                        <a class="active" href="@Url.Action("AdminIndex", "Employee")" style="font-size: 16px;"><i class=""></i>ကိုယ်ရေးအချက်အလက်</a>
+                                        @*<a href="" onclick="liActive(@Url.Action(item.ActionName, item.ControllerName), @(lstAllowedModuleGroupName[i].FunctionGroupID)_@(item.FunctionID), liMain_@(lstAllowedModuleGroupName[i].FunctionGroupID)_@(i))"><i class="@iconClass"></i>@item.LinkText</a>*@
+                                    </li>
+                                }
+                                <li>
+                                    <a class="active" href="@Url.Action("Index", "JobHistory")" style="font-size: 16px;"><i class=""></i>ယခင်လုပ်ကိုင်ခဲ့ဖူးသော အလုပ်ဌာနများ</a>
+
+                                </li>
+                                <li>
+                                    <a class="active" href="@Url.Action("Index", "TrainingHistory")" style="font-size: 16px;"><i class=""></i>တတ်ရောက်သင်တန်းများ</a>
+
+                                </li>
+                                <li>
+                                    <a class="active" href="@Url.Action("Index", "Award")" style="font-size: 16px;"><i class=""></i>ဂုဏ်ထူးဆောင်ဘွဲ့တံဆိပ်များ</a>
+
+                                </li>
+                                <li>
+                                    <a class="active" href="@Url.Action("Index", "Punishment")" style="font-size: 16px;"><i class=""></i>အပြစ်ပေးခြင်း</a>
+
+                                </li>
+                                <li>
+                                    <a class="active" href="@Url.Action("Index", "InternationalKnowledge")" style="font-size: 16px;"><i class=""></i>နိုင်ငံခြားဗဟုသုတဆိုင်ရာအချက်အလက်များ</a>
+
+                                </li>
+
+                                <li>
+                                    <a class="active" href="@Url.Action("Index", "LeaveEntitlement")" style="font-size: 16px;"><i class=""></i>ခွင့်ခံစားခြင်း</a>
+
+                                </li>
+                                <li>
+                                    <a class="active" href="@Url.Action("Index", "YearlyBonus")" style="font-size: 16px;"><i class=""></i>နှစ်တိုးခံစားခြင်း</a>
+
+                                </li>
+                                <li>
+                                    <a class="active" href="@Url.Action("Index", "EmployeeDisposal")" style="font-size: 16px;"><i class=""></i>ပြုန်းတီးအင်အားစာရင်း</a>
+
+                                </li>
+                            </ul>
+
+                        </li>
+                        <li class="treeview active menu-open">
+                            <a href="#" class="active">
+                                <i class="fa fa-list"></i>
+                                <span style="font-size: 20px;">ပင်စင်</span>
+
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                @if (ViewBag.lstLogIn.AccountType == "Head Admin" || ViewBag.lstLogIn.AccountType == "Super Admin")
+                                {
+                                    <li>
+                                        <a class="active" href="@Url.Action("Index", "Pension")" style="font-size: 16px;"><i class=""></i>ပင်စင်စားအမည်စာရင်းများထည့်ရန်</a>
 
                                     </li>
-                                    <li>
-                                        <a class="active" href="@Url.Action("Index", "TrainingHistory")" style="background-color:#fdf59a47 !important;"><i class=""></i>တတ်ရောက်သင်တန်းများ</a>
-
-                                    </li>
-                                    <li>
-                                        <a class="active" href="@Url.Action("Index", "Award")" style="background-color:#fdf59a47 !important;"><i class=""></i>ဂုဏ်ထူးဆောင်ဘွဲ့တံဆိပ်များ</a>
-
-                                    </li>
-                                    <li>
-                                        <a class="active" href="@Url.Action("Index", "Punishment")" style="background-color:#fdf59a47 !important;"><i class=""></i>အပြစ်ပေးခြင်း</a>
-
-                                    </li>
-                                    <li>
-                                        <a class="active" href="@Url.Action("Index", "InternationalKnowledge")" style="background-color:#fdf59a47 !important;"><i class=""></i>နိုင်ငံခြားဗဟုသုတဆိုင်ရာအချက်အလက်များ</a>
-
-                                    </li>
-
-                                    <li>
-                                        <a class="active" href="@Url.Action("Index", "LeaveEntitlement")" style="background-color:#fdf59a47 !important;"><i class=""></i>ခွင့်ခံစားခြင်း</a>
-
-                                    </li>
-                                    <li>
-                                        <a class="active" href="@Url.Action("Index", "YearlyBonus")" style="background-color:#fdf59a47 !important;"><i class=""></i>နှစ်တိုးခံစားခြင်း</a>
-
-                                    </li>
-                                    <li>
-                                        <a class="active" href="@Url.Action("Index", "EmployeeDisposal")" style="background-color:#fdf59a47 !important;"><i class=""></i>ပြုန်းတီးအင်အားစာရင်း</a>
-
-                                    </li>
-                                </ul>
+                                }
+                                else
+                                {
+                            <li>
+                                <a class="active" href="@Url.Action("Detail", "Pension")" style="font-size: 16px;"><i class="" ></i>ပင်စင်စားအမည်စာရင်းများထည့်ရန်</a>@*style="background-color:#fdf59a47 !important;"*@
 
                             </li>
-                            <li class="treeview active menu-open">
-                                <a href="#" class="active">
-                                    <i class="fa fa-list"></i>
-                                    <span>ပင်စင်</span>
+                                }
+                            </ul>
+                        </li>
+                        <li class="treeview active menu-open">
+                            <a href="#" class="active">
+                                <i class="fa fa-list"></i>
+                                <span style=" font-size: 20px;">Main Entry</span>
 
-                                    <span class="pull-right-container">
-                                        <i class="fa fa-angle-left pull-right"></i>
-                                    </span>
-                                </a>
-                                <ul class="treeview-menu">
-                                    <li>
-                                        <a class="active" href="@Url.Action("Index", "Pension")" style="background-color:#fdf59a47 !important;"><i class=""></i>ပင်စင်စားအမည်စာရင်းများထည့်ရန်</a>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li>
+                                    <a class="active" href="@Url.Action("Index", "Departments")" style="font-size: 16px;"><i class=""></i>ဌာနများထည့်ရန်</a>
 
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="treeview active menu-open">
-                                <a href="#" class="active">
-                                    <i class="fa fa-list"></i>
-                                    <span>Main Entry</span>
+                                </li>
+                            </ul>
+                        </li>
 
-                                    <span class="pull-right-container">
-                                        <i class="fa fa-angle-left pull-right"></i>
-                                    </span>
-                                </a>
-                                <ul class="treeview-menu">
-                                    <li>
-                                        <a class="active" href="@Url.Action("Index", "Departments")" style="background-color:#fdf59a47 !important;"><i class=""></i>ဌာနများထည့်ရန်</a>
-
-                                    </li>
-                                </ul>
-                            </li>
-                        
                     }
 
                     @*<li><a href="@Url.Action("ProposalApproveList", "ProposalProgress")"><i class="fa fa-inbox"></i> <span>ဝင်စာများ&nbsp;&nbsp;<span style="background-color:red;" class="badge badge-danger">@Context.Session.GetString("countDocIn")</span></span></a></li>

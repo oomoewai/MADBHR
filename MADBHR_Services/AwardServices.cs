@@ -65,6 +65,24 @@ namespace MADBHR_Services
                 return emps;
             }
         }
+        public List<TbAward> GetAwardForAdmin(string? StateDivisionCode = null, string? TownshipCode = null)
+        {
+
+            try
+            {
+                IDbConnection connection = new SqlConnection(_connectionStrings.DefaultConnection);
+                IDbConnection myCon = connection;
+                IDbCommand cmd = myCon.CreateCommand();
+                var awards = _awardDAO.GetAwardForAdmin(cmd, StateDivisionCode, TownshipCode);
+
+                return awards;
+            }
+            catch (Exception ex)
+            {
+                List<TbAward> emps = new List<TbAward>();
+                return emps;
+            }
+        }
         public void DeleteAward(int awardPkid, int userId)
         {
             try

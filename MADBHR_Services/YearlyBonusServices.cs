@@ -65,6 +65,24 @@ namespace MADBHR_Services
                 return emps;
             }
         }
+        public List<TbYearlyBonus> GetYearlyBonusForAdmin(string? StateDivisionCode = null, string? TownshipCode = null)
+        {
+
+            try
+            {
+                IDbConnection connection = new SqlConnection(_connectionStrings.DefaultConnection);
+                IDbConnection myCon = connection;
+                IDbCommand cmd = myCon.CreateCommand();
+                var yearlyBonus = _yearlyBonusDAO.GetYearlyBonusForAdmin(cmd, StateDivisionCode, TownshipCode);
+
+                return yearlyBonus;
+            }
+            catch (Exception ex)
+            {
+                List<TbYearlyBonus> emps = new List<TbYearlyBonus>();
+                return emps;
+            }
+        }
         public void DeleteYearlyBonus(int yearlyBonusPkid, int userId)
         {
             try

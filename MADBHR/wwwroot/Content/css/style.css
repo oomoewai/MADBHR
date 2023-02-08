@@ -387,3 +387,7 @@ fieldset {
    .font_style{
        font-weight:bold;
    }
+.header_style {
+    padding: 3px;
+    margin-top: 9px;
+}

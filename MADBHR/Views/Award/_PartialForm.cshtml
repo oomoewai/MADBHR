@@ -23,17 +23,37 @@
                     }
                     <input asp-for="AwardPkid" hidden />
                     @*}*@
-                    <div class="col-xs-12">
-                        <div class="row">
-                            <div class="col-md-6 form-group">
-                                <label class="form-label" for="field-1">ကိုယ်ပိုင်အမှတ်</label>
-                                <span class="desc"></span>
-                                <div class="controls">
-                                    <input type="text" class="form-control" id="field-1" asp-for="SerialNumber">
-                                    <span asp-validation-for="SerialNumber" class="text-danger"></span>
-                                </div>
+                <div class="col-xs-12">
+                    <div class="row">
+                        <div class="col-md-4 form-group">
+                            <label class="form-label" for="field-1">ကိုယ်ပိုင်အမှတ်</label>
+                            <span class="desc"></span>
+                            <div class="controls">
+                                <input type="text" class="form-control" id="field-1" asp-for="SerialNumber" onchange="ChangeNumber()">
+                                <span asp-validation-for="SerialNumber" class="text-danger"></span>
                             </div>
-                            <div class="col-md-6 form-group">
+                        </div>
+
+                        <div class="col-md-4 form-group">
+                            <label class="form-label" for="field-name">အမည်</label>
+                            <span class="desc"></span>
+                            <div class="controls">
+                                <input type="text" class="form-control" id="field-name" value="@ViewBag.Name">
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-4 form-group">
+                            <label class="form-label" for="field-2">ရာထူး</label>
+                            <span class="desc"></span>
+                            <div class="controls">
+                                <input type="text" class="form-control" id="field-rank" value="@ViewBag.Rank">
+                            </div>
+                        </div>
+                       
+                    </div>
+                        <div class="row">
+                            <div class="col-md-4 form-group">
                                 <label class="form-label" for="field-2">ချီးမြှင့်ခံရသည့်နေ့စွဲ</label>
                                 <span class="desc"></span>
                                 <div class="controls">
@@ -41,9 +61,7 @@
                                     <span asp-validation-for="AwardDate" class="text-danger"></span>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 form-group">
+                            <div class="col-md-4 form-group">
                                 <label class="form-label" for="field-3">ချီးမြှင့်ခံရသည့်နှစ်</label>
                                 <span class="desc"></span>
                                 <div class="controls">
@@ -51,7 +69,7 @@
                                     <span asp-validation-for="AwardYear" class="text-danger"></span>
                                 </div>
                             </div>
-                            <div class="col-md-6 form-group">
+                            <div class="col-md-4 form-group">
                                 <label class="form-label" for="field-4">ချီးမြှင့်ခံရသည့်ဘွဲ့တံဆိပ်အမျိုးအစား</label>
                                 <select class="form-control" asp-for="AwardTypeCode" asp-items="ViewBag.AwardType">
                                     <option selected="selected" value="">တံဆိပ်အမျိုးအစားရွေးပါ </option>
@@ -59,7 +77,7 @@
                                 <span asp-validation-for="AwardTypeCode" class="text-danger"></span>
 
                             </div>
-                        </div>                       
+                        </div>
                         <div class="row">
 
                             <div class="col-md-6 form-group">
@@ -82,7 +100,7 @@
                     </div>
 
 
-                </form>
+</form>
             </div>
         </div>
     </div>

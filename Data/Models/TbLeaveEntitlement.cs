@@ -46,5 +46,17 @@ namespace MADBHR_Data.Models
         [NotMapped]
         [SkipProperty]
         public string LeaveType { get; set; }
+        [NotMapped]
+        [SkipProperty]
+        public string StateDivision { get; set; }
+        [NotMapped]
+        [SkipProperty]
+        public string Township { get; set; }
+        [NotMapped]
+        [SkipProperty]
+        public string RankType { get; set; }
+        [NotMapped]
+        [SkipProperty]
+        public string Department { get; set; }
     }
 }

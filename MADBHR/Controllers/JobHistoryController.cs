@@ -4,8 +4,10 @@ using MADBHR_Services.Base;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Options;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using X.PagedList;
@@ -26,10 +28,24 @@ namespace MADBHR.Controllers
         public void Initialize(TbJobHistory tbJobHistory = null)
         {
             var userId = HttpContext.User.Identity.Name;
-            ViewBag.lstLogIn = _context.TbUserLogin.Where(x => x.Status == "Enable" && x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
-           
-            var currentJobTownship = _context.TbCurrentJobTownship.Where(x => x.Active == true).ToList();
-            ViewData["TownshipCode"] = new SelectList(currentJobTownship, "TownshipCode", "Township", tbJobHistory?.UploadForTownship);
+            var userInfo = _context.TbUserLogin.Where(x => x.Status == "Enable" && x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
+            ViewBag.lstLogIn = userInfo;
+            if (userInfo.AccountType == "Head Admin")
+            {
+                var currentJobTownships = _context.TbCurrentJobTownship.Where(x => x.Active == true).ToList();
+                ViewData["TownshipCode"] = new SelectList(currentJobTownships, "TownshipCode", "Township", tbJobHistory?.DepartmentName);
+            }
+            else if (userInfo.AccountType == "Super Admin")
+            {
+                var currentJobTownships = _context.TbCurrentJobTownship.Where(x => x.Active == true && x.StateDivisionId == userInfo.StateDivisionId).ToList();
+                ViewData["TownshipCode"] = new SelectList(currentJobTownships, "TownshipCode", "Township", tbJobHistory?.DepartmentName);
+            }
+            else if (userInfo.AccountType == "User")
+            {
+                var currentJobTownships = _context.TbCurrentJobTownship.Where(x => x.Active == true && x.StateDivisionId == userInfo.StateDivisionId && x.UploadForTownship == userInfo.TownshipId).ToList();
+                ViewData["TownshipCode"] = new SelectList(currentJobTownships, "TownshipCode", "Township", tbJobHistory?.DepartmentName);
+            }
+
             var rankType = _context.TbRankType.Select(x => new { x.RankTypeCode,x.RankType }).ToList();
             ViewData["RankType"] = new SelectList(rankType, "RankTypeCode", "RankType", tbJobHistory?.RankTypeCode1);
 
@@ -41,6 +57,7 @@ namespace MADBHR.Controllers
             var userInfo = _context.TbUserLogin.Where(x => x.Status == "Enable" && x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
             ViewBag.lstLogIn = userInfo;
             ViewBag.AccountType = userInfo.AccountType;
+            ViewBag.TownshipId = userInfo.TownshipId;
             if (userInfo.AccountType == "Super Admin")
             {
                 StateDivisionCode = userInfo.StateDivisionId;
@@ -52,6 +69,20 @@ namespace MADBHR.Controllers
                 var stateDivisionCodes = _context.TbStateDivision.Select(x => new { x.StateDivision, x.StateDivisionCode }).ToList();
                 ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision");
             }
+            else if(userInfo.AccountType=="User")
+            {
+                TownshipCode = _context.TbCurrentJobTownship.Where(x => x.UploadForTownship == userInfo.TownshipId).Select(x => x.TownshipCode).FirstOrDefault() ;
+                StateDivisionCode = userInfo.StateDivisionId;
+                TownshipCode = TownshipCode == null ? "0" : TownshipCode;
+                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).ToList();
+                ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision", stateDivisionCodes[0].StateDivisionCode);
+
+            }
+            TempData["SerialNumber"] = SerialNumber;
+            TempData["FromDate"] = FromDate;
+            TempData["ToDate"] = ToDate;
+            TempData["TownshipCode"] = TownshipCode;
+            TempData["StateDivisionCode"] = StateDivisionCode;
             var pageSize = _pagination.PageSize;
             ViewData["Page"] = page;
             ViewData["PageSize"] = pageSize;
@@ -65,6 +96,9 @@ namespace MADBHR.Controllers
             var pageSize = _pagination.PageSize;
             ViewData["Page"] = page;
             ViewData["PageSize"] = pageSize;
+            TempData["FromDate"] = FromDate;
+            TempData["ToDate"] = ToDate;
+            TempData["EmployeeCode"] = EmployeeCode;
             //var EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == SerialNumber).Select(x => x.EmployeeCode).FirstOrDefault();
             var jobHistories = _jobHistoryServices.GetJobHistory(EmployeeCode,FromDate,ToDate).ToList();
             return View(jobHistories.OrderByDescending(x => x.CreatedDate).ToList().ToPagedList((int)page, pageSize));
@@ -156,6 +190,109 @@ namespace MADBHR.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+        [HttpGet]
+        public async Task<IActionResult> ExcelExportForIndex()
+        {
+            string? SerialNumber= TempData["SerialNumber"]==null?null: TempData["SerialNumber"].ToString() ;
+            DateTime? FromDate=Convert.ToDateTime(TempData["FromDate"]);
+            DateTime? ToDate=Convert.ToDateTime(TempData["ToDate"]);
+            if (TempData["FromDate"] == null)
+            {
+                FromDate = null;
+                ToDate = null;
+
+            }
+            string? TownshipCode=TempData["TownshipCode"]==null?null: TempData["TownshipCode"].ToString();
+            string? StateDivisionCode= TempData["StateDivisionCode"]==null?null: TempData["StateDivisionCode"].ToString();
+            var jobHistories = _jobHistoryServices.GetCurrentJobHistory(null, StateDivisionCode, TownshipCode).ToList();
+            var package = new ExcelPackage();
+
+            // Add a new worksheet to the package
+            var worksheet = package.Workbook.Worksheets.Add("Data");
+            worksheet.Cells[1, 1].Value = "တိုင်းဒေသကြီး";
+            worksheet.Cells[1, 2].Value = "မြို့နယ်";
+            worksheet.Cells[1, 3].Value = "အမည်";
+            worksheet.Cells[1, 4].Value = "ဌာနအမည်";
+            worksheet.Cells[1, 5].Value = "ရာထူး အဆင့်";
+            worksheet.Cells[1, 6].Value = "ရာထူး အခြေအနေ";
+            
+
+            for (int i = 0; i < jobHistories.Count; i++)
+            {
+                worksheet.Cells[i + 2, 1].Value = jobHistories[i].StateDivision;
+                worksheet.Cells[i + 2, 2].Value = jobHistories[i].Township;
+                worksheet.Cells[i + 2, 3].Value = jobHistories[i].EmployeeName;
+                worksheet.Cells[i + 2, 4].Value = jobHistories[i].Department_Name;
+                worksheet.Cells[i + 2, 5].Value = jobHistories[i].RankType;
+                if(jobHistories[i].IsCurrent==true)
+                {
+                    worksheet.Cells[i + 2, 6].Value = "လက်ရှိရာထူး";
+                }
+                else
+                {
+                    worksheet.Cells[i + 2, 6].Value = "ယခင်ရာထူး";
+                }
+            }
+            var stream = new MemoryStream();
+            package.SaveAs(stream);
+
+            // Return the stream as a file
+            stream.Position = 0;
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "JobHistoryForIndex.xlsx");
+        }
+        [HttpGet]
+        public async Task<IActionResult> ExcelExportForDetail()
+        {
+           
+            DateTime? FromDate =Convert.ToDateTime(TempData["FromDate"]);
+            DateTime? ToDate = Convert.ToDateTime(TempData["ToDate"]);
+            if (TempData["FromDate"] == null)
+            {
+                FromDate = null;
+                ToDate = null;
+
+            }
+            string? EmployeeCode = TempData["EmployeeCode"] == null ? null : TempData["EmployeeCode"].ToString();       
+            var jobHistories = _jobHistoryServices.GetJobHistory(EmployeeCode, FromDate, ToDate).ToList();
+            var package = new ExcelPackage();
+
+            // Add a new worksheet to the package
+            var worksheet = package.Workbook.Worksheets.Add("Data");
+            worksheet.Cells[1, 1].Value = "တိုင်းဒေသကြီး";
+            worksheet.Cells[1, 2].Value = "မြို့နယ်";
+            worksheet.Cells[1, 3].Value = "အမည်";
+            worksheet.Cells[1, 4].Value = "ဌာနအမည်";
+            worksheet.Cells[1, 5].Value = "ရာထူး အဆင့်";
+            worksheet.Cells[1, 6].Value = "ရာထူး အခြေအနေ";
+            worksheet.Cells[1, 7].Value = "အချိန်ကာလ (မှ)";
+            worksheet.Cells[1, 8].Value = "အချိန်ကာလ (ထိ)";
+
+
+            for (int i = 0; i < jobHistories.Count; i++)
+            {
+                worksheet.Cells[i + 2, 1].Value = jobHistories[i].StateDivision;
+                worksheet.Cells[i + 2, 2].Value = jobHistories[i].Township;
+                worksheet.Cells[i + 2, 3].Value = jobHistories[i].EmployeeName;
+                worksheet.Cells[i + 2, 4].Value = jobHistories[i].Department_Name;
+                worksheet.Cells[i + 2, 5].Value = jobHistories[i].RankType;
+                if (jobHistories[i].IsCurrent == true)
+                {
+                    worksheet.Cells[i + 2, 6].Value = "လက်ရှိရာထူး";
+                }
+                else
+                {
+                    worksheet.Cells[i + 2, 6].Value = "ယခင်ရာထူး";
+                }
+                worksheet.Cells[i + 2, 7].Value = jobHistories[i].FromDateStr;
+                worksheet.Cells[i + 2, 8].Value = jobHistories[i].ToDateStr;
+            }
+            var stream = new MemoryStream();
+            package.SaveAs(stream);
+
+            // Return the stream as a file
+            stream.Position = 0;
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "JobHistoryForDetail.xlsx");
         }
     }
 }

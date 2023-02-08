@@ -52,10 +52,10 @@ namespace MADB.Controllers
 
                     var claimsIdentity = new ClaimsIdentity(claims, "Login");
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-                    if(userInfo .AccountType== "Head Admin")
+                    if(userInfo .AccountType== "Head Admin" || userInfo.AccountType=="Super Admin")
                         return RedirectToAction("AdminDivisionIndex", "Employee");
                     else
-                        return RedirectToAction("Dashboard", "Home");
+                        return RedirectToAction("AdminIndex", "Employee");
 
                 }
                 else

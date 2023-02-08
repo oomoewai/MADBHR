@@ -22,7 +22,7 @@ namespace MADBHR_Services.SqlDataAccess
                 cmd.AddParameter("@id", Id);
                 cmd.AddParameter("@pkid", jobHistory.JobHistoryPkid);
                 cmd.AddParameter("@EmployeeCode", jobHistory.EmployeeCode);
-                cmd.AddParameter("@DepartmentName", jobHistory.DepartmentName);
+                cmd.AddParameter("@DepartmentCode", jobHistory.DepartmentCode);
                 cmd.AddParameter("@RankType" ,jobHistory.RankTypeCode1);
                 cmd.AddParameter("@FromDate", jobHistory.FromDate);
                 cmd.AddParameter("@ToDate", jobHistory.ToDate);
@@ -56,8 +56,7 @@ namespace MADBHR_Services.SqlDataAccess
             cmd.AddParameter("@EmployeeCode", EmployeeCode);
             cmd.AddParameter("@FromDate", FromDate);
             cmd.AddParameter("@ToDate", ToDate);
-            cmd.AddParameter("@DivisionCode", StateDivisionCode);
-            cmd.AddParameter("@TownshipCode", TownshipCode);
+
 
             SqlDataAdapter ResAdapter = new SqlDataAdapter((SqlCommand)cmd);
             DataSet ResDs = new DataSet();

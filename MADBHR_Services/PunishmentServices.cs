@@ -65,6 +65,24 @@ namespace MADBHR_Services
                 return emps;
             }
         }
+        public List<TbPunishment> GetPunishmentForAdmin(string? StateDivisionCode = null, string? TownshipCode = null)
+        {
+
+            try
+            {
+                IDbConnection connection = new SqlConnection(_connectionStrings.DefaultConnection);
+                IDbConnection myCon = connection;
+                IDbCommand cmd = myCon.CreateCommand();
+                var history = _punishmentDAO.GetPunishmentForAdmin(cmd, StateDivisionCode, TownshipCode);
+
+                return history;
+            }
+            catch (Exception ex)
+            {
+                List<TbPunishment> emps = new List<TbPunishment>();
+                return emps;
+            }
+        }
         public void DeletePunishment(int punishmentPkid, int userId)
         {
             try

@@ -66,6 +66,24 @@ namespace MADBHR_Services
                 return emps;
             }
         }
+        public List<TbTrainingHistory> GetTrainingHistoryForAdmin( string? StateDivisionCode = null, string? TownshipCode = null)
+        {
+
+            try
+            {
+                IDbConnection connection = new SqlConnection(_connectionStrings.DefaultConnection);
+                IDbConnection myCon = connection;
+                IDbCommand cmd = myCon.CreateCommand();
+                var history = _trainingHistoryDAO.GetTrainingHistoryForAdmin(cmd, StateDivisionCode,TownshipCode);
+
+                return history;
+            }
+            catch (Exception ex)
+            {
+                List<TbTrainingHistory> emps = new List<TbTrainingHistory>();
+                return emps;
+            }
+        }
         public void DeleteTrainingHistory(int trainingHistoryPkid, int userId)
         {
             try

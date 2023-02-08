@@ -74,12 +74,95 @@ namespace MADBHR_Services.SqlDataAccess
                                     CountryName = ResDs.Tables[0].Rows[i]["CountryName"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["CountryName"].ToString() : "",
                                     Description = ResDs.Tables[0].Rows[i]["Description"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Description"].ToString() : "",
                                     EmployeeName = ResDs.Tables[0].Rows[i]["Name"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Name"].ToString() : "",
+                                    Department = ResDs.Tables[0].Rows[i]["Department"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Department"].ToString() : "",
+                                    RankType = ResDs.Tables[0].Rows[i]["RankType"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["RankType"].ToString() : "",
                                     IsDeleted = ResDs.Tables[0].Rows[i]["IsDeleted"] != DBNull.Value ? Convert.ToBoolean(ResDs.Tables[0].Rows[i]["IsDeleted"]) : false,
                                     CreatedDate = ResDs.Tables[0].Rows[i]["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(ResDs.Tables[0].Rows[i]["CreatedDate"]) : DateTime.Now,
                                     CreatedBy = ResDs.Tables[0].Rows[i]["CreatedBy"] != DBNull.Value ? Convert.ToInt32(ResDs.Tables[0].Rows[i]["CreatedBy"]) : 0
                                 };
 
                                 lstIntKnowledge.Add(intKnowledge);
+                            }
+                        }
+                    }
+                }
+            }
+            cmd.Connection.Close();
+            return lstIntKnowledge;
+
+        }
+        public List<TbIntKnowledge> GetIntKnowledgeForAdmn(IDbCommand cmd, string? StateDivisionCode = null, string? TownshipCode = null)
+        {
+
+            cmd.CommandText = "SP_GetIntKnowledgeForAdmin";
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Clear();
+            cmd.Connection.Open();
+            cmd.AddParameter("@DivisionCode", StateDivisionCode);
+            cmd.AddParameter("@TownshipCode", TownshipCode);
+            
+            SqlDataAdapter ResAdapter = new SqlDataAdapter((SqlCommand)cmd);
+            DataSet ResDs = new DataSet();
+            ResAdapter.Fill(ResDs);
+            List<TbIntKnowledge> lstIntKnowledge = new List<TbIntKnowledge>();
+            List<string> lstEmpCode = new List<string>();
+            if (ResDs != null)
+            {
+                if (ResDs.Tables.Count > 0)
+                {
+                    if (ResDs.Tables[0] != null)
+                    {
+                        if (ResDs.Tables[0].Rows.Count > 0)
+                        {
+                            for (int i = 0; i < ResDs.Tables[0].Rows.Count; i++)
+                            {
+                                if (lstEmpCode.Count > 0)
+                                {
+                                    if (!lstEmpCode.Contains(ResDs.Tables[0].Rows[i]["EmployeeCode"].ToString()))
+                                    {
+                                        TbIntKnowledge intKnowledge = new TbIntKnowledge
+                                        {
+                                            IntKnowledgePkid = ResDs.Tables[0].Rows[i]["IntKnowledgePkid"] != DBNull.Value ? Convert.ToInt32(ResDs.Tables[0].Rows[i]["IntKnowledgePkid"]) : 0,
+                                            EmployeeCode = ResDs.Tables[0].Rows[i]["EmployeeCode"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["EmployeeCode"].ToString() : "",
+                                            FromDateStr = ResDs.Tables[0].Rows[i]["FromDate"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["FromDate"].ToString() : "",
+                                            ToDateStr = ResDs.Tables[0].Rows[i]["ToDate"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["ToDate"].ToString() : "",
+                                            CountryName = ResDs.Tables[0].Rows[i]["CountryName"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["CountryName"].ToString() : "",
+                                            Description = ResDs.Tables[0].Rows[i]["Description"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Description"].ToString() : "",
+                                            EmployeeName = ResDs.Tables[0].Rows[i]["Name"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Name"].ToString() : "",
+                                            Department = ResDs.Tables[0].Rows[i]["Department"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Department"].ToString() : "",
+                                            RankType = ResDs.Tables[0].Rows[i]["RankType"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["RankType"].ToString() : "",
+                                            StateDivision = ResDs.Tables[0].Rows[i]["StateDivision"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["StateDivision"].ToString() : "",
+                                            Township = ResDs.Tables[0].Rows[i]["Township"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Township"].ToString() : "",
+                                            IsDeleted = ResDs.Tables[0].Rows[i]["IsDeleted"] != DBNull.Value ? Convert.ToBoolean(ResDs.Tables[0].Rows[i]["IsDeleted"]) : false,
+                                            CreatedDate = ResDs.Tables[0].Rows[i]["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(ResDs.Tables[0].Rows[i]["CreatedDate"]) : DateTime.Now,
+                                            CreatedBy = ResDs.Tables[0].Rows[i]["CreatedBy"] != DBNull.Value ? Convert.ToInt32(ResDs.Tables[0].Rows[i]["CreatedBy"]) : 0
+                                        };
+                                        lstEmpCode.Add(intKnowledge.EmployeeCode);
+                                        lstIntKnowledge.Add(intKnowledge);
+                                    }
+                                }
+                                else
+                                {
+                                    TbIntKnowledge intKnowledge = new TbIntKnowledge
+                                    {
+                                        IntKnowledgePkid = ResDs.Tables[0].Rows[i]["IntKnowledgePkid"] != DBNull.Value ? Convert.ToInt32(ResDs.Tables[0].Rows[i]["IntKnowledgePkid"]) : 0,
+                                        EmployeeCode = ResDs.Tables[0].Rows[i]["EmployeeCode"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["EmployeeCode"].ToString() : "",
+                                        FromDateStr = ResDs.Tables[0].Rows[i]["FromDate"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["FromDate"].ToString() : "",
+                                        ToDateStr = ResDs.Tables[0].Rows[i]["ToDate"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["ToDate"].ToString() : "",
+                                        CountryName = ResDs.Tables[0].Rows[i]["CountryName"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["CountryName"].ToString() : "",
+                                        Description = ResDs.Tables[0].Rows[i]["Description"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Description"].ToString() : "",
+                                        EmployeeName = ResDs.Tables[0].Rows[i]["Name"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Name"].ToString() : "",
+                                        Department = ResDs.Tables[0].Rows[i]["Department"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Department"].ToString() : "",
+                                        RankType = ResDs.Tables[0].Rows[i]["RankType"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["RankType"].ToString() : "",
+                                        StateDivision = ResDs.Tables[0].Rows[i]["StateDivision"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["StateDivision"].ToString() : "",
+                                        Township = ResDs.Tables[0].Rows[i]["Township"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Township"].ToString() : "",
+                                        IsDeleted = ResDs.Tables[0].Rows[i]["IsDeleted"] != DBNull.Value ? Convert.ToBoolean(ResDs.Tables[0].Rows[i]["IsDeleted"]) : false,
+                                        CreatedDate = ResDs.Tables[0].Rows[i]["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(ResDs.Tables[0].Rows[i]["CreatedDate"]) : DateTime.Now,
+                                        CreatedBy = ResDs.Tables[0].Rows[i]["CreatedBy"] != DBNull.Value ? Convert.ToInt32(ResDs.Tables[0].Rows[i]["CreatedBy"]) : 0
+                                    };
+                                    lstEmpCode.Add(intKnowledge.EmployeeCode);
+                                    lstIntKnowledge.Add(intKnowledge);
+                                }
                             }
                         }
                     }

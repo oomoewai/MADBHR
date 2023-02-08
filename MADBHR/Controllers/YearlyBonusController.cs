@@ -4,8 +4,10 @@ using MADBHR_Services.Base;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Options;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using X.PagedList;
@@ -28,14 +30,53 @@ namespace MADBHR.Controllers
             var userId = HttpContext.User.Identity.Name;
             ViewBag.lstLogIn = _context.TbUserLogin.Where(x => x.Status == "Enable" && x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
         }
-        public IActionResult Index(string? SerialNumber = null, DateTime? ApprovedDate = null, int? page = 1)
+        public IActionResult Index(string? StateDivisionCode = null, string? TownshipCode = null, int? page = 1)
+        {
+            Initialize();
+            var userId = HttpContext.User.Identity.Name;
+            var userInfo = _context.TbUserLogin.Where(x => x.Status == "Enable" && x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
+            ViewBag.lstLogIn = userInfo;
+            ViewBag.AccountType = userInfo.AccountType;
+            ViewBag.TownshipId = userInfo.TownshipId;
+            if (userInfo.AccountType == "Super Admin")
+            {
+                StateDivisionCode = userInfo.StateDivisionId;
+                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).ToList();
+                ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision", stateDivisionCodes[0].StateDivisionCode);
+            }
+            else if (userInfo.AccountType == "Head Admin")
+            {
+                var stateDivisionCodes = _context.TbStateDivision.Select(x => new { x.StateDivision, x.StateDivisionCode }).ToList();
+                ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision");
+            }
+            else if (userInfo.AccountType == "User")
+            {
+                TownshipCode = _context.TbCurrentJobTownship.Where(x => x.UploadForTownship == userInfo.TownshipId).Select(x => x.TownshipCode).FirstOrDefault();
+                StateDivisionCode = userInfo.StateDivisionId;
+                TownshipCode = TownshipCode == null ? "0" : TownshipCode;
+                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).ToList();
+                ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision", stateDivisionCodes[0].StateDivisionCode);
+
+            }
+            TempData["TownshipCode"] = TownshipCode;
+            TempData["StateDivisionCode"] = StateDivisionCode;
+            var pageSize = _pagination.PageSize;
+            ViewData["Page"] = page;
+            ViewData["PageSize"] = pageSize;
+            //var EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == SerialNumber).Select(x => x.EmployeeCode).FirstOrDefault();
+            var yearlyBonus = _yearlyBonusServices.GetYearlyBonusForAdmin( StateDivisionCode,TownshipCode).ToList();
+            return View(yearlyBonus.OrderByDescending(x => x.CreatedDate).ToList().ToPagedList((int)page, pageSize));
+        }
+        public IActionResult Detail(string EmployeeCode = null, DateTime? ApprovedDate = null, int? page = 1)
         {
             Initialize();
             var pageSize = _pagination.PageSize;
             ViewData["Page"] = page;
             ViewData["PageSize"] = pageSize;
-            var EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == SerialNumber).Select(x => x.EmployeeCode).FirstOrDefault();
-            var yearlyBonus = _yearlyBonusServices.GetYearlyBonus( EmployeeCode,ApprovedDate).ToList();
+            TempData["ApprovedDate"] = ApprovedDate;
+            TempData["EmployeeCode"] = EmployeeCode;
+            //var EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == SerialNumber).Select(x => x.EmployeeCode).FirstOrDefault();
+            var yearlyBonus = _yearlyBonusServices.GetYearlyBonus(EmployeeCode, ApprovedDate).ToList();
             return View(yearlyBonus.OrderByDescending(x => x.CreatedDate).ToList().ToPagedList((int)page, pageSize));
         }
         public IActionResult Create()
@@ -125,6 +166,92 @@ namespace MADBHR.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+        [HttpGet]
+        public async Task<IActionResult> ExcelExportForIndex()
+        {
+            string? TownshipCode = TempData["TownshipCode"] == null ? null : TempData["TownshipCode"].ToString();
+            string? StateDivisionCode = TempData["StateDivisionCode"] == null ? null : TempData["StateDivisionCode"].ToString();
+            var yearlyBonus = _yearlyBonusServices.GetYearlyBonusForAdmin(StateDivisionCode, TownshipCode).ToList();
+            var package = new ExcelPackage();
+
+            // Add a new worksheet to the package
+            var worksheet = package.Workbook.Worksheets.Add("Data");
+            worksheet.Cells[1, 1].Value = "တိုင်းဒေသကြီး";
+            worksheet.Cells[1, 2].Value = "မြို့နယ်";
+            worksheet.Cells[1, 3].Value = "အမည်";
+            worksheet.Cells[1, 4].Value = "ရာထူး";
+            worksheet.Cells[1, 5].Value = "ဌာန";
+            worksheet.Cells[1, 6].Value = "အမိန့်စာရက်စွဲ";
+            worksheet.Cells[1, 7].Value = "အမိန့်စာအမှတ်";
+
+
+            for (int i = 0; i < yearlyBonus.Count; i++)
+            {
+                worksheet.Cells[i + 2, 1].Value = yearlyBonus[i].StateDivision;
+                worksheet.Cells[i + 2, 2].Value = yearlyBonus[i].Township;
+                worksheet.Cells[i + 2, 3].Value = yearlyBonus[i].EmployeeName;
+                worksheet.Cells[i + 2, 4].Value = yearlyBonus[i].RankType;
+                worksheet.Cells[i + 2, 5].Value = yearlyBonus[i].Department;
+                worksheet.Cells[i + 2, 6].Value = yearlyBonus[i].ApproveDateStr;
+                worksheet.Cells[i + 2, 7].Value = yearlyBonus[i].ApprovedNo;
+
+            }
+            var stream = new MemoryStream();
+            package.SaveAs(stream);
+
+            // Return the stream as a file
+            stream.Position = 0;
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "YearlyBonusForIndex.xlsx");
+        }
+        [HttpGet]
+        public async Task<IActionResult> ExcelExportForDetail()
+        {
+
+
+            string? EmployeeCode = TempData["EmployeeCode"] == null ? null : TempData["EmployeeCode"].ToString();
+            DateTime? ApprovedDate = Convert.ToDateTime(TempData["ApprovedDate"]);
+            if (TempData["FromDate"] == null)
+            {
+                ApprovedDate = null;
+
+            }
+            var yearlyBonus = _yearlyBonusServices.GetYearlyBonus(EmployeeCode, ApprovedDate).ToList();
+            var package = new ExcelPackage();
+
+            // Add a new worksheet to the package
+            var worksheet = package.Workbook.Worksheets.Add("Data");
+            worksheet.Cells[1, 1].Value = "တိုင်းဒေသကြီး";
+            worksheet.Cells[1, 2].Value = "မြို့နယ်";
+            worksheet.Cells[1, 3].Value = "အမည်";
+            worksheet.Cells[1, 4].Value = "ရာထူး";
+            worksheet.Cells[1, 5].Value = "ဌာန";
+            worksheet.Cells[1, 6].Value = "အမိန့်စာရက်စွဲ";
+            worksheet.Cells[1, 7].Value = "အမိန့်စာအမှတ်";
+            worksheet.Cells[1, 8].Value = "နှစ်တိုးအကြိမ်";
+            worksheet.Cells[1, 9].Value = "နှစ်တိုးလစာငွေကျပ်";
+            worksheet.Cells[1, 10].Value = "နှစ်တိုးရက်စွဲ";
+
+
+            for (int i = 0; i < yearlyBonus.Count; i++)
+            {
+                worksheet.Cells[i + 2, 1].Value = yearlyBonus[i].StateDivision;
+                worksheet.Cells[i + 2, 2].Value = yearlyBonus[i].Township;
+                worksheet.Cells[i + 2, 3].Value = yearlyBonus[i].EmployeeName;
+                worksheet.Cells[i + 2, 4].Value = yearlyBonus[i].RankType;
+                worksheet.Cells[i + 2, 5].Value = yearlyBonus[i].Department;
+                worksheet.Cells[i + 2, 6].Value = yearlyBonus[i].ApproveDateStr;
+                worksheet.Cells[i + 2, 7].Value = yearlyBonus[i].ApprovedNo;
+                worksheet.Cells[i + 2, 8].Value = yearlyBonus[i].YearlyBonusCount;
+                worksheet.Cells[i + 2, 9].Value = yearlyBonus[i].YearlyBonusSalary;
+                worksheet.Cells[i + 2, 10].Value = yearlyBonus[i].YearlyBonusDate;
+            }
+            var stream = new MemoryStream();
+            package.SaveAs(stream);
+
+            // Return the stream as a file
+            stream.Position = 0;
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "YearlyBonusForDetail.xlsx");
         }
     }
 }

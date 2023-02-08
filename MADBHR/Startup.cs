@@ -63,6 +63,7 @@ namespace MADBHR
             services.AddTransient<MADBHR_Services.Base.IEmployeeDisposalServices, MADBHR_Services.EmployeeDisposalServices>();
             services.AddTransient<MADBHR_Services.Base.IPensionServices, MADBHR_Services.PensionServices>();
             services.AddTransient<MADBHR_Services.Base.IDepartmentServices, MADBHR_Services.DepartmentServices>();
+            services.AddTransient<MADBHR_Services.Base.IAccountRegisterServices, MADBHR_Services.AccountRegisterServices>();
             services.Configure<MADBHR_Services.Options.ConnectionStrings>(Configuration.GetSection(nameof(MADBHR_Services.Options.ConnectionStrings)));
             services.Configure<Pagination>(Configuration.GetSection("Pagination"));
 

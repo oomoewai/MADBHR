@@ -54,5 +54,11 @@ namespace MADBHR_Data.Models
         [NotMapped]
         [SkipProperty]
         public string EmployeeName { get; set; }
+        [NotMapped]
+        [SkipProperty]
+        public string StateDivision { get; set; }
+        [NotMapped]
+        [SkipProperty]
+        public string Township { get; set; }
     }
 }

@@ -84,6 +84,24 @@ namespace MADBHR_Services
                 return emps;
             }
         }
+        public List<TbDisposal> GetEmployeeDisposalForAdmin(string? StateDivisionCode = null, string? TownshipCode = null)
+        {
+
+            try
+            {
+                IDbConnection connection = new SqlConnection(_connectionStrings.DefaultConnection);
+                IDbConnection myCon = connection;
+                IDbCommand cmd = myCon.CreateCommand();
+                var disposals = _employeeDisposalDAO.GetDisposalForAdmin(cmd, StateDivisionCode, TownshipCode);
+
+                return disposals;
+            }
+            catch (Exception ex)
+            {
+                List<TbDisposal> emps = new List<TbDisposal>();
+                return emps;
+            }
+        }
         public void DeleteDisposal(string EmployeeCode, int userId)
         {
             try

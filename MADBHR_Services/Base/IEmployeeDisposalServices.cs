@@ -12,6 +12,7 @@ namespace MADBHR_Services.Base
         VMEmployeeInfo GetEmployeeInfo(string SerialNumber);
         Task<dynamic> SaveEmployeeDisposal(TbDisposal disposal, int userId, int Id);
         List<TbDisposal> GetEmployeeDisposal(string? DisposalTypeCode = null, string? EmployeeCode = null, DateTime? FromDate = null, DateTime? ToDate = null);
+        List<TbDisposal> GetEmployeeDisposalForAdmin(string? StateDivisionCode = null, string? TownshipCode = null);
         void DeleteDisposal(string EmployeeCode, int userId);
     }
 }

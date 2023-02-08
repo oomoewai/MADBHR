@@ -115,6 +115,8 @@ namespace MADBHR_Services.SqlDataAccess
                                     DisposalTypeCode = ResDs.Tables[0].Rows[i]["DisposalTypeCode"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["DisposalTypeCode"].ToString() : "",
                                     Remark = ResDs.Tables[0].Rows[i]["Remark"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Remark"].ToString() : "",
                                     EmployeeName = ResDs.Tables[0].Rows[i]["Name"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Name"].ToString() : "",
+                                    Department = ResDs.Tables[0].Rows[i]["Department"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Department"].ToString() : "",
+                                    RankType = ResDs.Tables[0].Rows[i]["RankType"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["RankType"].ToString() : "",
                                     IsDeleted = ResDs.Tables[0].Rows[i]["IsDeleted"] != DBNull.Value ? Convert.ToBoolean(ResDs.Tables[0].Rows[i]["IsDeleted"]) : false,
                                     CreatedDate = ResDs.Tables[0].Rows[i]["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(ResDs.Tables[0].Rows[i]["CreatedDate"]) : DateTime.Now,
                                     CreatedBy = ResDs.Tables[0].Rows[i]["CreatedBy"] != DBNull.Value ? Convert.ToInt32(ResDs.Tables[0].Rows[i]["CreatedBy"]) : 0
@@ -129,6 +131,86 @@ namespace MADBHR_Services.SqlDataAccess
             cmd.Connection.Close();
             return lstDisposals;
 
+        }
+        public List<TbDisposal> GetDisposalForAdmin(IDbCommand cmd, string? StateDivisionCode = null, string? TownshipCode = null)
+        {
+
+            cmd.CommandText = "SP_GetDisposalForAdmin";
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Clear();
+            cmd.Connection.Open();
+            cmd.AddParameter("@DivisionCode", StateDivisionCode);
+            cmd.AddParameter("@TownshipCode", TownshipCode);
+
+            SqlDataAdapter ResAdapter = new SqlDataAdapter((SqlCommand)cmd);
+            DataSet ResDs = new DataSet();
+            ResAdapter.Fill(ResDs);
+            List<TbDisposal> lstDisposals = new List<TbDisposal>();
+            List<string> lstEmpCode = new List<string>();
+            if (ResDs != null)
+            {
+                if (ResDs.Tables.Count > 0)
+                {
+                    if (ResDs.Tables[0] != null)
+                    {
+                        if (ResDs.Tables[0].Rows.Count > 0)
+                        {
+                            for (int i = 0; i < ResDs.Tables[0].Rows.Count; i++)
+                            {
+                                if (lstEmpCode.Count > 0)
+                                {
+                                    if (!lstEmpCode.Contains(ResDs.Tables[0].Rows[i]["EmployeeCode"].ToString()))
+                                    {
+                                        TbDisposal disposal = new TbDisposal
+                                        {
+                                            DisposalPkid = ResDs.Tables[0].Rows[i]["DisposalPkid"] != DBNull.Value ? Convert.ToInt32(ResDs.Tables[0].Rows[i]["DisposalPkid"]) : 0,
+                                            EmployeeCode = ResDs.Tables[0].Rows[i]["EmployeeCode"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["EmployeeCode"].ToString() : "",
+                                            DisposalDateStr = ResDs.Tables[0].Rows[i]["DisposalDate"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["DisposalDate"].ToString() : "",
+                                            DisposalType = ResDs.Tables[0].Rows[i]["DisposalType"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["DisposalType"].ToString() : "",
+                                            DisposalTypeCode = ResDs.Tables[0].Rows[i]["DisposalTypeCode"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["DisposalTypeCode"].ToString() : "",
+                                            Remark = ResDs.Tables[0].Rows[i]["Remark"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Remark"].ToString() : "",
+                                            EmployeeName = ResDs.Tables[0].Rows[i]["Name"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Name"].ToString() : "",
+                                            Department = ResDs.Tables[0].Rows[i]["Department"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Department"].ToString() : "",
+                                            RankType = ResDs.Tables[0].Rows[i]["RankType"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["RankType"].ToString() : "",
+                                            StateDivision = ResDs.Tables[0].Rows[i]["StateDivision"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["StateDivision"].ToString() : "",
+                                            Township = ResDs.Tables[0].Rows[i]["Township"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Township"].ToString() : "",
+                                            IsDeleted = ResDs.Tables[0].Rows[i]["IsDeleted"] != DBNull.Value ? Convert.ToBoolean(ResDs.Tables[0].Rows[i]["IsDeleted"]) : false,
+                                            CreatedDate = ResDs.Tables[0].Rows[i]["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(ResDs.Tables[0].Rows[i]["CreatedDate"]) : DateTime.Now,
+                                            CreatedBy = ResDs.Tables[0].Rows[i]["CreatedBy"] != DBNull.Value ? Convert.ToInt32(ResDs.Tables[0].Rows[i]["CreatedBy"]) : 0
+                                        };
+                                        lstEmpCode.Add(disposal.EmployeeCode);
+                                        lstDisposals.Add(disposal);
+                                    }
+                                }
+                                else
+                                {
+                                    TbDisposal disposal = new TbDisposal
+                                    {
+                                        DisposalPkid = ResDs.Tables[0].Rows[i]["DisposalPkid"] != DBNull.Value ? Convert.ToInt32(ResDs.Tables[0].Rows[i]["DisposalPkid"]) : 0,
+                                        EmployeeCode = ResDs.Tables[0].Rows[i]["EmployeeCode"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["EmployeeCode"].ToString() : "",
+                                        DisposalDateStr = ResDs.Tables[0].Rows[i]["DisposalDate"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["DisposalDate"].ToString() : "",
+                                        DisposalType = ResDs.Tables[0].Rows[i]["DisposalType"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["DisposalType"].ToString() : "",
+                                        DisposalTypeCode = ResDs.Tables[0].Rows[i]["DisposalTypeCode"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["DisposalTypeCode"].ToString() : "",
+                                        Remark = ResDs.Tables[0].Rows[i]["Remark"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Remark"].ToString() : "",
+                                        EmployeeName = ResDs.Tables[0].Rows[i]["Name"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Name"].ToString() : "",
+                                        Department = ResDs.Tables[0].Rows[i]["Department"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Department"].ToString() : "",
+                                        RankType = ResDs.Tables[0].Rows[i]["RankType"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["RankType"].ToString() : "",
+                                        StateDivision = ResDs.Tables[0].Rows[i]["StateDivision"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["StateDivision"].ToString() : "",
+                                        Township = ResDs.Tables[0].Rows[i]["Township"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Township"].ToString() : "",
+                                        IsDeleted = ResDs.Tables[0].Rows[i]["IsDeleted"] != DBNull.Value ? Convert.ToBoolean(ResDs.Tables[0].Rows[i]["IsDeleted"]) : false,
+                                        CreatedDate = ResDs.Tables[0].Rows[i]["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(ResDs.Tables[0].Rows[i]["CreatedDate"]) : DateTime.Now,
+                                        CreatedBy = ResDs.Tables[0].Rows[i]["CreatedBy"] != DBNull.Value ? Convert.ToInt32(ResDs.Tables[0].Rows[i]["CreatedBy"]) : 0
+                                    };
+                                    lstEmpCode.Add(disposal.EmployeeCode);
+                                    lstDisposals.Add(disposal);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            cmd.Connection.Close();
+            return lstDisposals;
         }
         public void DeleteDisposal(IDbCommand cmd, string EmployeeCode, int userId)
         {

@@ -6,8 +6,8 @@
     ViewData["Title"] = "All " + controller;
     var count = 1;
     var query = Context.Request.Query;
-    var SerialNumber = query["SerialNumber"];
-    var DisposalTypeCode = query["DisposalTypeCode"];
+    var StateDivisionCode = query["StateDivisionCode"];
+    var TownshipCode = query["TownshipCode"];
     ViewData["Query"] = query;
 
 }
@@ -27,20 +27,20 @@
 
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label class="form-label" for="FromDate">ကိုယ်ပိုင်အမှတ်</label>
+                                <label class="form-label" for="ToDate">တိုင်းဒေသကြီးများ</label>
                                 <div class="controls">
-                                    <input type="text" class="form-control" name="SerialNumber" value="@SerialNumber" id="serialNumber">
+                                    <select class="form-control" name="StateDivisionCode" value="@StateDivisionCode" asp-items="ViewBag.StateDivision" id="stateDivision" onchange="Change()">
+                                        <option selected="selected" value="">---ရွေးရန်---</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label class="form-label" for="field-4">ပြုန်းတီးအမျိုးအစား</label>
-                                <div class="controls">
-                                    <select class="form-control" name="DisposalType" value="@DisposalTypeCode" asp-items="ViewBag.DisposalTypeCode" id="disposalType">
-                                        <option selected="selected" value="">ပြုန်းတီးအမျိုးအစားရွေးပါ </option>
-                                    </select>
-                                </div>
+                                <label class="form-label" for="ToDate">မြို့နယ်များ</label>
+                                <select class="form-control" name="TownshipCode" value="@TownshipCode" id="townshipCode">
+                                    <option selected="selected" value="">---ရွေးရန်---</option>
+                                </select>
                             </div>
                         </div>
 
@@ -63,13 +63,13 @@
 <section class="content">
     <div class="box">
         <header class="panel-heading">
-            @*<h2 class="title pull-left"></h2>*@
+            <h5 class="title pull-left" style="font-weight:bold">ပြုန်းတီးအင်အားစာရင်းများကြည့်ရန်</h5>
             <div class="pull-right">
-                @*<button type="button" data-href="/@controller/Create" class="btn btn-click">Create</button>*@
+                <a asp-controller="@controller" asp-action="ExcelExportForIndex" class="btn btn-xs btn-secondary" style="width: 80px; height: 25px; padding: 3px;">Excel ထုတ်ရန်</a>
                 <a asp-controller="@controller" asp-action="Create" class="btn btn-xs btn-secondary" style="width: 80px; height: 25px; padding: 3px;">အသစ်ထည့်ရန်</a>
             </div>
         </header>
-        <div class="box-body">
+        <div class="box-body" style="margin-top:30px;">
             <div class="row">
                 <div class="col-xs-12">
 
@@ -77,10 +77,14 @@
                         <thead>
                             <tr>
                                 <th>စဉ်</th>
+                                <th>တိုင်းဒေသကြီး</th>
+                                <th>မြို့နယ်</th>
                                 <th>အမည်</th>
+                                <th>ရာထူး</th>
+                                <th>ဌာန</th>
                                 <th>ပြုန်းတီးအမျိုးအစား</th>
                                 <th>ပြုန်းတီးရက်စွဲ</th>
-                                <th>မှတ်ချက်</th>                               
+                                <th>မှတ်ချက်</th>
                                 <th></th>
 
                             </tr>
@@ -88,22 +92,22 @@
                         <tbody>
                             @foreach (var item in Model)
                             {
-                                <tr>
-                                    <td class="text-center">@((((int)ViewBag.Page - 1) * (int)ViewBag.PageSize) + count)</td>
-                                    <td class="text-center">@item.EmployeeName</td>
-                                    <td class="text-center">@item.DisposalType</td>
-                                    <td class="text-center">@item.DisposalDateStr</td>
-                                    <td class="text-center">@item.Remark</td>
+                            <tr>
+                                <td class="text-center">@((((int)ViewBag.Page - 1) * (int)ViewBag.PageSize) + count)</td>
+                                <td class="text-center">@item.StateDivision</td>
+                                <td class="text-center">@item.Township</td>
+                                <td class="text-center">@item.EmployeeName</td>
+                                <td class="text-center">@item.RankType</td>
+                                <td class="text-center">@item.Department</td>
+                                <td class="text-center">@item.DisposalType</td>
+                                <td class="text-center">@item.DisposalDateStr</td>
+                                <td class="text-center">@item.Remark</td>
 
-                                    <td class="text-center">
-                                        <a asp-controller="@controller" asp-action="Edit" asp-route-Id="@item.DisposalPkid" class="btn btn-xs btn-secondary">ပြင်ရန်</a>
-                                        <button asp-controller="@controller" asp-action="Delete" asp-route-Id="@item.DisposalPkid" class="btn btn-xs btn-secondary"
-                                                onclick="DeleteConfirm('/@controller/Delete/',@item.DisposalPkid)">
-                                            ပယ်ဖျက်ရန်
-                                        </button>
-                                    </td>
+                                <td class="text-center">
+                                    <a asp-controller="@controller" asp-action="Detail" asp-route-EmployeeCode="@item.EmployeeCode" class="btn btn-xs btn-secondary">အသေးစိတ်ကြည့်ရန်</a>
+                                </td>
 
-                                </tr>
+                            </tr>
                                 count++;
                             }
                         </tbody>
@@ -119,6 +123,76 @@
     </div>*@
 @section Scripts{
     <script>
+        $(document).ready(function () {
+            if ('@ViewBag.AccountType' == "Super Admin") {
+                document.getElementById("stateDivision").setAttribute("disabled", "disabled");
+                $.ajax({
+                    url: '/Employee/GetTownhsipByDivision?divisonCode=' + $("#stateDivision").val(),
+                    type: 'GET',
+                    ContentType: 'application/json;utf-8',
+                    datatype: 'json',
+                    success: function (res) {
+                        var selectList = document.getElementById("townshipCode");
+                        for (var i = 0; i < res.length; i++) {
+                            var option = document.createElement("option");
+                            option.value = res[i].townshipCode;
+                            option.text = res[i].township;
+                            selectList.appendChild(option);
+                        }
+                    }
+
+                });
+            }
+            else if ('@ViewBag.AccountType' == "User") {
+
+                $.ajax({
+                    url: '/Employee/GetTownship?divisonCode=' + $("#stateDivision").val() + '&TownshipCode=@ViewBag.TownshipId',
+                    type: 'GET',
+                    ContentType: 'application/json;utf-8',
+                    datatype: 'json',
+                    success: function (res) {
+                        var selectList = document.getElementById("townshipCode");
+                        for (var i = 0; i < res.length; i++) {
+                            var option = document.createElement("option");
+                            option.value = res[i].townshipCode;
+                            option.text = res[i].township;
+                            selectList.appendChild(option);
+                        }
+                    }
+
+                });
+                document.getElementById("stateDivision").setAttribute("disabled", "disabled");
+
+            }
+
+        });
+
+        function Change() {
+            console.log("StateDivision Text", $("#stateDivision :selected").text()); // The text content of the selected option
+            console.log("StateDivision Text", $("#stateDivision").val());
+            debugger;
+            $.ajax({
+
+                url: '/Employee/GetTownhsipByDivision?divisonCode=' + $("#stateDivision").val(),
+                type: 'GET',
+                ContentType: 'application/json;utf-8',
+                datatype: 'json',
+                success: function (res) {
+                    var selectList = document.getElementById("townshipCode");
+                    //selectList.id = "mySelect";
+                    //myParent.appendChild(selectList);
+
+                    //Create and append the options
+                    for (var i = 0; i < res.length; i++) {
+                        var option = document.createElement("option");
+                        option.value = res[i].townshipCode;
+                        option.text = res[i].township;
+                        selectList.appendChild(option);
+                    }
+                }
+
+            });
+        }
         function DeleteConfirm(url, id) {
             Swal.fire({
                 title: 'Are you sure?',

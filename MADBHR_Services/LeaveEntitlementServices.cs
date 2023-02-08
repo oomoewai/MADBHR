@@ -65,6 +65,24 @@ namespace MADBHR_Services
                 return emps;
             }
         }
+        public List<TbLeaveEntitlement> GetLeaveEntitlementForAdmin(string? StateDivisionCode = null, string? TownshipCode = null)
+        {
+
+            try
+            {
+                IDbConnection connection = new SqlConnection(_connectionStrings.DefaultConnection);
+                IDbConnection myCon = connection;
+                IDbCommand cmd = myCon.CreateCommand();
+                var leaveEntitlements = _leaveEntitlementDAO.GetLeaveEntitlementForAdmin(cmd, StateDivisionCode, TownshipCode);
+
+                return leaveEntitlements;
+            }
+            catch (Exception ex)
+            {
+                List<TbLeaveEntitlement> emps = new List<TbLeaveEntitlement>();
+                return emps;
+            }
+        }
         public void DeleteLeaveEntitlement (int leaveEntitlementPkid, int userId)
         {
             try

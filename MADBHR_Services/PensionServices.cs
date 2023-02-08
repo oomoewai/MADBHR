@@ -1,5 +1,6 @@
 ﻿using MADBHR_Data.Models;
 using MADBHR_Data.Repository.Base;
+using MADBHR_Models.Employee;
 using MADBHR_Services.Base;
 using MADBHR_Services.Options;
 using MADBHR_Services.SqlDataAccess;
@@ -47,7 +48,7 @@ namespace MADBHR_Services
             }
 
         }
-        public List<TbPension> GetPension( string? EmployeeCode = null, DateTime? FromDate = null, DateTime? ToDate = null)
+        public List<VMPensionEmpCount> GetPensionEmployeeCount(string? StateDivisionCode = null)
         {
 
             try
@@ -55,7 +56,25 @@ namespace MADBHR_Services
                 IDbConnection connection = new SqlConnection(_connectionStrings.DefaultConnection);
                 IDbConnection myCon = connection;
                 IDbCommand cmd = myCon.CreateCommand();
-                var pensions = _pensionDAO.GetPension(cmd, EmployeeCode);
+                var employees = _pensionDAO.GetPensionEmployeeCounts(cmd, StateDivisionCode);
+
+                return employees;
+            }
+            catch (Exception ex)
+            {
+                List<VMPensionEmpCount> emps = new List<VMPensionEmpCount>();
+                return emps;
+            }
+        }
+        public List<TbPension> GetPension( string? StateDivisionCode = null, string? TownshipCode = null,string ? EmployeeCode = null, DateTime? FromDate = null, DateTime? ToDate = null)
+        {
+
+            try
+            {
+                IDbConnection connection = new SqlConnection(_connectionStrings.DefaultConnection);
+                IDbConnection myCon = connection;
+                IDbCommand cmd = myCon.CreateCommand();
+                var pensions = _pensionDAO.GetPension(cmd,StateDivisionCode,TownshipCode, EmployeeCode);
 
                 return pensions;
             }
