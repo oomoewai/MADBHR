@@ -43,6 +43,7 @@ namespace MADBHR_Services.SqlDataAccess
                                 empInfo.joindate = ResDs.Tables[0].Rows[i]["joindate"] != DBNull.Value ? Convert.ToDateTime(ResDs.Tables[0].Rows[i]["joindate"]).ToString("dd/MM/yyyy") : "";
                                 empInfo.FromDate = ResDs.Tables[0].Rows[i]["FromDate"] != DBNull.Value ? Convert.ToDateTime(ResDs.Tables[0].Rows[i]["FromDate"]).ToString("dd/MM/yyyy") : "";
                                 empInfo.RankType = ResDs.Tables[0].Rows[i]["RankType"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["RankType"].ToString() : "";
+                                empInfo.TownCode = ResDs.Tables[0].Rows[i]["TownshipCode"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["TownshipCode"].ToString() : "";
 
 
                             }
@@ -54,7 +55,7 @@ namespace MADBHR_Services.SqlDataAccess
             return empInfo;
 
         }
-        public dynamic SaveEmployeeDisposal(IDbCommand cmd, TbDisposal disposal, int userId, int Id)
+        public dynamic SaveEmployeeDisposal(IDbCommand cmd, TbDisposal disposal, int userId, int Id,bool isTransfer)
         {
             try
             {
@@ -71,6 +72,8 @@ namespace MADBHR_Services.SqlDataAccess
                 cmd.AddParameter("@IsDeleted", false);
                 cmd.AddParameter("@CreatedBy", userId);
                 cmd.AddParameter("@UploadForTownship", disposal.UploadForTownship);
+                cmd.AddParameter("@isTransfer", isTransfer);
+
 
 
                 cmd.ExecuteNonQuery();

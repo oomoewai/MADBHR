@@ -1,5 +1,166 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using MADBHR.Enum
 @{
+    ViewData["Title"] = "Edit Account";
+    ViewData["Action"] = ViewEnum.Action.Edit.ToDescription();
+}
+
+<partial name="_PartialForm" />
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            $("#field-6").hide();
+            $("#StateDivision").hide();
+            $("#townshipId").hide()
+            $("#lblTownship").hide();
+            $("#field-password").val('@ViewBag.Password');
+            debugger;
+            let accountType = '@ViewBag.account';
+            if (accountType == "Head Admin") {
+                $("#field-5").show();
+                $("#StateDivisionForHeadAdmin").show();
+                $("#field-6").hide();
+                $("#StateDivision").hide();
+                $("#townshipId").hide()
+                $("#lblTownship").hide();
+            }
+            else if (accountType == "Super Admin") {
+                $("#field-6").show();
+                $("#StateDivision").show();
+                $("#townshipId").hide();
+                $("#lblTownship").hide();
+                $("#field-5").hide();
+                $("#StateDivisionForHeadAdmin").hide();
+            }
+            else if(accountType == "User") {
+                $("#field-6").show();
+                $("#StateDivision").show();
+                $("#townshipId").show();
+                $("#lblTownship").show();
+                $("#field-5").hide();
+                $("#StateDivisionForHeadAdmin").hide();
+                $.ajax({
+
+                    url: '/AccountRegister/GetTownhsipByDivision?divisonCode=' + '@ViewBag.stateCode',
+                    type: 'GET',
+                    ContentType: 'application/json;utf-8',
+                    datatype: 'json',
+                    success: function (res) {
+                        var selectList = document.getElementById("townshipId");
+                        for (var i = 0; i < res.length; i++) {
+                            var option = document.createElement("option");
+                            if ('@ViewBag.townCode' == res[i].townCode) {
+                                option.value = res[i].townCode;
+                                option.text = res[i].townName;
+                                option.selected = res[i].townCode;
+                            }
+                            else {
+                                option.value = res[i].townCode;
+                                option.text = res[i].townName;
+                            }
+                           
+                            selectList.appendChild(option);
+                        }
+                    }
+
+                });
+            }
+
+        });
+        function Change() {
+            debugger;
+            var password = $("#field-password").val();
+            var confirmPassword = $("#ConfirmPassword").val();
+
+            if (password != confirmPassword) {
+
+                Swal.fire({
+                    title: 'Confirm Password',
+                    text: "Your password not match",
+                    icon: 'warning',
+                    showCancelButton: false,
+                    confirmbuttonColor: '#3085d6',
+                    //cancelButtonColor: '#d33',
+                    confirmButtonText: 'OK'
+                })
+
+            }
+
+        }
+        function TypeChange() {
+            debugger;
+            var accountType = $("#accountType").val();
+            if (accountType == "User") {
+                $("#field-6").show();
+                $("#StateDivision").show();
+                $("#townshipId").show();
+                $("#lblTownship").show();
+                $("#field-5").hide();
+                $("#StateDivisionForHeadAdmin").hide();
+            }
+            else if (accountType == "Super Admin") {
+                $("#field-6").show();
+                $("#StateDivision").show();
+                $("#townshipId").hide();
+                $("#lblTownship").hide();
+                $("#field-5").hide();
+                $("#StateDivisionForHeadAdmin").hide();
+            }
+            else if (accountType == "Head Admin") {
+                $("#field-5").show();
+                $("#StateDivisionForHeadAdmin").show();
+                $("#field-6").hide();
+                $("#StateDivision").hide();
+                $("#townshipId").hide()
+                $("#lblTownship").hide();
+                
+            }
+        }
+        function CheckEmail() {
+            debugger;
+            var email = $("#field-email").val();
+            $.ajax({
+
+                url: `/AccountRegister/GetUserInfo?useroremail=${email}`,
+                type: 'get',
+                success: function (res) {
+                    if (res) {
+                        Swal.fire({
+                            title: 'Validate Email',
+                            text: "Your Email is already exist!",
+                            icon: 'warning',
+                            showCancelButton: false,
+                            confirmbuttonColor: '#3085d6',
+                            //cancelButtonColor: '#d33',
+                            confirmButtonText: 'OK'
+                        })
+                    }
+
+                }
+
+            });
+
+
+        }
+        function StateDivisionChange() {
+            $("#townshipId").empty();
+            $.ajax({
+
+                url: '/AccountRegister/GetTownhsipByDivision?divisonCode=' + $("#StateDivision").val(),
+                type: 'GET',
+                ContentType: 'application/json;utf-8',
+                datatype: 'json',
+                success: function (res) {
+                    var selectList = document.getElementById("townshipId");
+                    for (var i = 0; i < res.length; i++) {
+                        var option = document.createElement("option");
+                        option.value = res[i].townCode;
+                        option.text = res[i].townName;
+                        selectList.appendChild(option);
+                    }
+                }
+
+            });
+        }
+    </script>
 }

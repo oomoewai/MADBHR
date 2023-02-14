@@ -165,7 +165,8 @@ namespace MADBHR_Services.SqlDataAccess
                                 employee.StateDivision = ResDs.Tables[0].Rows[i]["StateDivision"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["StateDivision"].ToString() : "";
                                 employee.TownshipCount = ResDs.Tables[0].Rows[i]["TownshipCount"] != DBNull.Value ? Convert.ToInt32(ResDs.Tables[0].Rows[i]["TownshipCount"]) : 0;
                                 employee.EmployeeCount = ResDs.Tables[0].Rows[i]["EmployeeCount"] != DBNull.Value ? Convert.ToInt32(ResDs.Tables[0].Rows[i]["EmployeeCount"]) : 0;
-                                
+                                employee.TotalUpperRank= ResDs.Tables[0].Rows[i]["UpperRankCount"] != DBNull.Value ? Convert.ToInt32(ResDs.Tables[0].Rows[i]["UpperRankCount"]) : 0;
+                                employee.TotalLowerRank = ResDs.Tables[0].Rows[i]["LowerRankCount"] != DBNull.Value ? Convert.ToInt32(ResDs.Tables[0].Rows[i]["LowerRankCount"]) : 0;
 
                                 emps.Add(employee);
                             }

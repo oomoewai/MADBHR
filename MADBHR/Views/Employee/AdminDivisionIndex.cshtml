@@ -67,8 +67,10 @@
                             <tr>
                                 <th>စဉ်</th‌>
                                 <th>တိုင်းဒေသကြီး</th>
-                                <th>မြို့နယ်ပေါင်း</th>
-                                <th>ဝန်ထမ်းပေါင်း</th>                            
+                                <th>မြို့နယ်ရုံးပေါင်း</th>
+                                <th>ဝန်ထမ်းပေါင်း</th>
+                                <th>အရာထမ်းပေါင်း</th>
+                                <th>အမှုထမ်းပေါင်း</th>
                                 <th></th>
 
                             </tr>
@@ -76,21 +78,23 @@
                         <tbody>
                             @foreach (var item in Model)
                             {
-                                <tr>
-                                    <td class="text-center">@((((int)ViewBag.Page - 1) * (int)ViewBag.PageSize) + count)</td>
-                                    <td class="text-center">@item.StateDivision</td>
-                                    <td class="text-center">@item.TownshipCount</td>
-                                    <td class="text-center">@item.EmployeeCount</td>                         
-                                    <td class="text-center">
+                            <tr>
+                                <td class="text-center">@((((int)ViewBag.Page - 1) * (int)ViewBag.PageSize) + count)</td>
+                                <td class="text-center">@item.StateDivision</td>
+                                <td class="text-center">@item.TownshipCount</td>
+                                <td class="text-center">@item.EmployeeCount</td>
+                                <td class="text-center">@item.TotalUpperRank</td>
+                                <td class="text-center">@item.TotalLowerRank</td>
+                                <td class="text-center">
                                     <a asp-controller="Employee" asp-action="AdminIndex" asp-route-StateDivisionCode="@item.StateDivisionCode" class="btn btn-xs btn-secondary">မြို့နယ်အလိုက်သေးစိတ်ကြည့်ရန်</a>
                                     @*<a asp-controller="@controller" asp-action="Edit" asp-route-Id="@item.EmployeePkid" class="btn btn-xs btn-secondary">ပြင်ရန်</a>
-                                    <button asp-controller="@controller" asp-action="Delete" asp-route-Id="@item.EmployeePkid" class="btn btn-xs btn-secondary"
-                                                onclick="DeleteConfirm('/@controller/Delete/',@item.EmployeePkid)">
-                                            ပယ်ဖျက်ရန်
-                                        </button>*@
-                                    </td>
+            <button asp-controller="@controller" asp-action="Delete" asp-route-Id="@item.EmployeePkid" class="btn btn-xs btn-secondary"
+                        onclick="DeleteConfirm('/@controller/Delete/',@item.EmployeePkid)">
+                    ပယ်ဖျက်ရန်
+                </button>*@
+                                </td>
 
-                                </tr>
+                            </tr>
                                 count++;
                             }
                         </tbody>

@@ -1,0 +1,44 @@
+﻿@using MADBHR.Enum
+@{
+    ViewData["Title"] = "Create Transfer";
+    ViewData["Action"] = ViewEnum.Action.Create.ToDescription();
+}
+
+<partial name="_PartialForm" />
+@section Scripts
+{
+    <script>
+    $(document).ready(function () {
+        document.getElementById("townshipId").setAttribute("disabled", "disabled");
+    });
+    function ChangeNumber() {
+        debugger;
+        var serialNumber = $("#field-1").val();
+        console.log("serialnumber:", serialNumber);
+        $.ajax({
+
+            url: `/EmployeeDisposal/GetEmployeeInformation?SerialNumber=${serialNumber}`,
+            type: 'get',
+            success: function (res) {
+                if (res) {
+                    $("#field-name").val(res.name);
+                    $("#field-rank").val(res.rankType);
+                     var selectList = document.getElementById("townshipId");
+                       /* for (var i = 0; i < res.length; i++) {*/
+                            var option = document.createElement("option");                           
+                                option.value = res.townCode;
+                                option.text = res.township;
+                                option.selected = res.townCode;
+                          
+
+                            selectList.appendChild(option);
+                       /* }*/
+                }
+
+            }
+
+        });
+
+    }
+    </script>
+}

@@ -1,4 +1,5 @@
-﻿@using Microsoft.AspNetCore.Http
+﻿
+@using Microsoft.AspNetCore.Http
 
 <!DOCTYPE html>
 <html>
@@ -112,21 +113,16 @@
                                             {
                                                 tmpCaption = tmpCaption + "  |  " + @Convert.ToString(ViewBag.lstLogIn.TownshipName);
                                             }
-
                                             if (ViewBag.lstLogIn != null)
                                             {
-
                                                 @if (ViewBag.lstLogIn.DeptName != null)
                                                 {
                                                     <span class="hidden-xs">@Convert.ToString(ViewBag.lstLogIn.DeptName) &nbsp;	&nbsp;	 | &nbsp;	&nbsp;	 @Convert.ToString(ViewBag.lstLogIn.SectionName) &nbsp;	&nbsp;	 | &nbsp;	&nbsp;	 @Convert.ToString(ViewBag.lstLogIn.SubSectionName) &nbsp;&nbsp;  | &nbsp;&nbsp; @Convert.ToString(ViewBag.lstLogIn.RoleName) </span>
-
                                                 }
                                                 else
                                                 {
                                                     <span class="hidden-xs">@tmpCaption</span>
-
                                                 }
-
                                             }*@
 
                                     }
@@ -221,7 +217,7 @@
                                         {
                                             @Html.AntiForgeryToken()
                                             <div class="pull-right">
-                                                <a href="javascript:document.getElementById('logoutForm').submit()" class="btn btn-default btn-flat">Sign out</a>
+                                                <a href="javascript:document.getElementById('logoutForm').submit()" class="btn btn-secondary">Sign out</a>
                                             </div>
                                         }
                                     </li>
@@ -330,6 +326,13 @@
                                     <a class="active" href="@Url.Action("Index", "EmployeeDisposal")" style="font-size: 16px;"><i class=""></i>ပြုန်းတီးအင်အားစာရင်း</a>
 
                                 </li>
+                                @if (ViewBag.lstLogIn.AccountType == "Head Admin" || ViewBag.lstLogIn.AccountType == "Super Admin")
+                                {
+                                    <li>
+                                        <a class="active" href="@Url.Action("Index", "Transfer")" style="font-size: 16px;"><i class=""></i>ပြောင်းရွှေ့စာရင်း</a>
+                                    </li>
+
+                                }
                             </ul>
 
                         </li>
@@ -352,10 +355,10 @@
                                 }
                                 else
                                 {
-                            <li>
-                                <a class="active" href="@Url.Action("Detail", "Pension")" style="font-size: 16px;"><i class="" ></i>ပင်စင်စားအမည်စာရင်းများထည့်ရန်</a>@*style="background-color:#fdf59a47 !important;"*@
+                                    <li>
+                                        <a class="active" href="@Url.Action("Detail", "Pension")" style="font-size: 16px;"><i class=""></i>ပင်စင်စားအမည်စာရင်းများထည့်ရန်</a>@*style="background-color:#fdf59a47 !important;"*@
 
-                            </li>
+                                    </li>
                                 }
                             </ul>
                         </li>
@@ -371,6 +374,10 @@
                             <ul class="treeview-menu">
                                 <li>
                                     <a class="active" href="@Url.Action("Index", "Departments")" style="font-size: 16px;"><i class=""></i>ဌာနများထည့်ရန်</a>
+
+                                </li>
+                                <li>
+                                    <a class="active" href="@Url.Action("Index", "AccountRegister")" style="font-size: 16px;"><i class=""></i>အသုံးပြုသူများစာရင်း</a>
 
                                 </li>
                             </ul>

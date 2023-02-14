@@ -14,5 +14,6 @@ namespace MADBHR_Models.Employee
         public string FromDate { get; set; }
         public string FatherName { get; set; }
         public string RankType { get; set; }
+        public string TownCode { get; set; }
     }
 }

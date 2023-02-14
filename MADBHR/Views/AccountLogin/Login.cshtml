@@ -1,4 +1,4 @@
-﻿@model MADBHR_Data.Models.TbUser
+﻿@model MADBHR_Data.Models.TbUserLogin
 @{
     Layout = null;
 }
@@ -14,7 +14,6 @@
     <link href="~/css/select2.min.css" rel="stylesheet" />
 
     <style>
-
         body {
             background: #ffffff;
             font-family: 'Open Sans', sans-serif;
@@ -26,14 +25,12 @@
             font-size: 16px;
             margin-top: 200px;
         }
-
             /* Reset top and bottom margins from certain elements */
             .login-header,
             .login p {
                 margin-top: 0;
                 margin-bottom: 0;
             }
-
         /* The triangle form is achieved by a CSS hack */
         .login-triangle {
             width: 0;
@@ -57,7 +54,6 @@
             background: #ebebeb;
             padding: 12px;
         }
-
         /* Every row inside .login-container is defined with p tags */
         .login p {
             padding: 12px;
@@ -81,7 +77,6 @@
                 border-color: #bbb;
                 color: #555;
             }
-
                 /* Text fields' focus effect */
                 .login input[type="email"]:focus,
                 .login input[type="password"]:focus {
@@ -98,7 +93,6 @@
                 .login input[type="submit"]:hover {
                     background: #3d7714;
                 }
-
                 /* Buttons' focus effect */
                 .login input[type="submit"]:focus {
                     border-color: #05a;
@@ -169,19 +163,19 @@
 </head>
 
 <body>
-    <header>
+    @*<header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container" style="max-height:90px; width:auto;">
+            <div class="container" style="max-height:90px; width:auto;">*@
                 @*<a class="navbar-brand" asp-area="" asp-controller="AccountLogin" asp-action="Login" style="font-size:18px;">
-                    <img src="~/Content/dist/img/MADB Logo.png" alt="MADB" style="max-height:90px; width:auto;" />
-                </a>*@
-            </div>
+                        <img src="~/Content/dist/img/MADB Logo.png" alt="MADB" style="max-height:90px; width:auto;" />
+                    </a>*@
+            @*</div>
         </nav>
-    </header>
+    </header>*@
 
     <form class="login" asp-action="Login">
         <div class="login-triangle"></div>
-        
+
         <h2 class="login-header"><img src="~/Content/dist/img/MADBIMG.png" alt="MADB" style="max-height: 41px; width: auto; margin-bottom: -13px; margin-left: -34px;" />&nbsp;&nbsp;မြန်မာ့လယ်ယာဖွံ့ဖြိုးရေးဘဏ်</h2>
 
         <div class="login-container">
@@ -192,13 +186,13 @@
         </div>
     </form>
 
-   
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
+
+    @*<footer class="border-top footer text-muted">
+        <div class="container">*@
             @*&copy; 2021 - မြန်မာ့လယ်ယာဖွံ့ဖြိုးရေးဘဏ် <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>*@
-        </div>
-    </footer>
+        @*</div>
+    </footer>*@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -206,7 +200,6 @@
     <script src="~/js/select2.min.js"></script>
 
     <script type="text/javascript">
-
         var msg = '@ViewBag.Message';
         $(document).ready(function () {
             //if (msg == "Success") {
@@ -214,14 +207,12 @@
             //    $('#first').focus();
             //}
         })
-
         $("#first").on("input", function () {
             var one = $(this).val()
             if (one.length == 1) {
                 $('#second').focus();
             }
         })
-
         $("#second").on("keyup", function (e) {
             var two = $(this).val()
             if (e.which == 8 && two.length == 0) {
@@ -232,7 +223,6 @@
                 $('#third').focus();
             }
         })
-
         $("#third").on("keyup", function (e) {
             var three = $(this).val()
             if (e.which == 8 && three.length == 0) {
@@ -243,7 +233,6 @@
                 $('#fourth').focus();
             }
         })
-
         $("#fourth").on("keyup", function (e) {
             var fourth = $(this).val()
             if (e.which == 8 && fourth.length == 0) {
@@ -251,7 +240,6 @@
                 $('#third').val("");
             }
         })
-
         $('#btnSubmit').on('click', function () {
             var one = $('#first').val()
             var two = $('#second').val()
@@ -260,7 +248,6 @@
             $('#otpCode').val(one + two+three+four);
             alert($('#otpCode').val())
         })
-        
 
     </script>
 </body>

@@ -9,5 +9,6 @@ namespace MADBHR_Services.Base
     public interface IAccountRegisterServices
     {
         Task<dynamic> SaveAccount(TbUserLogin userLogin, int userId, int Id);
+        List<TbUserLogin> GetAccount(string? StateDivisionCode = null, string? TownshipCode = null,string? UsernameOrEmail=null);
     }
 }

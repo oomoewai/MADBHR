@@ -10,7 +10,7 @@
     <div class="box">
         <div class="box-header">
 
-            <h4 class="text-blue text-bold">Account Register</h4>
+            <h4 class="text-blue text-bold">အသုံးပြုသူများစာရင်းထည့်ရန်</h4>
         </div>
         <div class="box-body">
             <div class="row">
@@ -45,7 +45,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6 form-group">
-                                <label class="form-label" for="field-2">Password</label>
+                                <label class="form-label" for="field-password">Password</label>
                                 <span class="desc"></span>
                                 <div class="controls">
                                     <input type="password" class="form-control" id="field-password" asp-for="Password">
@@ -132,7 +132,7 @@
                         <div class="col-xs-12  padding-bottom-30">
                             <div class="text-left">
                                 <button type="submit" class="btn btn-primary">သိမ်းမည်</button>
-                                <button type="button" data-href="/@controller/index" class="btn btn-primary">နောက်သို့ပြန်သွားမည်</button>
+                                <a asp-controller="@controller" asp-action="Index" class="btn btn-primary">ရှေ့သို့ပြန်သွားမည်</a>
                             </div>
                         </div>
                     </div>

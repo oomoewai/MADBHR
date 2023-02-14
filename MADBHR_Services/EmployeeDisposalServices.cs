@@ -45,7 +45,7 @@ namespace MADBHR_Services
                 return emps;
             }
         }
-        public async Task<dynamic> SaveEmployeeDisposal(TbDisposal disposal, int userId, int Id)
+        public async Task<dynamic> SaveEmployeeDisposal(TbDisposal disposal, int userId, int Id,bool isTransfer)
         {
             try
             {
@@ -53,7 +53,7 @@ namespace MADBHR_Services
                 IDbConnection connection = new SqlConnection(_connectionStrings.DefaultConnection);
                 IDbConnection mycon = connection;
                 IDbCommand cmd = mycon.CreateCommand();
-                var emp = _employeeDisposalDAO.SaveEmployeeDisposal(cmd, disposal, userId, Id);
+                var emp = _employeeDisposalDAO.SaveEmployeeDisposal(cmd, disposal, userId, Id,isTransfer);
                 //_unitOfwork.TbEmployeeRepository.Insert(employee);
                 //_unitOfwork.Commit();
 

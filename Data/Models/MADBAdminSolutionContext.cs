@@ -63,6 +63,7 @@ namespace MADBHR_Data.Models
         public virtual DbSet<TbTownshipSetup> TbTownshipSetup { get; set; }
         public virtual DbSet<TbTrainingHistory> TbTrainingHistory { get; set; }
         public virtual DbSet<TbTrainingType> TbTrainingType { get; set; }
+        public virtual DbSet<TbTransfer> TbTransfer { get; set; }
         public virtual DbSet<TbUser> TbUser { get; set; }
         public virtual DbSet<TbUserLogin> TbUserLogin { get; set; }
         public virtual DbSet<TbYearlyBonus> TbYearlyBonus { get; set; }
@@ -1211,6 +1212,31 @@ namespace MADBHR_Data.Models
                 entity.Property(e => e.TrainingType).HasMaxLength(500);
 
                 entity.Property(e => e.TrainingTypeCode).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<TbTransfer>(entity =>
+            {
+                entity.HasKey(e => e.TransferPkid);
+
+                entity.ToTable("TB_Transfer");
+
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.EmployeeCode)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.FromTownshipCode)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.RankTypeCode).HasMaxLength(50);
+
+                entity.Property(e => e.ToTownshipCode).HasMaxLength(50);
+
+                entity.Property(e => e.TransferDate).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<TbUser>(entity =>

@@ -1,9 +1,8 @@
-﻿
-@using MADBHR.Enum
+﻿@using MADBHR.Enum
 @*@model MADBHR_Models.Employee.VMRequestEmployee*@
-@model MADBHR_Data.Models.TbIntKnowledge
+@model MADBHR_Data.Models.TbTransfer
 @{
-    var controller = "InternationalKnowledge";
+    var controller = "Transfer";
     ViewData["Title"] = "All " + controller;
 }
 <section class="content">
@@ -11,7 +10,7 @@
     <div class="box">
         <div class="box-header">
 
-            <h4 class="text-blue text-bold">နိုင်ငံခြားဗဟုသုတဆိုင်ရာအချက်အလက်များဖြည့်သွင်းရန်</h4>
+            <h4 class="text-blue text-bold">ပြောင်းရွှေ့စာရင်းများဖြည့်သွင်းရန်</h4>
         </div>
         <div class="box-body">
             <div class="row">
@@ -22,18 +21,22 @@
                         <input asp-for="EmployeeCode" hidden />
 
                     }
-                    <input asp-for="IntKnowledgePkid" hidden />
+                    <input asp-for="TransferPkid" hidden />
                     @*}*@
                     <div class="col-xs-12">
                         <div class="row">
-                            <div class="col-md-4 form-group">
-                                <label class="form-label" for="field-1">ကိုယ်ပိုင်အမှတ်</label>
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-1">ကိုယ်ပိုင်အမှတ် (ကိန်းဂဏန်း ၄ လုံးသာထည့်ရန်)</label>
                                 <span class="desc"></span>
                                 <div class="controls">
-                                    <input type="text" class="form-control" id="field-1" asp-for="SerialNumber" onchange="ChangeNumber()">
+                                    <input type="number" class="form-control" id="field-1" asp-for="SerialNumber" onchange="ChangeNumber()" minlength="1" maxlength="4">
                                     <span asp-validation-for="SerialNumber" class="text-danger"></span>
                                 </div>
                             </div>
+
+                           
+                        </div>
+                        <div class="row">
                             <div class="col-md-4 form-group">
                                 <label class="form-label" for="field-name">အမည်</label>
                                 <span class="desc"></span>
@@ -41,54 +44,55 @@
                                     <input type="text" class="form-control" id="field-name" value="@ViewBag.Name">
                                 </div>
                             </div>
-                            <div class="col-md-4 form-group">
+                            <div class="col-md-6 form-group">
                                 <label class="form-label" for="field-2">ရာထူး</label>
                                 <span class="desc"></span>
                                 <div class="controls">
-                                    <input type="text" class="form-control" id="field-rank" value="@ViewBag.Rank">
+                                    <input type="text" class="form-control" asp-for="RankTypeCode" id="field-rank" value="@ViewBag.Rank">
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6 form-group">
-                                <label class="form-label" for="field-2">ကာလ (မှ)</label>
+                                <label class="form-label" for="field-2">မြို့နယ် (မှ)</label>
                                 <span class="desc"></span>
                                 <div class="controls">
-                                    <input type="date" class="form-control" id="field-2" asp-for="FromDate">
-                                    <span asp-validation-for="FromDate" class="text-danger"></span>
+                                    <select class="form-control" asp-for="FromTownshipCode" id="townshipId" asp-items="@ViewBag.FromTownshipCode">
+                                        <option selected="selected" value="">---ရွေးရန်--- </option>
+                                    </select>
+                                    <span asp-validation-for="FromTownshipCode" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-6 form-group">
-                                <label class="form-label" for="field-3">ကာလ (ထိ)</label>
+                                <label class="form-label" for="field-3">မြို့နယ် (သို့)</label>
                                 <span class="desc"></span>
                                 <div class="controls">
-                                    <input type="date" class="form-control" id="field-3" asp-for="ToDate">
-                                    <span asp-validation-for="ToDate" class="text-danger"></span>
+                                    <select class="form-control" asp-for="ToTownshipCode" asp-items="ViewBag.ToTownshipCode">
+                                        <option selected="selected" value="">---ရွေးရန်--- </option>
+                                    </select>
+                                    <span asp-validation-for="ToTownshipCode" class="text-danger"></span>
                                 </div>
                             </div>
 
                         </div>
                         <div class="row">
                             <div class="col-md-6 form-group">
-                                <label class="form-label" for="field-3">နိုင်ငံအမည်</label>
+                                <label class="form-label" for="field-2">ပြောင်းရွှေ့ရက်စွဲ</label>
                                 <span class="desc"></span>
                                 <div class="controls">
-                                    <input type="text" class="form-control" id="field-3" asp-for="CountryName">
-                                    <span asp-validation-for="CountryName" class="text-danger"></span>
+                                    <input type="date" class="form-control" id="field-dob" asp-for="TransferDate">
+                                    <span asp-validation-for="TransferDate" class="text-danger"></span>
                                 </div>
                             </div>
-
                             <div class="col-md-6 form-group">
-                                <label class="form-label" for="field-5">သွားရောက်သည့်အကြောင်းအရင်း</label>
+                                <label class="form-label" for="field-remark">အကြောင်းအရာ</label>
                                 <span class="desc"></span>
                                 <div class="controls">
-                                    <input type="text" class="form-control" id="field-5" asp-for="Description">
-                                    <span asp-validation-for="Description" class="text-danger"></span>
+                                    <input type="text" class="form-control" id="field-remark" asp-for="Remark">
+                                    <span asp-validation-for="Remark" class="text-danger"></span>
                                 </div>
                             </div>
-
                         </div>
-                       
                         <div class="col-xs-12  padding-bottom-30">
                             <div class="text-left">
                                 <button type="submit" class="btn btn-primary gradient-blue">သိမ်းမည်</button>

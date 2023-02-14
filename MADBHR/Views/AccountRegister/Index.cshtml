@@ -8,6 +8,7 @@
     var query = Context.Request.Query;
     var StateDivisionCode = query["StateDivisionCode"];
     var TownshipCode = query["TownshipCode"];
+    var UsernameOrEmail = query["UsernameOrEmail"];
     ViewData["Query"] = query;
 
 }
@@ -44,7 +45,13 @@
                                 </select>
                             </div>
                         </div>
-
+                        <div class="col-md-3 form-group">
+                            <label class="form-label" for="field-name">Email</label>
+                            <span class="desc"></span>
+                            <div class="controls">
+                                <input type="text" class="form-control" id="field-email" asp-for="@UsernameOrEmail">
+                            </div>
+                        </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="form-label">&nbsp;</label>
@@ -63,7 +70,7 @@
 <section class="content">
     <div class="box">
         <header class="panel-heading">
-            <h5 class="title pull-left" style="font-weight:bold">Account List</h5>
+            <h5 class="title pull-left" style="font-weight:bold">အသုံးပြုသူများစာရင်း</h5>
             <div class="pull-right header_style">
                 @*<button type="button" data-href="/@controller/Create" class="btn btn-click">Create</button>*@
                 <a asp-controller="@controller" asp-action="ExcelExportForIndex" class="btn btn-xs btn-secondary" style="width: 80px; height: 25px; padding: 3px;">Excel Export</a>
@@ -82,29 +89,44 @@
                                 <th>Township</th>
                                 <th>Name</th>
                                 <th>Email</th>
-                               
 
+
+                                <th></th>
                                 <th></th>
 
                             </tr>
                         </thead>
                         <tbody>
+
                             @foreach (var item in Model)
                             {
+                                var isActive = "";
+                                @if (item.Status == "Disable")
+                                {
+                                    isActive = "Inactive";
+                                }
+                                else
+                                {
+                                    isActive = "Active";
+                                }
                                 <tr>
                                     <td class="text-center">@((((int)ViewBag.Page - 1) * (int)ViewBag.PageSize) + count)</td>
                                     <td class="text-center">@item.StateDivision</td>
                                     <td class="text-center">@item.Township</td>
                                     <td class="text-center">@item.Name</td>
                                     <td class="text-center">@item.UsernameOrEmail</td>
-                                    
+
                                     <td class="text-center">
                                         <a asp-controller="@controller" asp-action="Edit" asp-route-Id="@item.UserPkid" class="btn btn-xs btn-secondary">Edit</a>
-                                        @*<button asp-controller="@controller" asp-action="Delete" asp-route-Id="@item.AwardPkid" class="btn btn-xs btn-secondary"
-                                                    onclick="DeleteConfirm('/@controller/Delete/',@item.AwardPkid)">
-                                                ပယ်ဖျက်ရန်
-                                            </button>*@
+                                       
                                     </td>
+
+                                    <td>
+                                        <button class="onoff" onclick="onoff(this,@item.UserPkid, '@isActive')" id="btnSwitch+@count"><div>@isActive</div></button>
+
+                                    </td>
+
+
 
                                 </tr>
                                 count++;
@@ -120,13 +142,15 @@
 @*</div>
         </div>
     </div>*@
+<link rel="stylesheet" href="~/Content/css/style.css" asp-append-version="true">
 @section Scripts{
     <script>
+        var buttonstate = 0;
          $(document).ready(function () {
-            if ('@ViewBag.AccountType' == "Super Admin") {
+            if ('@ViewBag.account' == "Super Admin") {
                 document.getElementById("stateDivision").setAttribute("disabled", "disabled");
                 $.ajax({
-                    url: '/Employee/GetTownhsipByDivision?divisonCode=' + $("#stateDivision").val(),
+                    url: '/AccountRegister/GetTownhsipByDivision?divisonCode=' + $("#stateDivision").val(),
                     type: 'GET',
                     ContentType: 'application/json;utf-8',
                     datatype: 'json',
@@ -134,18 +158,18 @@
                         var selectList = document.getElementById("townshipCode");
                         for (var i = 0; i < res.length; i++) {
                             var option = document.createElement("option");
-                            option.value = res[i].townshipCode;
-                            option.text = res[i].township;
+                            option.value = res[i].townCode;
+                            option.text = res[i].townName;
                             selectList.appendChild(option);
                         }
                     }
 
                 });
             }
-            else if ('@ViewBag.AccountType' == "User") {
+            else if ('@ViewBag.account' == "User") {
 
                 $.ajax({
-                    url: '/Employee/GetTownship?divisonCode=' + $("#stateDivision").val() + '&TownshipCode=@ViewBag.TownshipId',
+                    url: '/AccountRegister/GetTownship?divisonCode=' + $("#stateDivision").val() + '&TownshipCode=@ViewBag.TownshipId',
                     type: 'GET',
                     ContentType: 'application/json;utf-8',
                     datatype: 'json',
@@ -153,8 +177,8 @@
                         var selectList = document.getElementById("townshipCode");
                         for (var i = 0; i < res.length; i++) {
                             var option = document.createElement("option");
-                            option.value = res[i].townshipCode;
-                            option.text = res[i].township;
+                            option.value = res[i].townCode;
+                            option.text = res[i].townName;
                             selectList.appendChild(option);
                         }
                     }
@@ -162,7 +186,47 @@
                 });
                 document.getElementById("stateDivision").setAttribute("disabled", "disabled");
 
-            }
+             }
+
+             //$.ajax({
+
+             //    url: `/AccountRegister/GetAccounts`,
+             //    type: 'get',
+             //    success: function (res) {
+             //        debugger;
+             //        if (res) {
+             //            console.log("branches=", res);
+             //            for (var i = 0; i < res.length; i++) {
+             //                var switchId = document.getElementById("btnSwitch+"+ (i+1));
+             //                if (res[i].status == "Enable") {
+             //                    buttonstate = 1;
+             //                }
+             //                else {
+             //                    buttonstate = 0;
+             //                }
+             //                /*buttonstate = 1 - buttonstate;*/
+             //                var blabel, bstyle, bcolor;
+             //                if (buttonstate==1) {
+             //                    blabel = "active";
+             //                    bstyle = "green";
+             //                    bcolor = "lightgreen";
+             //                }
+             //                else {
+             //                    blabel = "inactive";
+             //                    bstyle = "lightgray";
+             //                    bcolor = "gray";
+             //                }
+             //                var child = switchId.firstChild;
+             //                child.style.background = bstyle;
+             //                child.style.color = bcolor;
+             //                child.innerHTML = blabel;
+             //            }
+
+             //        }
+
+             //    }
+
+             //});
 
         });
 
@@ -172,7 +236,7 @@
             debugger;
             $.ajax({
 
-                url: '/Employee/GetTownhsipByDivision?divisonCode=' + $("#stateDivision").val(),
+                url: '/AccountRegister/GetTownhsipByDivision?divisonCode=' + $("#stateDivision").val(),
                 type: 'GET',
                 ContentType: 'application/json;utf-8',
                 datatype: 'json',
@@ -184,8 +248,8 @@
                     //Create and append the options
                     for (var i = 0; i < res.length; i++) {
                         var option = document.createElement("option");
-                        option.value = res[i].townshipCode;
-                        option.text = res[i].township;
+                        option.value = res[i].townCode;
+                        option.text = res[i].townName;
                         selectList.appendChild(option);
                     }
                 }
@@ -206,6 +270,66 @@
                     window.location.href = url + id;
                 }
             })
+        }
+        function onoff(element, userId,isActive) {
+            debugger;
+            //consol.log(element);
+            if (isActive == "Inactive") {
+                buttonstate = 1;
+            }
+            else {
+                buttonstate = 0;
+            }
+            var blabel, bstyle, bcolor;
+            if (buttonstate) {
+                blabel = "Active";
+                //bstyle = "green";
+                //bcolor = "lightgreen";
+            }
+            else {
+                blabel = "Inactive";
+                //bstyle = "lightgray";
+                //bcolor = "gray";
+            }
+            var child = element.firstChild;
+            child.style.background = bstyle;
+            child.style.color = bcolor;
+            child.innerHTML = blabel;
+            $.ajax({
+
+                url: `/AccountRegister/UpdateUserStatus?UserId=${userId}&Active=${buttonstate}`,
+                type: 'get',
+                success: function (res) {
+                    //if (res) {
+                    //    if (buttonstate == 1) {
+                    //        Swal.fire({
+                    //            position: `center`,
+                    //            icon: `success`,
+                    //            showCloseButton: true,
+                    //            title: `Are you sure you want to Active`,
+                    //            showConfirmButton: true,
+                    //            ConfirmButtonText: "Yes",
+                    //            ConfirmButtonText: "No",
+                    //            timer: 2000
+                    //        })
+                    //    }
+                    //    if (buttonstate == 0) {
+                    //        Swal.fire({
+                    //            position: `center`,
+                    //            icon: `success`,
+                    //            showCloseButton: true,
+                    //            title: `Are you sure you want to InActive`,
+                    //            showConfirmButton: true,
+                    //            ConfirmButtonText: "Yes",
+                    //            ConfirmButtonText:"No",
+                    //            timer: 2000
+                    //        })
+                    //    }
+
+                    //}
+
+                }
+            });
         }
     </script>
 }

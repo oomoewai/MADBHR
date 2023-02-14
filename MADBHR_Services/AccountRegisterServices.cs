@@ -47,5 +47,23 @@ namespace MADBHR_Services
             }
 
         }
+        public List<TbUserLogin> GetAccount(string? StateDivisionCode = null, string? TownshipCode = null,string? UsernameOrEmail=null)
+        {
+
+            try
+            {
+                IDbConnection connection = new SqlConnection(_connectionStrings.DefaultConnection);
+                IDbConnection myCon = connection;
+                IDbCommand cmd = myCon.CreateCommand();
+                var accounts = _accountRegisterDAO.GetAccount(cmd, StateDivisionCode, TownshipCode, UsernameOrEmail);
+
+                return accounts;
+            }
+            catch (Exception ex)
+            {
+                List<TbUserLogin> emps = new List<TbUserLogin>();
+                return emps;
+            }
+        }
     }
 }

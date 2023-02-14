@@ -110,7 +110,7 @@ namespace MADBHR.Controllers
                     disposal.UploadForTownship = userInfo.TownshipId == null || userInfo.TownshipId == "" ? userInfo.StateDivisionId : userInfo.TownshipId;
 
                     disposal.EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == disposal.SerialNumber).Select(x => x.EmployeeCode).FirstOrDefault();
-                    var emp = await _employeeDisposalServices.SaveEmployeeDisposal(disposal, Convert.ToInt32(userId), 0);
+                    var emp = await _employeeDisposalServices.SaveEmployeeDisposal(disposal, Convert.ToInt32(userId), 0,false);
 
                     return RedirectToAction("Index");
 
@@ -153,7 +153,7 @@ namespace MADBHR.Controllers
                     var userId = HttpContext.User.Identity.Name;
                     var userInfo = _context.TbUserLogin.Where(x => x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
                     disposal.UploadForTownship = userInfo.TownshipId == null || userInfo.TownshipId == "" ? userInfo.StateDivisionId : userInfo.TownshipId;
-                    var emp = await _employeeDisposalServices.SaveEmployeeDisposal(disposal, Convert.ToInt32(userId), disposal.DisposalPkid);
+                    var emp = await _employeeDisposalServices.SaveEmployeeDisposal(disposal, Convert.ToInt32(userId), disposal.DisposalPkid,false);
 
                     return RedirectToAction("Index");
 
