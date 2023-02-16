@@ -4,7 +4,9 @@ using MADBHR_Models.Employee;
 using MADBHR_Services.Base;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using NLog;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -21,12 +23,14 @@ namespace MADBHR.Controllers
         private readonly MADBAdminSolutionContext _context;
         private readonly IEmployeeServices _employeeServices;
         private readonly Pagination _pagination;
+        private readonly ILogger<EmployeeController> _logger;
 
-        public EmployeeController(MADBAdminSolutionContext context, IEmployeeServices employeeServices, IOptions<Pagination> pagination)
+        public EmployeeController(MADBAdminSolutionContext context, IEmployeeServices employeeServices, IOptions<Pagination> pagination,ILogger<EmployeeController> logger)
         {
             _context = context;
             _employeeServices = employeeServices;
             _pagination = pagination.Value;
+            _logger = logger;
         }
         public void Initialize(TbEmployee employee = null)
         {
@@ -72,7 +76,7 @@ namespace MADBHR.Controllers
             return View(employees.OrderByDescending(x => x.CreatedDate).ToList().ToPagedList((int)page, pageSize));
 
         }
-        public IActionResult AdminIndex(string StateDivisionCode = null, string TownshipCode = null, int? page = 1)
+        public IActionResult AdminIndex(string StateDivisionCode = null, string TownshipCode = null,string? Status=null, int? page = 1)
         {
             Initialize();
             var userId = HttpContext.User.Identity.Name;
@@ -93,11 +97,16 @@ namespace MADBHR.Controllers
                 var townshipCodes = _context.TbCurrentJobTownship.Where(x => x.StateDivisionId == StateDivisionCode).ToList();
                 ViewData["TownshipCode"] = new SelectList(townshipCodes, "TownshipCode", "Township");
             }
+            List<string> status = new List<string>();
+            status.Add("Pending");
+            status.Add("Approve");
+            status.Add("Reject");
+            ViewData["Status"] = new SelectList(status);
             TempData["StateDivisionCode"] = StateDivisionCode;
             var pageSize = _pagination.PageSize;
             ViewData["Page"] = page;
             ViewData["PageSize"] = pageSize;
-            var employees = _employeeServices.GetEmployeeForAdmin(StateDivisionCode, TownshipCode).ToList();
+            var employees = _employeeServices.GetEmployeeForAdmin(StateDivisionCode, TownshipCode,Status).ToList();
             StateDivisionCode = null;
             TownshipCode = null;
             return View(employees.OrderByDescending(x => x.CreatedDate).ToList().ToPagedList((int)page, pageSize));
@@ -108,7 +117,7 @@ namespace MADBHR.Controllers
             var userId = HttpContext.User.Identity.Name;
             var userInfo = _context.TbUserLogin.Where(x => x.Status == "Enable" && x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
             ViewBag.lstLogIn = userInfo;
-
+            //MappedDiagnosticsLogicalContext.Set("userId", userInfo.UserPkid);
             if (userInfo.AccountType == "Super Admin")
             {
                 StateDivisionCode = userInfo.StateDivisionId;
@@ -120,7 +129,7 @@ namespace MADBHR.Controllers
                 var stateDivisionCodes = _context.TbStateDivision.Select(x => new { x.StateDivision, x.StateDivisionCode }).ToList();
                 ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision");
             }
-
+            
             var pageSize = _pagination.PageSize;
             ViewData["Page"] = page;
             ViewData["PageSize"] = pageSize;
@@ -156,10 +165,12 @@ namespace MADBHR.Controllers
         {
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {
+                var userId = HttpContext.User.Identity.Name;
+                var userInfo = _context.TbUserLogin.Where(x => x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
+                MappedDiagnosticsLogicalContext.Set("userId", userInfo.UserPkid);
                 try
                 {
-                    var userId = HttpContext.User.Identity.Name;
-                    var userInfo = _context.TbUserLogin.Where(x => x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
+                  
                     //if (ModelState.IsValid)
                     //{
                     var didUploaded = true;
@@ -200,7 +211,17 @@ namespace MADBHR.Controllers
                     if (didUploaded)
                     {
                         employee.UploadForTownship = userInfo.TownshipId == null || userInfo.TownshipId == "" ? userInfo.StateDivisionId : userInfo.TownshipId;
+                        if(userInfo.AccountType == "User" || userInfo.AccountType == "Super Admin")
+                        {
+                            employee.Status = "Pending";
+                        }
+                        else
+                        {
+                            employee.Status = "Approve";
+                        }
                         var emp = await _employeeServices.SaveEmployee(employee, Convert.ToInt32(userId), 0);
+                        
+                        _logger.LogInformation("Successfully Create");
                         if (RedirectToRelationship == true)
                         {
                             return RedirectToAction("Create", "Relationship", new { SerialNumber = emp.SerialNumber });
@@ -218,7 +239,8 @@ namespace MADBHR.Controllers
                 }
                 catch (Exception e)
                 {
-
+                    
+                    _logger.LogError(e.Message);
                     await transaction.RollbackAsync();
                 }
             }
@@ -239,10 +261,12 @@ namespace MADBHR.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(TbEmployee employee, bool? RedirectToRelationship = null)
         {
+            var userId = HttpContext.User.Identity.Name;
+            var userInfo = _context.TbUserLogin.Where(x => x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
+            MappedDiagnosticsLogicalContext.Set("userId", userInfo.UserPkid);
             try
             {
-                var userId = HttpContext.User.Identity.Name;
-                var userInfo = _context.TbUserLogin.Where(x => x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
+               
                 if (ModelState.IsValid)
                 {
                     var didUploaded = true;
@@ -322,6 +346,7 @@ namespace MADBHR.Controllers
                     {
                         employee.UploadForTownship = userInfo.TownshipId == null || userInfo.TownshipId == "" ? userInfo.StateDivisionId : userInfo.TownshipId;
                         var emp = await _employeeServices.SaveEmployee(employee, Convert.ToInt32(userId), employee.EmployeePkid);
+                        _logger.LogInformation("Successfully Edit");
                         if (RedirectToRelationship == true)
                         {
                             return RedirectToAction("Index", "Relationship", new { EmployeeCode = employee.EmployeeCode });
@@ -336,23 +361,26 @@ namespace MADBHR.Controllers
             }
             catch (Exception e)
             {
-
+                _logger.LogError(e.Message);
             }
             Initialize(employee);
             return View(employee);
         }
         public async Task<IActionResult> Delete(int id)
         {
+            var userId = HttpContext.User.Identity.Name;
+            MappedDiagnosticsLogicalContext.Set("userId", Convert.ToInt32(userId));
             try
             {
-                var userId = HttpContext.User.Identity.Name;
+               
                 _employeeServices.DeleteEmployee(id, Convert.ToInt32(userId));
+                _logger.LogInformation("Successfully Delete");
                 //TempData["notice"] = StatusEnum.NoticeStatus.Delete;
 
             }
             catch (Exception e)
             {
-
+                _logger.LogError(e.Message);
             }
 
             return RedirectToAction(nameof(Index));
@@ -423,6 +451,16 @@ namespace MADBHR.Controllers
             return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "EmployeeData.xlsx");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> EmployeeStatusChange(string EmployeeCode,string Status,string? Comment=null)
+        {
+            TbEmployee tbEmployee = _context.TbEmployee.Where(x => x.EmployeeCode == EmployeeCode).FirstOrDefault();
+            tbEmployee.Status = Status;
+            tbEmployee.RejectComment = Comment;
+            var userId = HttpContext.User.Identity.Name;
+            var emp = _employeeServices.SaveEmployee(tbEmployee, Convert.ToInt32(userId), tbEmployee.EmployeePkid);
+            return Ok();
+        }
 
     }
 }

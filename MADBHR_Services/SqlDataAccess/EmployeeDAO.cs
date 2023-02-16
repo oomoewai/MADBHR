@@ -54,6 +54,8 @@ namespace MADBHR_Services.SqlDataAccess
                 cmd.AddParameter("@ProfilePic", employee.ProfilePic);
                 cmd.AddParameter("@NrcPic", employee.Nrcpic);
                 cmd.AddParameter("@Form66Pic", employee.Form66Pic);
+                cmd.AddParameter("@Status", employee.Status);
+                cmd.AddParameter("@RejectComment", employee.RejectComment);
                 cmd.ExecuteNonQuery();
                 cmd.Connection.Close();
                 return employee;
@@ -179,7 +181,7 @@ namespace MADBHR_Services.SqlDataAccess
 
         }
 
-        public List<TbEmployee> GetEmployeeForAdmin(IDbCommand cmd, string? SateDivisionCode=null,string? TownshipCode=null)
+        public List<TbEmployee> GetEmployeeForAdmin(IDbCommand cmd, string? SateDivisionCode=null,string? TownshipCode=null, string? Status = null)
         {
 
             cmd.CommandText = "SP_GetEmployeeForAdmin";
@@ -188,6 +190,7 @@ namespace MADBHR_Services.SqlDataAccess
             cmd.Connection.Open();
             cmd.AddParameter("@DivisionCode", SateDivisionCode);
             cmd.AddParameter("@TownshipCode", TownshipCode);
+            cmd.AddParameter("@Status", Status);
 
             SqlDataAdapter ResAdapter = new SqlDataAdapter((SqlCommand)cmd);
             DataSet ResDs = new DataSet();
@@ -241,7 +244,9 @@ namespace MADBHR_Services.SqlDataAccess
                                     IsDeleted = ResDs.Tables[0].Rows[i]["IsDeleted"] != DBNull.Value ? Convert.ToBoolean(ResDs.Tables[0].Rows[i]["IsDeleted"]) : false,
                                     IsRecordEdited = ResDs.Tables[0].Rows[i]["IsRecordEdited"] != DBNull.Value ? Convert.ToBoolean(ResDs.Tables[0].Rows[i]["IsRecordEdited"]) : false,
                                     CreatedDate = ResDs.Tables[0].Rows[i]["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(ResDs.Tables[0].Rows[i]["CreatedDate"]) : DateTime.Now,
-                                    CreatedBy = ResDs.Tables[0].Rows[i]["CreatedBy"] != DBNull.Value ? Convert.ToInt32(ResDs.Tables[0].Rows[i]["CreatedBy"]) : 0
+                                    CreatedBy = ResDs.Tables[0].Rows[i]["CreatedBy"] != DBNull.Value ? Convert.ToInt32(ResDs.Tables[0].Rows[i]["CreatedBy"]) : 0,
+                                    Status = ResDs.Tables[0].Rows[i]["Status"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Status"].ToString() : "",
+                                    RejectComment = ResDs.Tables[0].Rows[i]["RejectComment"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["RejectComment"].ToString() : "",
                                 };
 
                                 emps.Add(employee);

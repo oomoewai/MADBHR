@@ -30,6 +30,7 @@ namespace MADBHR.Controllers
             var userId = HttpContext.User.Identity.Name;
             var userInfo = _context.TbUserLogin.Where(x => x.Status == "Enable" && x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
             ViewBag.lstLogIn = userInfo;
+           
             if (userInfo.AccountType == "Head Admin")
             {
                 var currentJobTownships = _context.TbCurrentJobTownship.Where(x => x.Active == true).ToList();

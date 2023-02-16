@@ -19,6 +19,7 @@ namespace MADBHR_Data.Models
         {
         }
 
+        public virtual DbSet<Nlogs> Nlogs { get; set; }
         public virtual DbSet<TbAge60Full> TbAge60Full { get; set; }
         public virtual DbSet<TbAge60Full1> TbAge60Full1 { get; set; }
         public virtual DbSet<TbAward> TbAward { get; set; }
@@ -134,6 +135,19 @@ namespace MADBHR_Data.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Nlogs>(entity =>
+            {
+                entity.ToTable("NLogs");
+
+                entity.Property(e => e.CallSite).HasMaxLength(255);
+
+                entity.Property(e => e.Exception).HasMaxLength(255);
+
+                entity.Property(e => e.Level).HasMaxLength(50);
+
+                entity.Property(e => e.Logged).HasColumnType("datetime");
+            });
+
             modelBuilder.Entity<TbAge60Full>(entity =>
             {
                 entity.HasKey(e => e.Age60FullPkid)
@@ -448,6 +462,8 @@ namespace MADBHR_Data.Models
                 entity.Property(e => e.Religion).HasMaxLength(50);
 
                 entity.Property(e => e.SerialNumber).HasMaxLength(50);
+
+                entity.Property(e => e.Status).HasMaxLength(50);
 
                 entity.Property(e => e.TownshipCode).HasMaxLength(50);
 

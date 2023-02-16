@@ -33,9 +33,7 @@ namespace MADBHR_Services
         {
             try
             {
-                var departmentInfo = _unitOfwork.TbEmployeeRepository.Get(x => x.EmployeeCode == employee.EmployeeCode).FirstOrDefault();
-                if (departmentInfo == null)
-                {
+              
                     IDbConnection connection = new SqlConnection(_connectionStrings.DefaultConnection);
                     IDbConnection mycon = connection;
                     IDbCommand cmd = mycon.CreateCommand();
@@ -44,12 +42,7 @@ namespace MADBHR_Services
                     //_unitOfwork.Commit();
 
                     return employee;
-                }
-                else
-                {
-
-                    return "Already Exists Department";
-                }
+              
             }
             catch (Exception ex)
             {
@@ -93,7 +86,7 @@ namespace MADBHR_Services
                 return emps;
             }
         }
-        public List<TbEmployee> GetEmployeeForAdmin(string? StateDivisionCode = null,string? TownshipCode=null)
+        public List<TbEmployee> GetEmployeeForAdmin(string? StateDivisionCode = null,string? TownshipCode=null,string? Status=null)
         {
 
             try
@@ -101,7 +94,7 @@ namespace MADBHR_Services
                 IDbConnection connection = new SqlConnection(_connectionStrings.DefaultConnection);
                 IDbConnection myCon = connection;
                 IDbCommand cmd = myCon.CreateCommand();
-                var employees = _employeeDAO.GetEmployeeForAdmin(cmd, StateDivisionCode,TownshipCode);
+                var employees = _employeeDAO.GetEmployeeForAdmin(cmd, StateDivisionCode,TownshipCode,Status);
 
                 return employees;
             }

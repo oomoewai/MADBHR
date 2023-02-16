@@ -160,6 +160,7 @@ namespace MADBHR_Services.SqlDataAccess
                                             Remark = ResDs.Tables[0].Rows[i]["Remark"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Remark"].ToString() : "",
                                             FromTownshipCode = ResDs.Tables[0].Rows[i]["FromTownshipCode"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["FromTownshipCode"].ToString() : "",
                                             ToTownshipCode = ResDs.Tables[0].Rows[i]["ToTownshipCode"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["ToTownshipCode"].ToString() : "",
+                                            RankTypeCode = ResDs.Tables[0].Rows[i]["RankTypeCode"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["RankTypeCode"].ToString() : "",
                                         };                                       
                                         lstTransfers.Add(transfer);
                             }
@@ -169,6 +170,18 @@ namespace MADBHR_Services.SqlDataAccess
             }
             cmd.Connection.Close();
             return lstTransfers;
+        }
+        public void DeleteTransfer(IDbCommand cmd, int transferPkid, int userId)
+        {
+
+            cmd.CommandText = "SP_DeleteTransfer";
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.Clear();
+            cmd.Connection.Open();
+            cmd.AddParameter("@TransferPkid ", transferPkid);
+            cmd.AddParameter("@CreatedBy", userId);
+            cmd.ExecuteNonQuery();
+            cmd.Connection.Close();
         }
         protected override void ReadRecord(ref IDataReader aDataReader, ref TbTransfer aInfo, string prefix)
         { }

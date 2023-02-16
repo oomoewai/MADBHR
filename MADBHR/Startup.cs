@@ -12,6 +12,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using NLog.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -88,7 +90,7 @@ namespace MADBHR
                 options.LoginPath = "/AccountLogin/Login";
 
             });
-
+           
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
         }
@@ -114,7 +116,7 @@ namespace MADBHR
             //Note the middleware order.
             app.UseAuthentication();
             app.UseAuthorization();
-
+            
 
             app.UseEndpoints(endpoints =>
             {

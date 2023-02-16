@@ -34,21 +34,31 @@
                                 </div>
                             </div>
 
-                           
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4 form-group">
+                            <div class="col-md-6 form-group">
                                 <label class="form-label" for="field-name">အမည်</label>
                                 <span class="desc"></span>
                                 <div class="controls">
                                     <input type="text" class="form-control" id="field-name" value="@ViewBag.Name">
                                 </div>
                             </div>
+                        </div>
+                        <div class="row">
+
                             <div class="col-md-6 form-group">
                                 <label class="form-label" for="field-2">ရာထူး</label>
                                 <span class="desc"></span>
                                 <div class="controls">
-                                    <input type="text" class="form-control" asp-for="RankTypeCode" id="field-rank" value="@ViewBag.Rank">
+                                    <input type="text" class="form-control" id="field-rank" value="@ViewBag.Rank">
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-2">လက်ရှိရာထူး</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <select class="form-control" asp-for="RankTypeCode" id="rankTypeCode" asp-items="@ViewBag.RankTypeCode">
+                                        <option selected="selected" value="">---ရွေးရန်--- </option>
+                                    </select>
+                                    <span asp-validation-for="RankTypeCode" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
@@ -95,7 +105,7 @@
                         </div>
                         <div class="col-xs-12  padding-bottom-30">
                             <div class="text-left">
-                                <button type="submit" class="btn btn-primary gradient-blue">သိမ်းမည်</button>
+                                <button type="submit" class="btn btn-primary gradient-blue" id="btnSubmit">သိမ်းမည်</button>
                                 <a asp-controller="@controller" asp-action="Index" class="btn btn-primary">ရှေ့သို့ပြန်သွားမည်</a>
                             </div>
                         </div>

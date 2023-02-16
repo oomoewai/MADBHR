@@ -25,6 +25,7 @@ namespace MADBHR_Data.Models
         public DateTime? CreatedDate { get; set; }
         public int? CreatedBy { get; set; }
         public string UploadForTownship { get; set; }
+        public int? TransferId { get; set; }
         [NotMapped]
         [SkipProperty]
         public string SerialNumber { get; set; }

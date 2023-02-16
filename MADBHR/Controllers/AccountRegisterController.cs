@@ -3,9 +3,13 @@ using MADBHR_Data.Models;
 using MADBHR_Services.Base;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using NLog;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using X.PagedList;
@@ -17,11 +21,13 @@ namespace MADBHR.Controllers
         private readonly MADBAdminSolutionContext _context;
         private readonly IAccountRegisterServices _accountRegisterServices;
         private readonly Pagination _pagination;
-        public AccountRegisterController(MADBAdminSolutionContext context, IAccountRegisterServices accountRegisterServices, IOptions<Pagination> pagination)
+        private readonly ILogger<AccountRegisterController> _logger;
+        public AccountRegisterController(MADBAdminSolutionContext context, IAccountRegisterServices accountRegisterServices, IOptions<Pagination> pagination,ILogger<AccountRegisterController> logger)
         {
             _context = context;
             _accountRegisterServices = accountRegisterServices;
             _pagination = pagination.Value;
+            _logger = logger;
         }
         public void Initialize(TbUserLogin tbUserLogin = null)
         {
@@ -87,6 +93,7 @@ namespace MADBHR.Controllers
 
             TempData["TownshipCode"] = TownshipCode;
             TempData["StateDivisionCode"] = StateDivisionCode;
+            TempData["UsernameOrEmail"] = UsernameOrEmail;
             var pageSize = _pagination.PageSize;
             ViewData["Page"] = page;
             ViewData["PageSize"] = pageSize;
@@ -107,17 +114,20 @@ namespace MADBHR.Controllers
         {
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {
+                var userId = HttpContext.User.Identity.Name;
+                var userInfo = _context.TbUserLogin.Where(x => x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
+                MappedDiagnosticsLogicalContext.Set("userId", userInfo.UserPkid);
                 try
                 {                 
-                    var userId = HttpContext.User.Identity.Name;
-                    var userInfo = _context.TbUserLogin.Where(x => x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
+                  
                     userLogin.UserPkid = 0;
                     var emp = await _accountRegisterServices.SaveAccount(userLogin, Convert.ToInt32(userId), 0);
-
+                    _logger.LogInformation("Successfully Create");
                     return RedirectToAction("Index");
                 }
                 catch (Exception e)
                 {
+                    _logger.LogError(e.Message);
 
                     await transaction.RollbackAsync();
                 }
@@ -144,21 +154,24 @@ namespace MADBHR.Controllers
         {
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {
+                var userId = HttpContext.User.Identity.Name;
+                var userInfo = _context.TbUserLogin.Where(x => x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
+                MappedDiagnosticsLogicalContext.Set("userId",userInfo.UserPkid);
                 try
                 {
 
                     //if (ModelState.IsValid)
                     //{
-                    var userId = HttpContext.User.Identity.Name;
-                    var userInfo = _context.TbUserLogin.Where(x => x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
+                    
                     //account.UploadForTownship = userInfo.TownshipId == null || userInfo.TownshipId == "" ? userInfo.StateDivisionId : userInfo.TownshipId;
                     var emp = await _accountRegisterServices.SaveAccount(account, Convert.ToInt32(userId), 0);
+                    _logger.LogInformation("Successfully Edit");
                     return RedirectToAction("Index");
 
                 }
                 catch (Exception e)
                 {
-
+                    _logger.LogError(e.Message);
                     await transaction.RollbackAsync();
                 }
             }
@@ -239,6 +252,37 @@ namespace MADBHR.Controllers
 
             var accounts = _accountRegisterServices.GetAccount(StateDivisionCode, TownshipCode, null);
             return Ok(accounts);
+        }
+        [HttpGet]
+        public async Task<IActionResult> ExcelExportForIndex()
+        {
+
+            string? TownshipCode = TempData["TownshipCode"] == null ? null : TempData["TownshipCode"].ToString();
+            string? StateDivisionCode = TempData["StateDivisionCode"] == null ? null : TempData["StateDivisionCode"].ToString();
+            string? UserNameorEmail=TempData["UsernameOrEmail"] == null ? null : TempData["UsernameOrEmail"].ToString();
+            var accounts = _accountRegisterServices.GetAccount(StateDivisionCode, TownshipCode,UserNameorEmail).ToList();
+            var package = new ExcelPackage();
+
+            // Add a new worksheet to the package
+            var worksheet = package.Workbook.Worksheets.Add("Data");
+            worksheet.Cells[1, 1].Value = "တိုင်းဒေသကြီး";
+            worksheet.Cells[1, 2].Value = "မြို့နယ်";
+            worksheet.Cells[1, 3].Value = "အမည်";
+            worksheet.Cells[1, 4].Value = "User Name or Email";
+
+            for (int i = 0; i < accounts.Count; i++)
+            {
+                worksheet.Cells[i + 2, 1].Value = accounts[i].StateDivision;
+                worksheet.Cells[i + 2, 2].Value = accounts[i].Township;
+                worksheet.Cells[i + 2, 3].Value = accounts[i].Name;
+                worksheet.Cells[i + 2, 4].Value = accounts[i].UsernameOrEmail;
+            }
+            var stream = new MemoryStream();
+            package.SaveAs(stream);
+
+            // Return the stream as a file
+            stream.Position = 0;
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "AccountRegisterForIndex.xlsx");
         }
 
     }

@@ -15,5 +15,8 @@ namespace MADBHR_Models.Employee
         public string FatherName { get; set; }
         public string RankType { get; set; }
         public string TownCode { get; set; }
+        public string Status { get; set; }
+        public bool isDisposal { get; set; }
+        public string EmployeeCode { get; set; }
     }
 }

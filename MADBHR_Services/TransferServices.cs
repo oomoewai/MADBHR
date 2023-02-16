@@ -83,5 +83,20 @@ namespace MADBHR_Services
                 return emps;
             }
         }
+        public void DeleteTransfer(int transferPkid, int userId)
+        {
+            try
+            {
+
+                IDbConnection connection = new SqlConnection(_connectionStrings.DefaultConnection);
+                IDbConnection myCon = connection;
+                IDbCommand cmd = myCon.CreateCommand();
+                _transferDAO.DeleteTransfer(cmd, transferPkid, userId);
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
     }
 }

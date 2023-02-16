@@ -30,7 +30,7 @@
                             <label class="form-label" for="field-1">ကိုယ်ပိုင်အမှတ်</label>
                             <span class="desc"></span>
                             <div class="controls">
-                                <input type="text" class="form-control" id="field-1" asp-for="SerialNumber">
+                                <input type="text" class="form-control" id="field-1" asp-for="SerialNumber" onchange="ChangeNumber()">
                                 <span asp-validation-for="SerialNumber" class="text-danger"></span>
                             </div>
                         </div>

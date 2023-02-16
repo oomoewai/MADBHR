@@ -57,7 +57,7 @@
                                 <label class="form-label">&nbsp;</label>
                                 <div class="controls">
                                     <button type="submit" class="btn btn-primary gradient-blue">ရှာဖွေရန်</button>
-
+                                    <a asp-controller="@controller" asp-action="Index" class="btn btn-primary">Cancel</a>
                                 </div>
                             </div>
                         </div>
@@ -101,34 +101,36 @@
                             @foreach (var item in Model)
                             {
                                 var isActive = "";
-                                @if (item.Status == "Disable")
+                                var fontColor = "";
+                            @if (item.Status == "Disable")
                                 {
                                     isActive = "Inactive";
+                                    fontColor = "color:red;";
                                 }
                                 else
                                 {
                                     isActive = "Active";
                                 }
-                                <tr>
-                                    <td class="text-center">@((((int)ViewBag.Page - 1) * (int)ViewBag.PageSize) + count)</td>
-                                    <td class="text-center">@item.StateDivision</td>
-                                    <td class="text-center">@item.Township</td>
-                                    <td class="text-center">@item.Name</td>
-                                    <td class="text-center">@item.UsernameOrEmail</td>
+                            <tr>
+                                <td class="text-center">@((((int)ViewBag.Page - 1) * (int)ViewBag.PageSize) + count)</td>
+                                <td class="text-center">@item.StateDivision</td>
+                                <td class="text-center">@item.Township</td>
+                                <td class="text-center">@item.Name</td>
+                                <td class="text-center">@item.UsernameOrEmail</td>
 
-                                    <td class="text-center">
-                                        <a asp-controller="@controller" asp-action="Edit" asp-route-Id="@item.UserPkid" class="btn btn-xs btn-secondary">Edit</a>
-                                       
-                                    </td>
+                                <td class="text-center">
+                                    <a asp-controller="@controller" asp-action="Edit" asp-route-Id="@item.UserPkid" class="btn btn-xs btn-secondary">Edit</a>
 
-                                    <td>
-                                        <button class="onoff" onclick="onoff(this,@item.UserPkid, '@isActive')" id="btnSwitch+@count"><div>@isActive</div></button>
+                                </td>
 
-                                    </td>
+                                <td>
+                                    <button class="onoff" onclick="onoff(this,@item.UserPkid, '@isActive')" id="btnSwitch+@count" style="@fontColor"><div>@isActive</div></button>
+
+                                </td>
 
 
 
-                                </tr>
+                            </tr>
                                 count++;
                             }
                         </tbody>
@@ -289,7 +291,7 @@
             else {
                 blabel = "Inactive";
                 //bstyle = "lightgray";
-                //bcolor = "gray";
+                bcolor = "red";
             }
             var child = element.firstChild;
             child.style.background = bstyle;

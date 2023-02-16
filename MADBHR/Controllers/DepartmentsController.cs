@@ -17,6 +17,7 @@ namespace MADBHR.Controllers
         private readonly MADBAdminSolutionContext _context;
         private readonly IDepartmentServices _departmentServices;
         private readonly Pagination _pagination;
+       
         public DepartmentsController(MADBAdminSolutionContext context, IDepartmentServices departmentServices, IOptions<Pagination> pagination)
         {
             _context = context;

@@ -36,7 +36,16 @@ namespace MADBHR.Controllers
         [HttpGet]
         public IActionResult GetEmployeeInformation(string SerialNumber)
         {
-            var empInfo = _employeeDisposalServices.GetEmployeeInfo(SerialNumber); 
+            var empInfo = _employeeDisposalServices.GetEmployeeInfo(SerialNumber);
+            var disposalInfo = _context.TbDisposal.Where(x => x.EmployeeCode == empInfo.EmployeeCode && (x.DisposalTypeCode== "102" || x.DisposalTypeCode == "106" || x.DisposalTypeCode == "107")).FirstOrDefault();
+            if(disposalInfo!=null)
+            {
+                empInfo.isDisposal = true;
+            }
+            else
+            {
+                empInfo.isDisposal = false;
+            }
             return Json(empInfo);
         }
 

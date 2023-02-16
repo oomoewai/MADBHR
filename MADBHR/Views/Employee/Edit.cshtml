@@ -21,6 +21,32 @@
             $("#dvNrcPreview").attr("src", $('#NRCImageContent').val());
             $("#dvNrcPreview").attr("class", "thumbnail");
 
+            $('#btnApprove').click(function () {
+                $.ajax({
+
+                    url: '/Employee/EmployeeStatusChange?EmployeeCode=' + $('#EmpCode').val() + '&Status=' +"Approve",
+                    type: 'POST',
+                    ContentType: 'application/json;utf-8',
+                    datatype: 'json',
+                    success: function (res) {
+
+                    }
+
+                });
+            });
+            $('#btnYes').click(function () {
+                $.ajax({
+
+                    url: '/Employee/EmployeeStatusChange?EmployeeCode=' + $('#EmpCode').val() + '&Status=' + "Reject" + '&Comment=' + $('#txtComment').val(),
+                    type: 'POST',
+                    ContentType: 'application/json;utf-8',
+                    datatype: 'json',
+                    success: function (res) {
+
+                    }
+
+                });
+            });
         });
 
         $("#dvPreview").click(function (e) {
@@ -90,6 +116,7 @@
                 alert("Please upload a valid image file.");
             }
         });
+
 
     </script>
 

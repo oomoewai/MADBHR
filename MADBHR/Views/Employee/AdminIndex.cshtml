@@ -8,12 +8,14 @@
     var query = Context.Request.Query;
     var StateDivisionCode = query["StateDivisionCode"];
     var TownshipCode = query["TownshipCode"];
+    var Status = query["Status"];
     ViewData["Query"] = query;
 
 }
 @*<div class="col-xs-12 ">
     <div class=" bg-w">
         <div class="col-lg-12">*@
+
 <div class="panel-group" id="accordion" role="tablist" aria -multiselectable="true">
     <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="headingOne1">
@@ -28,15 +30,16 @@
                 <form method="get" action="/@controller/AdminIndex">
                     <div class="row">
                         @*<div class="col-md-3">
-                                <div class="form-group">
-                                    <label class="form-label" for="ToDate">တိုင်းဒေသကြီးများ</label>
-                                    <div class="controls">
-                                        <select class="form-control" name="StateDivisionCode" value="@StateDivisionCode" asp-items="ViewBag.StateDivision" id="stateDivision" onchange="Change()">
-                                            <option selected="selected" value="">---ရွေးရန်---</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>*@
+            <div class="form-group">
+                <label class="form-label" for="ToDate">တိုင်းဒေသကြီးများ</label>
+                <div class="controls">
+                    <select class="form-control" name="StateDivisionCode" value="@StateDivisionCode" asp-items="ViewBag.StateDivision" id="stateDivision" onchange="Change()">
+                        <option selected="selected" value="">---ရွေးရန်---</option>
+                    </select>
+                </div>
+            </div>
+        </div>*@
+                        <input asp-for="@StateDivisionCode" hidden />
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="form-label" for="ToDate">မြို့နယ်များ</label>
@@ -45,13 +48,20 @@
                                 </select>
                             </div>
                         </div>
-
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="form-label" for="ToDate">အတည်ပြုအခြေနေ</label>
+                                <select class="form-control" name="Status" value="@Status" asp-items="ViewBag.Status" id="status" disabled>
+                                    <option selected="selected" value="">---ရွေးရန်---</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="form-label">&nbsp;</label>
                                 <div class="controls">
                                     <button type="submit" class="btn btn-primary gradient-blue">ရှာဖွေရန်</button>
-
+                                    <a asp-controller="@controller" asp-action="AdminIndex" asp-route-StateDivisionCode="@StateDivisionCode" class="btn btn-primary">Cancel</a>
                                 </div>
                             </div>
                         </div>
@@ -88,6 +98,8 @@
                                 <th>အမိ အမည်</th>
                                 <th>ကိုးကွယ်သည့်ဘာသာ</th>
                                 <th>လူမျိုး</th>
+                                <th>အတည်ပြု အခြေနေ</th>
+                                <th>မှတ်ချက်များ</th>
                                 <th></th>
 
                             </tr>
@@ -106,6 +118,46 @@
                                     <td class="text-center">@item.MotherName</td>
                                     <td class="text-center">@item.Religion</td>
                                     <td class="text-center">@item.Race</td>
+                                    @*<td class="text-center">@item.Status</td>*@
+                                <td class="text-center">
+                                    @if (item.Status == "Pending")
+                                    {
+                                        @if (ViewBag.lstLogIn.AccountType == "Head Admin")
+                                        {
+                                            <select class="form-control" name="ApproveStatus" id="approveStatus" onchange="ChangeStatus('@item.EmployeeCode')">
+                                                <option selected="selected" value="0">Pending</option>
+                                                <option value="Approve">Approve</option>
+                                                <option value="Reject">Reject</option>
+                                            </select>
+                                            <input value="@item.EmployeeCode" id="EmpCode" hidden />
+                                        }
+                                        else
+                                        {
+                                            <select class="form-control" name="ApproveStatus" id="approveStatus" onchange="ChangeStatus('@item.EmployeeCode')" disabled>
+                                                <option selected="selected" value="0">Pending</option>
+                                                <option value="Approve">Approve</option>
+                                                <option value="Reject">Reject</option>
+                                            </select>
+                                        }
+                                    }
+                                    @if (item.Status == "Approve")
+                                    {<select class="form-control" name="ApproveStatus" id="approveStatus" onchange="ChangeStatus('@item.EmployeeCode')" disabled>
+                                            <option selected="selected" value="0">Pending</option>
+                                            <option value="Approve" selected="selected">Approve</option>
+                                            <option value="Reject">Reject</option>
+                                        </select>
+
+                                    }
+                                    @if (item.Status == "Reject")
+                                    {<select class="form-control" name="ApproveStatus" id="approveStatus" onchange="ChangeStatus('@item.EmployeeCode')" style="color:red" disabled>
+                                            <option selected="selected" value="0">Pending</option>
+                                            <option value="Approve">Approve</option>
+                                            <option value="Reject" selected="selected">Reject</option>
+                                        </select>
+
+                                    }
+                                </td>
+                                    <td class="text-center">@item.RejectComment</td>
                                     <td class="text-center">
                                         <a asp-controller="Relationship" asp-action="Index" asp-route-EmployeeCode="@item.EmployeeCode" class="btn btn-xs btn-secondary">ဇနီး/ခင်ပွန်းအချက်အလက်ကြည့်ရန်</a>
                                         <a asp-controller="@controller" asp-action="Edit" asp-route-Id="@item.EmployeePkid" class="btn btn-xs btn-secondary">ပြင်ရန်</a>
@@ -126,6 +178,40 @@
         </div>
     </div>
 </section>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="မှတ်ချက်ဖြည့်သွင်းခြင်း"
+     data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticModalLabel">
+                    မှတ်ချက်ဖြည့်သွင်းခြင်း
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>   မှတ်ချက်ဖြည့်သွင်းရန်</label>&nbsp&nbsp<span style="color:red;">*</span>
+                            <textarea name="textarea-input" id="txtComment" rows="5" placeholder="မှတ်ချက်ဖြည့်သွင်းရန်" class="form-control"></textarea>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnYes" class="btn btn-secondary" data-dismiss="modal">လုပ်မည်</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">မလုပ်ပါ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @*</div>
         </div>
     </div>*@
@@ -133,66 +219,49 @@
     <script>
 
         $(document).ready(function () {
-            //document.getElementById("stateDivision").setAttribute("disabled", "disabled");
-            //debugger;
-            //$.ajax({
-            //    url: '/Employee/GetTownhsipByDivision?divisonCode=' + $("#stateDivision").val(),
-            //    type: 'GET',
-            //    ContentType: 'application/json;utf-8',
-            //    datatype: 'json',
-            //    success: function (res) {
-            //        var selectList = document.getElementById("townshipCode");
-            //        for (var i = 0; i < res.length; i++) {
-            //            var option = document.createElement("option");
-            //            option.value = res[i].townshipCode;
-            //            option.text = res[i].township;
-            //            selectList.appendChild(option);
-            //        }
-            //    }
+            $('#myModal').modal('hide');
+           
+            $('#btnYes').click(function () {
+                $.ajax({
 
-            //});
-        });
+                    url: '/Employee/EmployeeStatusChange?EmployeeCode=' + $('#EmpCode').val() + '&Status=' + $('#approveStatus').val() + '&Comment=' + $('#txtComment').val(),
+                    type: 'POST',
+                    ContentType: 'application/json;utf-8',
+                    datatype: 'json',
+                    success: function (res) {
 
-        function Change() {
-            console.log("StateDivision Text", $("#stateDivision :selected").text()); // The text content of the selected option
-            console.log("StateDivision Text", $("#stateDivision").val());
-            debugger;
-            $.ajax({
-
-                url: '/Employee/GetTownhsipByDivision?divisonCode=' + $("#stateDivision").val(),
-                type: 'GET',
-                ContentType: 'application/json;utf-8',
-                datatype: 'json',
-                success: function (res) {
-                    var selectList = document.getElementById("townshipCode");
-                    //selectList.id = "mySelect";
-                    //myParent.appendChild(selectList);
-
-                    //Create and append the options
-                    for (var i = 0; i < res.length; i++) {
-                        var option = document.createElement("option");
-                        option.value = res[i].townshipCode;
-                        option.text = res[i].township;
-                        selectList.appendChild(option);
                     }
-                }
 
+                });
             });
+            $('#townshipCode').click(function () {
+                $('#status').prop('disabled', false);
+            });
+
+        });
+        function ChangeStatus(EmployeeCode) {
+            var status = $('#approveStatus').val();
+            console.log("status", status);
+            if (status == "Approve") {
+                $.ajax({
+
+                    url: '/Employee/EmployeeStatusChange?EmployeeCode=' + EmployeeCode + '&Status=' + status,
+                    type: 'POST',
+                    ContentType: 'application/json;utf-8',
+                    datatype: 'json',
+                    success: function (res) {
+
+                    }
+
+                });
+            }
+            else {
+                EmpCode = EmployeeCode;
+                $('#myModal').modal('show');
+            }
         }
-                //function DeleteConfirm(url, id) {
-                //    Swal.fire({
-                //        title: 'Are you sure?',
-                //        text: "You won't be able to revert this!",
-                //        icon: 'warning',
-                //        showCancelButton: true,
-                //        confirmButtonColor: '#3085d6',
-                //        cancelButtonColor: '#d33',
-                //        confirmButtonText: 'Yes, delete it!'
-                //    }).then((result) => {
-                //        if (result.isConfirmed) {
-                //            window.location.href = url + id;
-                //        }
-                //    })
-                //}
+
+
+       
     </script>
 }

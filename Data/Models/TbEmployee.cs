@@ -45,6 +45,8 @@ namespace MADBHR_Data.Models
         public string ProfilePic { get; set; }
         public string Form66Pic { get; set; }
         public string Nrcpic { get; set; }
+        public string Status { get; set; }
+        public string RejectComment { get; set; }
         [NotMapped]
         [SkipProperty]
         public string ImageContent { get; set; }

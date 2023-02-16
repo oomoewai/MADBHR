@@ -44,7 +44,8 @@ namespace MADBHR_Services.SqlDataAccess
                                 empInfo.FromDate = ResDs.Tables[0].Rows[i]["FromDate"] != DBNull.Value ? Convert.ToDateTime(ResDs.Tables[0].Rows[i]["FromDate"]).ToString("dd/MM/yyyy") : "";
                                 empInfo.RankType = ResDs.Tables[0].Rows[i]["RankType"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["RankType"].ToString() : "";
                                 empInfo.TownCode = ResDs.Tables[0].Rows[i]["TownshipCode"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["TownshipCode"].ToString() : "";
-
+                                empInfo.Status= ResDs.Tables[0].Rows[i]["Status"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Status"].ToString() : "";
+                                empInfo.EmployeeCode = ResDs.Tables[0].Rows[i]["EmployeeCode"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["EmployeeCode"].ToString() : "";
 
                             }
                         }
@@ -63,7 +64,6 @@ namespace MADBHR_Services.SqlDataAccess
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.Clear();
                 cmd.Connection.Open();
-
                 cmd.AddParameter("@id", Id);
                 cmd.AddParameter("@EmployeeCode", disposal.EmployeeCode);
                 cmd.AddParameter("@DisposalDate", disposal.DisposalDate);
@@ -73,8 +73,7 @@ namespace MADBHR_Services.SqlDataAccess
                 cmd.AddParameter("@CreatedBy", userId);
                 cmd.AddParameter("@UploadForTownship", disposal.UploadForTownship);
                 cmd.AddParameter("@isTransfer", isTransfer);
-
-
+                cmd.AddParameter("@TansferPkid", disposal.TransferId);
 
                 cmd.ExecuteNonQuery();
                 cmd.Connection.Close();

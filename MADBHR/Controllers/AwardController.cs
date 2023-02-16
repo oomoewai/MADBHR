@@ -3,7 +3,9 @@ using MADBHR_Data.Models;
 using MADBHR_Services.Base;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using NLog;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -19,11 +21,13 @@ namespace MADBHR.Controllers
         private readonly MADBAdminSolutionContext _context;
         private readonly IAwardServices _awardServices;
         private readonly Pagination _pagination;
-        public AwardController(MADBAdminSolutionContext context, IAwardServices awardServices, IOptions<Pagination> pagination)
+        private readonly ILogger<AwardController> _logger;
+        public AwardController(MADBAdminSolutionContext context, IAwardServices awardServices, IOptions<Pagination> pagination,ILogger<AwardController> logger)
         {
             _context = context;
             _awardServices = awardServices;
             _pagination = pagination.Value;
+            _logger = logger;
         }
         public void Initialize(TbAward tbAward = null)
         {
@@ -95,25 +99,27 @@ namespace MADBHR.Controllers
         {
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {
+                var userId = HttpContext.User.Identity.Name;
+                var userInfo = _context.TbUserLogin.Where(x => x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
+                MappedDiagnosticsLogicalContext.Set("userId", userInfo.UserPkid);
                 try
                 {
 
                     //if (ModelState.IsValid)
                     //{
-                    var userId = HttpContext.User.Identity.Name;
-                    var userInfo = _context.TbUserLogin.Where(x => x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
+                
                     award.UploadForTownship = userInfo.TownshipId == null || userInfo.TownshipId == "" ? userInfo.StateDivisionId : userInfo.TownshipId;
 
                     award.EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == award.SerialNumber).Select(x => x.EmployeeCode).FirstOrDefault();
                     var emp = await _awardServices.SaveAward(award, Convert.ToInt32(userId), 0);
-
+                    _logger.LogInformation("Successfully Create");
                     return RedirectToAction("Index");
 
                     //}
                 }
                 catch (Exception e)
                 {
-
+                    _logger.LogError(e.Message);
                     await transaction.RollbackAsync();
                 }
             }
@@ -133,22 +139,24 @@ namespace MADBHR.Controllers
         {
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {
+                var userId = HttpContext.User.Identity.Name;
+                var userInfo = _context.TbUserLogin.Where(x => x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
+                MappedDiagnosticsLogicalContext.Set("userId", userInfo.UserPkid);
                 try
                 {
 
                     //if (ModelState.IsValid)
                     //{
-                    var userId = HttpContext.User.Identity.Name;
-                    var userInfo = _context.TbUserLogin.Where(x => x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
+                  
                     award.UploadForTownship = userInfo.TownshipId == null || userInfo.TownshipId == "" ? userInfo.StateDivisionId : userInfo.TownshipId;
                     var emp = await _awardServices.SaveAward(award, Convert.ToInt32(userId), award.AwardPkid);
-
+                    _logger.LogInformation("Successfully Edit");
                     return RedirectToAction("Index");
 
                 }
                 catch (Exception e)
                 {
-
+                    _logger.LogError(e.Message);
                     await transaction.RollbackAsync();
                 }
             }
@@ -157,15 +165,20 @@ namespace MADBHR.Controllers
         }
         public async Task<IActionResult> Delete(int id)
         {
+            var userId = HttpContext.User.Identity.Name;
+            MappedDiagnosticsLogicalContext.Set("userId",Convert.ToInt32(userId));
             try
             {
-                var userId = HttpContext.User.Identity.Name;
+                
                 _awardServices.DeleteAward(id, Convert.ToInt32(userId));
+                _logger.LogInformation("Successfully Deleted");
+
                 //TempData["notice"] = StatusEnum.NoticeStatus.Delete;
 
             }
             catch (Exception e)
             {
+                _logger.LogError(e.Message);
 
             }
 

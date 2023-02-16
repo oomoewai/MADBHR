@@ -22,7 +22,7 @@
                         <input asp-for="EmployeeCode" hidden />
                         
                     }                  
-                     <input asp-for="EmployeePkid" hidden />
+                     <input asp-for="EmployeePkid" id="EmpCode" hidden />
                     @*}*@
                     <div class="col-xs-12">
                         <div class="row">
@@ -238,9 +238,14 @@
                         </div>
                         <div class="col-xs-12  padding-bottom-30">
                             <div class="text-left">
-                                <button type="submit" class="btn btn-primary gradient-blue">သိမ်းမည်</button>
+                                <button type="submit" class="btn btn-primary">သိမ်းမည်</button>
                                 <button type="submit" name="RedirectToRelationship" value="true" class="btn btn-primary gradient-blue">သိမ်းပြီး။ ဇနီး/ခင်ပွန်းအချက်အလက်ထည့်ရန်</button>
                                 <a asp-controller="@controller" asp-action="Index" class="btn btn-primary">ရှေ့သို့ပြန်သွားမည်</a>
+                                @if (ViewData["Action"].ToString() == ViewEnum.Action.Edit.ToDescription() && ViewBag.lstLogIn.AccountType == "Head Admin")
+                                {
+                                    <button type="button" class="btn btn-primary" id="btnApprove">Approve</button>
+                                    <button type="button" class="btn btn-primary" id="btnReject" data-toggle="modal" data-target="#myModal">Reject</button>
+                                }
                             </div>
                         </div>
                     </div>
@@ -251,3 +256,36 @@
         </div>
     </div>
 </section>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="မှတ်ချက်ဖြည့်သွင်းခြင်း"
+     data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticModalLabel">
+                    မှတ်ချက်ဖြည့်သွင်းခြင်း
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>   မှတ်ချက်ဖြည့်သွင်းရန်</label>&nbsp&nbsp<span style="color:red;">*</span>
+                            <textarea name="textarea-input" id="txtComment" rows="5" placeholder="မှတ်ချက်ဖြည့်သွင်းရန်" class="form-control"></textarea>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnYes" class="btn btn-secondary" data-dismiss="modal">လုပ်မည်</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">မလုပ်ပါ</button>
+            </div>
+        </div>
+    </div>
+</div>
