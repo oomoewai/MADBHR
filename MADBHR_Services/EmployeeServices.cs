@@ -68,6 +68,24 @@ namespace MADBHR_Services
                 return emps;
             }
         }
+        public List<TbEmployee> GetRequestingEmployee()
+        {
+
+            try
+            {
+                IDbConnection connection = new SqlConnection(_connectionStrings.DefaultConnection);
+                IDbConnection myCon = connection;
+                IDbCommand cmd = myCon.CreateCommand();
+                var employees = _employeeDAO.GetRequestingEmployee(cmd);
+
+                return employees;
+            }
+            catch (Exception ex)
+            {
+                List<TbEmployee> emps = new List<TbEmployee>();
+                return emps;
+            }
+        }
         public List<VMEmployeeCount> GetEmployeeCount(string? StateDivisionCode = null)
         {
 

@@ -31,15 +31,15 @@
                 <form method="get" action="/@controller/AdminIndex">
                     <div class="row">
                         @*<div class="col-md-3">
-            <div class="form-group">
-                <label class="form-label" for="ToDate">တိုင်းဒေသကြီးများ</label>
-                <div class="controls">
-                    <select class="form-control" name="StateDivisionCode" value="@StateDivisionCode" asp-items="ViewBag.StateDivision" id="stateDivision" onchange="Change()">
-                        <option selected="selected" value="">---ရွေးရန်---</option>
-                    </select>
-                </div>
-            </div>
-        </div>*@
+                                <div class="form-group">
+                                    <label class="form-label" for="ToDate">တိုင်းဒေသကြီးများ</label>
+                                    <div class="controls">
+                                        <select class="form-control" name="StateDivisionCode" value="@StateDivisionCode" asp-items="ViewBag.StateDivision" id="stateDivision" onchange="Change()">
+                                            <option selected="selected" value="">---ရွေးရန်---</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>*@
                         <input asp-for="@StateDivisionCode" hidden />
                         <div class="col-md-3">
                             <div class="form-group">
@@ -78,6 +78,10 @@
             <h5 class="title pull-left" style="font-weight:bold">ကိုယ်ရေးအချက်အလက်များကို မြို့နယ်အလိုက်ကြည့်ရန်</h5>
             <div class="pull-right header_style">
                 @*<button type="button" data-href="/@controller/Create" class="btn btn-click">Create</button>*@
+                @if (ViewBag.lstLogIn.AccountType == "Head Admin")
+                {
+                    <a asp-controller="@controller" asp-action="Index" class="btn btn-xs btn-secondary" style="width: 130px; height: 25px; padding: 3px;">Request Employee list</a>
+                }
                 <a asp-controller="@controller" asp-action="ExcelExport" class="btn btn-xs btn-secondary" style="width: 80px; height: 25px; padding: 3px;">Excel ထုတ်ရန်</a>
                 <a asp-controller="@controller" asp-action="Create" class="btn btn-xs btn-secondary" style="width: 80px; height: 25px; padding: 3px;">အသစ်ထည့်ရန်</a>
             </div>
@@ -90,7 +94,7 @@
                         <thead>
                             <tr>
                                 <th>စဉ်</th‌>
-                                <th>တိုင်းဒေသကြီး</th>
+                                    @*<th>တိုင်းဒေသကြီး</th>*@
                                 <th>မြို့နယ်</th>
                                 <th>အမည်</th>
                                 <th>မြို့နယ်ရုံးအမည်</th>
@@ -99,8 +103,10 @@
                                 <th>အမိ အမည်</th>
                                 <th>ကိုးကွယ်သည့်ဘာသာ</th>
                                 <th>လူမျိုး</th>
-                                <th>အတည်ပြု အခြေနေ</th>
+                                <th>အတည်ပြုအခြေနေ</th>
                                 <th>မှတ်ချက်များ</th>
+                                <th>ပြင်ရန်အကြောင်းအရာ</th>
+                                @*<th></th>*@
                                 <th></th>
 
                             </tr>
@@ -110,7 +116,7 @@
                             {
                                 <tr>
                                     <td class="text-center">@((((int)ViewBag.Page - 1) * (int)ViewBag.PageSize) + count)</td>
-                                    <td class="text-center">@item.StateDivision</td>
+                                    @*<td class="text-center">@item.StateDivision</td>*@
                                     <td class="text-center">@item.Township</td>
                                     <td class="text-center">@item.Name</td>
                                     <td class="text-center">@item.OccupationName</td>
@@ -120,53 +126,85 @@
                                     <td class="text-center">@item.Religion</td>
                                     <td class="text-center">@item.Race</td>
                                     @*<td class="text-center">@item.Status</td>*@
-                                <td class="text-center">
-                                    @if (item.Status == "Pending")
-                                    {
-                                        @if (ViewBag.lstLogIn.AccountType == "Head Admin")
-                                        {
-                                            <select class="form-control" name="ApproveStatus" id="approveStatus" onchange="ChangeStatus('@item.EmployeeCode')">
-                                                <option selected="selected" value="0">Pending</option>
-                                                <option value="Approve">Approve</option>
-                                                <option value="Reject">Reject</option>
-                                            </select>
-                                            <input value="@item.EmployeeCode" id="EmpCode" hidden />
-                                        }
-                                        else
-                                        {
-                                            <select class="form-control" name="ApproveStatus" id="approveStatus" onchange="ChangeStatus('@item.EmployeeCode')" disabled>
-                                                <option selected="selected" value="0">Pending</option>
-                                                <option value="Approve">Approve</option>
-                                                <option value="Reject">Reject</option>
-                                            </select>
-                                        }
-                                    }
-                                    @if (item.Status == "Approve")
-                                    {<select class="form-control" name="ApproveStatus" id="approveStatus" onchange="ChangeStatus('@item.EmployeeCode')" disabled>
-                                            <option selected="selected" value="0">Pending</option>
-                                            <option value="Approve" selected="selected">Approve</option>
-                                            <option value="Reject">Reject</option>
-                                        </select>
-
-                                    }
-                                    @if (item.Status == "Reject")
-                                    {<select class="form-control" name="ApproveStatus" id="approveStatus" onchange="ChangeStatus('@item.EmployeeCode')" style="color:red" disabled>
-                                            <option selected="selected" value="0">Pending</option>
-                                            <option value="Approve">Approve</option>
-                                            <option value="Reject" selected="selected">Reject</option>
-                                        </select>
-
-                                    }
-                                </td>
-                                    <td class="text-center">@item.RejectComment</td>
                                     <td class="text-center">
-                                        <a asp-controller="Relationship" asp-action="Index" asp-route-EmployeeCode="@item.EmployeeCode" class="btn btn-xs btn-secondary">ဇနီး/ခင်ပွန်းအချက်အလက်ကြည့်ရန်</a>
+
+                                        @if (item.Status == "Pending" || item.Status == "")
+                                        {
+                                            @if (ViewBag.lstLogIn.AccountType == "Head Admin")
+                                            {
+                                                <select class="form-control" name="ApproveStatus" id="approveStatus" onchange="ChangeStatus('@item.EmployeeCode')">
+                                                    <option selected="selected" value="0">Pending</option>
+                                                    <option value="Approve">Approve</option>
+                                                    <option value="Reject">Reject</option>
+                                                </select>
+                                                @*<input value="@item.EmployeeCode" id="EmpCode" hidden />*@
+                                            }
+                                            else
+                                            {
+                                                <select class="form-control" name="ApproveStatus" id="approveStatus" onchange="ChangeStatus('@item.EmployeeCode')" disabled>
+                                                    <option selected="selected" value="0">Pending</option>
+                                                    <option value="Approve">Approve</option>
+                                                    <option value="Reject">Reject</option>
+                                                </select>
+                                            }
+                                        }
+                                        @if (item.Status == "Approve")
+                                        {<select class="form-control" name="ApproveStatus" id="approveStatus" onchange="ChangeStatus('@item.EmployeeCode')" disabled>
+                                                <option value="0">Pending</option>
+                                                <option value="Approve" selected="selected">Approve</option>
+                                                <option value="Reject">Reject</option>
+                                            </select>
+
+                                        }
+                                        @if (item.Status == "Reject")
+                                        {<select class="form-control" name="ApproveStatus" id="approveStatus" onchange="ChangeStatus('@item.EmployeeCode')" style="color:red" disabled>
+                                                <option value="0">Pending</option>
+                                                <option value="Approve">Approve</option>
+                                                <option value="Reject" selected="selected">Reject</option>
+                                            </select>
+
+                                        }
+                                    </td>
+                                    <td class="text-center">@item.RejectComment</td>
+                                    <td class="text-center">@item.EditComment</td>
+                                    @*<td class="text-center">
+                                        @if (ViewBag.lstLogIn.AccountType != "Head Admin")
+                                        {
+                                            <a data-toggle="modal" data-target="#editModel" class="btn btn-xs btn-secondary" onclick="EditRequestClick('@item.EmployeeCode')">Request</a>
+                                        }
+                                    </td>*@
+                                <td class="text-center" style="width:350px;">
+                                    <a asp-controller="Relationship" asp-action="Index" asp-route-EmployeeCode="@item.EmployeeCode" class="btn btn-xs btn-secondary">ဇနီး/ခင်ပွန်းအချက်အလက်</a>
+                                    @if (ViewBag.lstLogIn.AccountType == "Head Admin")
+                                    {
                                         <a asp-controller="@controller" asp-action="Edit" asp-route-Id="@item.EmployeePkid" class="btn btn-xs btn-secondary">ပြင်ရန်</a>
                                         <button asp-controller="@controller" asp-action="Delete" asp-route-Id="@item.EmployeePkid" class="btn btn-xs btn-secondary"
                                                 onclick="DeleteConfirm('/@controller/Delete/',@item.EmployeePkid)">
                                             ပယ်ဖျက်ရန်
                                         </button>
-                                    </td>
+                                    }
+                                    else
+                                    {
+                                        @if (item.EditRequest == "" && item.DeleteRequest == "")
+                                        {
+                                            <a data-toggle="modal" data-target="#editModel" class="btn btn-xs btn-secondary" onclick="EditRequestClick('@item.EmployeeCode')">Request</a>
+                                        }
+
+                                        @if (item.EditRequest == "Confirm")
+                                        {
+                                            <a asp-controller="@controller" asp-action="Edit" asp-route-Id="@item.EmployeePkid" class="btn btn-xs btn-secondary">ပြင်ရန်</a>
+                                        }
+                                        @if (item.DeleteRequest == "Confirm")
+                                        {
+                                            <button asp-controller="@controller" asp-action="Delete" asp-route-Id="@item.EmployeePkid" class="btn btn-xs btn-secondary"
+                                                    onclick="DeleteConfirm('/@controller/Delete/',@item.EmployeePkid)">
+                                                ပယ်ဖျက်ရန်
+                                            </button>
+                                        }
+
+                                    }
+
+                                </td>
 
                                 </tr>
                                 count++;
@@ -212,25 +250,87 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="editModel" tabindex="-1" role="dialog" aria-labelledby="အကြောင်းအရာဖြည့်သွင်းခြင်း"
+     data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticModalLabel">
+                    အကြောင်းအရာဖြည့်သွင်းခြင်း
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
 
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <select class="form-control" name="RequestType" id="requestType">
+                                <option selected="selected" value="">---ရွေးရန်---</option>
+                                <option  value="Edit">Edit</option>
+                                <option value="Delete">Delete</option>
+
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>   တောင်းဆိုရသည့် အကြောင်းအရင်း</label>&nbsp&nbsp<span style="color:red;">*</span>
+                            <textarea name="textarea-input" id="txtEditComment" rows="5" placeholder="မှတ်ချက်ဖြည့်သွင်းရန်" class="form-control"></textarea>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnEditYes" class="btn btn-secondary" data-dismiss="modal">လုပ်မည်</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">မလုပ်ပါ</button>
+            </div>
+        </div>
+    </div>
+</div>
 @*</div>
         </div>
     </div>*@
 @section Scripts{
     <script>
-
+        var EmpCode = "";
+        var EmpEditCode = "";
         $(document).ready(function () {
             $('#myModal').modal('hide');
-           
+            $('#editModel').modal('hide');
+
             $('#btnYes').click(function () {
                 $.ajax({
 
-                    url: '/Employee/EmployeeStatusChange?EmployeeCode=' + $('#EmpCode').val() + '&Status=' + $('#approveStatus').val() + '&Comment=' + $('#txtComment').val(),
+                    url: '/Employee/EmployeeStatusChange?EmployeeCode=' + EmpCode + '&Status=' + $('#approveStatus').val() + '&Comment=' + $('#txtComment').val(),
                     type: 'POST',
                     ContentType: 'application/json;utf-8',
                     datatype: 'json',
                     success: function (res) {
 
+                    }
+
+                });
+            });
+            $('#btnEditYes').click(function () {
+                debugger;
+                console.log("EmpCode", EmpEditCode);
+                var requestType = $('#requestType').val();
+                $.ajax({
+
+                    url: '/Employee/EmployeeEditRequest?EmployeeCode=' + EmpEditCode + '&Comment=' + $('#txtEditComment').val() + '&RequestType=' + requestType,
+                    type: 'POST',
+                    ContentType: 'application/json;utf-8',
+                    datatype: 'json',
+                    success: function (res) {
+                        window.location = "/Employee/AdminIndex?StateDivisionCode=" + '@ViewBag.StateDivisionCode';
                     }
 
                 });
@@ -261,8 +361,12 @@
                 $('#myModal').modal('show');
             }
         }
+        function EditRequestClick(EmployeeCode) {
+            EmpEditCode = EmployeeCode;
+            $('#editModal').modal('show');
+        }
 
 
-       
+
     </script>
 }

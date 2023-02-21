@@ -417,6 +417,10 @@ namespace MADBHR_Data.Models
 
                 entity.Property(e => e.DearestPerson).HasMaxLength(500);
 
+                entity.Property(e => e.DeleteRequest).HasMaxLength(20);
+
+                entity.Property(e => e.EditRequest).HasMaxLength(20);
+
                 entity.Property(e => e.EducationTypeCode).HasMaxLength(50);
 
                 entity.Property(e => e.EmployeeCode).HasMaxLength(50);

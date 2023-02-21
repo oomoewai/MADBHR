@@ -72,7 +72,7 @@ namespace MADBHR.Controllers
             TempData["SerialNumber"] = SerialNumber;
             TempData["FatherName"] = FatherName;
 
-            var employees = _employeeServices.GetEmployee(Name, FromDate, ToDate, SerialNumber).ToList();
+            var employees = _employeeServices.GetRequestingEmployee().ToList();
             return View(employees.OrderByDescending(x => x.CreatedDate).ToList().ToPagedList((int)page, pageSize));
 
         }
@@ -103,6 +103,7 @@ namespace MADBHR.Controllers
             status.Add("Reject");
             ViewData["Status"] = new SelectList(status);
             TempData["StateDivisionCode"] = StateDivisionCode;
+            ViewBag.StateDivisionCode = StateDivisionCode;
             var pageSize = _pagination.PageSize;
             ViewData["Page"] = page;
             ViewData["PageSize"] = pageSize;
@@ -345,6 +346,7 @@ namespace MADBHR.Controllers
                     if (didUploaded)
                     {
                         employee.UploadForTownship = userInfo.TownshipId == null || userInfo.TownshipId == "" ? userInfo.StateDivisionId : userInfo.TownshipId;
+                        employee.EditRequest = null;
                         var emp = await _employeeServices.SaveEmployee(employee, Convert.ToInt32(userId), employee.EmployeePkid);
                         _logger.LogInformation("Successfully Edit");
                         if (RedirectToRelationship == true)
@@ -353,7 +355,10 @@ namespace MADBHR.Controllers
                         }
                         else
                         {
-                            return RedirectToAction("Index");
+                            if (userInfo.AccountType == "Head Admin" || userInfo.AccountType == "Super Admin")
+                                return RedirectToAction("AdminDivisionIndex");
+                            else
+                                return RedirectToAction("AdminIndex");
                         }
 
                     }
@@ -461,6 +466,40 @@ namespace MADBHR.Controllers
             var emp = _employeeServices.SaveEmployee(tbEmployee, Convert.ToInt32(userId), tbEmployee.EmployeePkid);
             return Ok();
         }
-
+        [HttpPost]
+        public async Task<IActionResult> EmployeeEditRequest(string EmployeeCode, string RequestType, string? Comment = null)
+        {
+            TbEmployee tbEmployee = _context.TbEmployee.Where(x => x.EmployeeCode == EmployeeCode).FirstOrDefault();
+            if(RequestType=="Edit")
+            {
+                tbEmployee.EditRequest = "Requesting";
+            }
+            else
+            {
+                tbEmployee.DeleteRequest = "Requesting";
+            }
+            tbEmployee.EditComment = Comment;
+            var userId = HttpContext.User.Identity.Name;
+            ViewBag.StateDivisionCode = TempData["StateDivisionCode"];
+            var emp = _employeeServices.SaveEmployee(tbEmployee, Convert.ToInt32(userId), tbEmployee.EmployeePkid);
+            return Ok();
+        }
+        [HttpPost]
+        public async Task<IActionResult> ChangeConfirm(string EmployeeCode,string RequestType)
+        {
+            TbEmployee tbEmployee = _context.TbEmployee.Where(x => x.EmployeeCode == EmployeeCode).FirstOrDefault();
+            if(RequestType=="Edit")
+            {
+                tbEmployee.EditRequest = "Confirm";
+            }
+            else
+            {
+                tbEmployee.DeleteRequest = "Confirm";
+            }
+            var userId = HttpContext.User.Identity.Name;
+            ViewBag.StateDivisionCode = TempData["StateDivisionCode"];
+            var emp = _employeeServices.SaveEmployee(tbEmployee, Convert.ToInt32(userId), tbEmployee.EmployeePkid);
+            return Ok();
+        }
     }
 }
