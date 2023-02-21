@@ -92,7 +92,7 @@ namespace MADBHR.Controllers
             var pageSize = _pagination.PageSize;
             ViewData["Page"] = page;
             ViewData["PageSize"] = pageSize;
-            var EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == SerialNumber).Select(x => x.EmployeeCode).FirstOrDefault();
+            var EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == SerialNumber && x.IsDeleted == false).Select(x => x.EmployeeCode).FirstOrDefault();
             var pensions = _pensionServices.GetPension(StateDivisionCode,TownshipCode,EmployeeCode).ToList();
             return View(pensions.OrderByDescending(x => x.CreatedDate).ToList().ToPagedList((int)page, pageSize));
         }
@@ -116,7 +116,7 @@ namespace MADBHR.Controllers
                     var userInfo = _context.TbUserLogin.Where(x => x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
                     pension.UploadForTownship = userInfo.TownshipId == null || userInfo.TownshipId == "" ? userInfo.StateDivisionId : userInfo.TownshipId;
 
-                    pension.EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == pension.SerialNumber).Select(x => x.EmployeeCode).FirstOrDefault();
+                    pension.EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == pension.SerialNumber && x.IsDeleted == false).Select(x => x.EmployeeCode).FirstOrDefault();
                     var emp = await _pensionServices.SavePension(pension, Convert.ToInt32(userId), 0);
 
                     return RedirectToAction("Index");
@@ -135,7 +135,7 @@ namespace MADBHR.Controllers
         public IActionResult Edit(int Id)
         {
             var pension = _context.TbPension.Where(x => x.PensionPkid == Id).FirstOrDefault();
-            pension.SerialNumber = _context.TbEmployee.Where(x => x.EmployeeCode == pension.EmployeeCode).Select(x => x.SerialNumber).FirstOrDefault();
+            pension.SerialNumber = _context.TbEmployee.Where(x => x.EmployeeCode == pension.EmployeeCode && x.IsDeleted == false).Select(x => x.SerialNumber).FirstOrDefault();
             var empInfo = _employeeDisposalServices.GetEmployeeInfo(pension.SerialNumber);
             ViewBag.Name = empInfo.Name;
             ViewBag.Rank = empInfo.RankType;

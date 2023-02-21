@@ -37,7 +37,7 @@ namespace MADBHR.Controllers
         public IActionResult GetEmployeeInformation(string SerialNumber)
         {
             var empInfo = _employeeDisposalServices.GetEmployeeInfo(SerialNumber);
-            var disposalInfo = _context.TbDisposal.Where(x => x.EmployeeCode == empInfo.EmployeeCode && (x.DisposalTypeCode== "102" || x.DisposalTypeCode == "106" || x.DisposalTypeCode == "107")).FirstOrDefault();
+            var disposalInfo = _context.TbDisposal.Where(x => x.EmployeeCode == empInfo.EmployeeCode && (x.DisposalTypeCode== "102" || x.DisposalTypeCode == "106" || x.DisposalTypeCode == "107") && x.IsDeleted == false).FirstOrDefault();
             if(disposalInfo!=null)
             {
                 empInfo.isDisposal = true;
@@ -118,7 +118,7 @@ namespace MADBHR.Controllers
                     var userInfo = _context.TbUserLogin.Where(x => x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
                     disposal.UploadForTownship = userInfo.TownshipId == null || userInfo.TownshipId == "" ? userInfo.StateDivisionId : userInfo.TownshipId;
 
-                    disposal.EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == disposal.SerialNumber).Select(x => x.EmployeeCode).FirstOrDefault();
+                    disposal.EmployeeCode =  _context.TbEmployee.Where(x => x.SerialNumber == disposal.SerialNumber && x.IsDeleted == false).Select(x => x.EmployeeCode).FirstOrDefault();
                     var emp = await _employeeDisposalServices.SaveEmployeeDisposal(disposal, Convert.ToInt32(userId), 0,false);
 
                     return RedirectToAction("Index");
@@ -137,7 +137,7 @@ namespace MADBHR.Controllers
         public IActionResult Edit(int Id)
         {
             var disposal = _context.TbDisposal.Where(x => x.DisposalPkid == Id).FirstOrDefault();
-            disposal.SerialNumber = _context.TbEmployee.Where(x => x.EmployeeCode == disposal.EmployeeCode).Select(x => x.SerialNumber).FirstOrDefault();
+            disposal.SerialNumber = _context.TbEmployee.Where(x => x.EmployeeCode == disposal.EmployeeCode && x.IsDeleted == false).Select(x => x.SerialNumber).FirstOrDefault();
             var empInfo = _employeeDisposalServices.GetEmployeeInfo(disposal.SerialNumber);
             ViewBag.Name = empInfo.Name;
             ViewBag.Rank = empInfo.RankType;

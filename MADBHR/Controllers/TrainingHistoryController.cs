@@ -18,13 +18,15 @@ namespace MADBHR.Controllers
     {
         private readonly MADBAdminSolutionContext _context;
         private readonly ITrainingHistoryServices _trainingHistoryServices;
+        private readonly IEmployeeDisposalServices _employeeDisposalServices;
         private readonly Pagination _pagination;
 
-        public TrainingHistoryController(MADBAdminSolutionContext context, ITrainingHistoryServices trainingHistoryServices, IOptions<Pagination> pagination)
+        public TrainingHistoryController(MADBAdminSolutionContext context, ITrainingHistoryServices trainingHistoryServices, IOptions<Pagination> pagination,IEmployeeDisposalServices employeeDisposalServices)
         {
             _context = context;
             _trainingHistoryServices = trainingHistoryServices;
             _pagination = pagination.Value;
+            _employeeDisposalServices = employeeDisposalServices;
         }
         public void Initialize(TbTrainingHistory traingHistory = null)
         {
@@ -70,7 +72,7 @@ namespace MADBHR.Controllers
             var pageSize = _pagination.PageSize;
             ViewData["Page"] = page;
             ViewData["PageSize"] = pageSize;
-            var EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == SerialNumber).Select(x => x.EmployeeCode).FirstOrDefault();
+            var EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == SerialNumber && x.IsDeleted == false).Select(x => x.EmployeeCode).FirstOrDefault();
             var trainingHistories = _trainingHistoryServices.GetTrainingHistoryForAdmin(StateDivisionCode, TownshipCode).ToList();
             return View(trainingHistories.OrderByDescending(x => x.CreatedDate).ToList().ToPagedList((int)page, pageSize));
         }
@@ -107,7 +109,7 @@ namespace MADBHR.Controllers
                     var userInfo = _context.TbUserLogin.Where(x => x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
                     trainingHistory.UploadForTownship = userInfo.TownshipId == null || userInfo.TownshipId == "" ? userInfo.StateDivisionId : userInfo.TownshipId;
 
-                    trainingHistory.EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == trainingHistory.SerialNumber).Select(x => x.EmployeeCode).FirstOrDefault();
+                    trainingHistory.EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == trainingHistory.SerialNumber && x.IsDeleted == false).Select(x => x.EmployeeCode).FirstOrDefault();
                     var emp = await _trainingHistoryServices.SaveTrainingHistory(trainingHistory, Convert.ToInt32(userId), 0);
 
                     return RedirectToAction("Index");
@@ -126,8 +128,11 @@ namespace MADBHR.Controllers
         public IActionResult Edit(int Id)
         {
             var trainingHistory = _context.TbTrainingHistory.Where(x => x.TrainingHistoryPkid == Id).FirstOrDefault();         
-            trainingHistory.SerialNumber = _context.TbEmployee.Where(x => x.EmployeeCode == trainingHistory.EmployeeCode).Select(x => x.SerialNumber).FirstOrDefault();
+            trainingHistory.SerialNumber = _context.TbEmployee.Where(x => x.EmployeeCode == trainingHistory.EmployeeCode && x.IsDeleted == false).Select(x => x.SerialNumber).FirstOrDefault();
+            var empInfo = _employeeDisposalServices.GetEmployeeInfo(trainingHistory.SerialNumber);
             Initialize(trainingHistory);
+            ViewBag.Name = empInfo.Name;
+            ViewBag.Rank = empInfo.RankType;
             return View(trainingHistory);
         }
         [HttpPost]

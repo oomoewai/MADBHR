@@ -19,11 +19,13 @@ namespace MADBHR.Controllers
         private readonly MADBAdminSolutionContext _context;
         private readonly IPunishmentServices _punishmentServices;
         private readonly Pagination _pagination;
-        public PunishmentController(MADBAdminSolutionContext context, IPunishmentServices punishmentServices, IOptions<Pagination> pagination)
+        private readonly IEmployeeDisposalServices _employeeDisposalServices;
+        public PunishmentController(MADBAdminSolutionContext context, IPunishmentServices punishmentServices, IOptions<Pagination> pagination,IEmployeeDisposalServices employeeDisposalServices)
         {
             _context = context;
             _punishmentServices = punishmentServices;
             _pagination = pagination.Value;
+            _employeeDisposalServices = employeeDisposalServices;
         }
         public void Initialize(TbPunishment tbPunishment = null)
         {
@@ -102,7 +104,7 @@ namespace MADBHR.Controllers
                     var userInfo = _context.TbUserLogin.Where(x => x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
                     punishment.UploadForTownship = userInfo.TownshipId == null || userInfo.TownshipId == "" ? userInfo.StateDivisionId : userInfo.TownshipId;
 
-                    punishment.EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == punishment.SerialNumber).Select(x => x.EmployeeCode).FirstOrDefault();
+                    punishment.EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == punishment.SerialNumber && x.IsDeleted == false).Select(x => x.EmployeeCode).FirstOrDefault();
                     var emp = await _punishmentServices.SavePunishment(punishment, Convert.ToInt32(userId), 0);
 
                     return RedirectToAction("Index");
@@ -121,8 +123,11 @@ namespace MADBHR.Controllers
         public IActionResult Edit(int Id)
         {
             var punishment = _context.TbPunishment.Where(x => x.PunishmentPkid == Id).FirstOrDefault();
-            punishment.SerialNumber = _context.TbEmployee.Where(x => x.EmployeeCode == punishment.EmployeeCode).Select(x => x.SerialNumber).FirstOrDefault();
+            punishment.SerialNumber = _context.TbEmployee.Where(x => x.EmployeeCode == punishment.EmployeeCode && x.IsDeleted == false).Select(x => x.SerialNumber).FirstOrDefault();
+            var empInfo = _employeeDisposalServices.GetEmployeeInfo(punishment.SerialNumber);
             Initialize(punishment);
+            ViewBag.Name = empInfo.Name;
+            ViewBag.Rank = empInfo.RankType;
             return View(punishment);
         }
         [HttpPost]

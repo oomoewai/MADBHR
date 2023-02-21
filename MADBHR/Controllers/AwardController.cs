@@ -22,12 +22,15 @@ namespace MADBHR.Controllers
         private readonly IAwardServices _awardServices;
         private readonly Pagination _pagination;
         private readonly ILogger<AwardController> _logger;
-        public AwardController(MADBAdminSolutionContext context, IAwardServices awardServices, IOptions<Pagination> pagination,ILogger<AwardController> logger)
+        private readonly IEmployeeDisposalServices _employeeDisposalServices;
+
+        public AwardController(MADBAdminSolutionContext context, IAwardServices awardServices, IOptions<Pagination> pagination,ILogger<AwardController> logger,IEmployeeDisposalServices employeeDisposalServices)
         {
             _context = context;
             _awardServices = awardServices;
             _pagination = pagination.Value;
             _logger = logger;
+            _employeeDisposalServices = employeeDisposalServices;
         }
         public void Initialize(TbAward tbAward = null)
         {
@@ -110,7 +113,7 @@ namespace MADBHR.Controllers
                 
                     award.UploadForTownship = userInfo.TownshipId == null || userInfo.TownshipId == "" ? userInfo.StateDivisionId : userInfo.TownshipId;
 
-                    award.EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == award.SerialNumber).Select(x => x.EmployeeCode).FirstOrDefault();
+                    award.EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == award.SerialNumber && x.IsDeleted == false).Select(x => x.EmployeeCode).FirstOrDefault();
                     var emp = await _awardServices.SaveAward(award, Convert.ToInt32(userId), 0);
                     _logger.LogInformation("Successfully Create");
                     return RedirectToAction("Index");
@@ -129,8 +132,11 @@ namespace MADBHR.Controllers
         public IActionResult Edit(int Id)
         {
             var award = _context.TbAward.Where(x => x.AwardPkid == Id).FirstOrDefault();
-            award.SerialNumber = _context.TbEmployee.Where(x => x.EmployeeCode == award.EmployeeCode).Select(x => x.SerialNumber).FirstOrDefault();
+            award.SerialNumber = _context.TbEmployee.Where(x => x.EmployeeCode == award.EmployeeCode && x.IsDeleted == false).Select(x => x.SerialNumber).FirstOrDefault();
+            var empInfo = _employeeDisposalServices.GetEmployeeInfo(award.SerialNumber);
             Initialize(award);
+            ViewBag.Name = empInfo.Name;
+            ViewBag.Rank = empInfo.RankType;
             return View(award);
         }
         [HttpPost]

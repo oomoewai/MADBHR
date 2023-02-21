@@ -110,7 +110,7 @@ namespace MADBHR.Controllers
                     var userId = HttpContext.User.Identity.Name;
                     var userInfo = _context.TbUserLogin.Where(x => x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
 
-                    transfer.EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == transfer.SerialNumber).Select(x => x.EmployeeCode).FirstOrDefault();
+                    transfer.EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == transfer.SerialNumber && x.IsDeleted == false).Select(x => x.EmployeeCode).FirstOrDefault();
                     var emp = await _transferServices.SaveTransfer(transfer, Convert.ToInt32(userId), 0);
                     TbDisposal tbDisposal = new TbDisposal();
                     tbDisposal.EmployeeCode = transfer.EmployeeCode;
@@ -159,7 +159,7 @@ namespace MADBHR.Controllers
         {
             var transferEmployeeCode = _context.TbTransfer.Where(x => x.TransferPkid == Id).Select(x => x.EmployeeCode).FirstOrDefault();
             var transfer = _transferServices.GetTransfer(transferEmployeeCode,null,null,Id).FirstOrDefault();
-            transfer.SerialNumber = _context.TbEmployee.Where(x => x.EmployeeCode == transferEmployeeCode).Select(x => x.SerialNumber).FirstOrDefault();
+            transfer.SerialNumber = _context.TbEmployee.Where(x => x.EmployeeCode == transferEmployeeCode && x.IsDeleted == false).Select(x => x.SerialNumber).FirstOrDefault();
             var empInfo = _employeeDisposalServices.GetEmployeeInfo(transfer.SerialNumber);
             ViewBag.Name = empInfo.Name;
             ViewBag.Rank = empInfo.RankType;

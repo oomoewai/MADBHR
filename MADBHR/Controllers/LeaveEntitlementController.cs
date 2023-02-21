@@ -19,11 +19,13 @@ namespace MADBHR.Controllers
         private readonly MADBAdminSolutionContext _context;
         private readonly ILeaveEntitlementServices _leaveEntitlementServices;
         private readonly Pagination _pagination;
-        public LeaveEntitlementController(MADBAdminSolutionContext context, ILeaveEntitlementServices leaveEntitlementServices, IOptions<Pagination> pagination)
+        private readonly IEmployeeDisposalServices _employeeDisposalServices;
+        public LeaveEntitlementController(MADBAdminSolutionContext context, ILeaveEntitlementServices leaveEntitlementServices, IOptions<Pagination> pagination,IEmployeeDisposalServices employeeDisposalServices)
         {
             _context = context;
             _leaveEntitlementServices = leaveEntitlementServices;
             _pagination = pagination.Value;
+            _employeeDisposalServices = employeeDisposalServices;
         }
         public void Initialize(TbLeaveEntitlement tbLeaveEntitlement = null)
         {
@@ -104,7 +106,7 @@ namespace MADBHR.Controllers
                     var userInfo = _context.TbUserLogin.Where(x => x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
                     leaveEntitlement.UploadForTownship = userInfo.TownshipId == null || userInfo.TownshipId == "" ? userInfo.StateDivisionId : userInfo.TownshipId;
 
-                    leaveEntitlement.EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == leaveEntitlement.SerialNumber).Select(x => x.EmployeeCode).FirstOrDefault();
+                    leaveEntitlement.EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == leaveEntitlement.SerialNumber && x.IsDeleted == false).Select(x => x.EmployeeCode).FirstOrDefault();
                     var emp = await _leaveEntitlementServices.SaveLeaveEntitlement(leaveEntitlement, Convert.ToInt32(userId), 0);
 
                     return RedirectToAction("Index");
@@ -123,8 +125,11 @@ namespace MADBHR.Controllers
         public IActionResult Edit(int Id)
         {
             var leaveEntitlement = _context.TbLeaveEntitlement.Where(x => x.LeaveEntitlementPkid == Id).FirstOrDefault();
-            leaveEntitlement.SerialNumber = _context.TbEmployee.Where(x => x.EmployeeCode == leaveEntitlement.EmployeeCode).Select(x => x.SerialNumber).FirstOrDefault();
+            leaveEntitlement.SerialNumber = _context.TbEmployee.Where(x => x.EmployeeCode == leaveEntitlement.EmployeeCode && x.IsDeleted == false).Select(x => x.SerialNumber).FirstOrDefault();
+            var empInfo = _employeeDisposalServices.GetEmployeeInfo(leaveEntitlement.SerialNumber);
             Initialize(leaveEntitlement);
+            ViewBag.Name = empInfo.Name;
+            ViewBag.Rank = empInfo.RankType;
             return View(leaveEntitlement);
         }
         [HttpPost]

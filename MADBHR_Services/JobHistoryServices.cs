@@ -1,5 +1,6 @@
 ﻿using MADBHR_Data.Models;
 using MADBHR_Data.Repository.Base;
+using MADBHR_Models.JobExperience;
 using MADBHR_Services.Base;
 using MADBHR_Services.Options;
 using MADBHR_Services.SqlDataAccess;
@@ -80,6 +81,42 @@ namespace MADBHR_Services
             catch (Exception ex)
             {
                 List<TbJobHistory> emps = new List<TbJobHistory>();
+                return emps;
+            }
+        }
+        public List<VMJobExperience> GetTotalJobExperience(string? EmployeeCode = null,string? StateDivisionCode=null,string? TownshipCode=null)
+        {
+
+            try
+            {
+                IDbConnection connection = new SqlConnection(_connectionStrings.DefaultConnection);
+                IDbConnection myCon = connection;
+                IDbCommand cmd = myCon.CreateCommand();
+                var jobexperiences = _jobHistoryDAO.GetTotalJobExperience(cmd, EmployeeCode,StateDivisionCode,TownshipCode);
+
+                return jobexperiences;
+            }
+            catch (Exception ex)
+            {
+                List<VMJobExperience> emps = new List<VMJobExperience>();
+                return emps;
+            }
+        }
+        public List<VMJobExperience> GetCurrentJobExperience(string? EmployeeCode = null, string? StateDivisionCode = null, string? TownshipCode = null)
+        {
+
+            try
+            {
+                IDbConnection connection = new SqlConnection(_connectionStrings.DefaultConnection);
+                IDbConnection myCon = connection;
+                IDbCommand cmd = myCon.CreateCommand();
+                var jobexperiences = _jobHistoryDAO.GetCurrentJobExperience(cmd, EmployeeCode,  StateDivisionCode ,TownshipCode);
+
+                return jobexperiences;
+            }
+            catch (Exception ex)
+            {
+                List<VMJobExperience> emps = new List<VMJobExperience>();
                 return emps;
             }
         }

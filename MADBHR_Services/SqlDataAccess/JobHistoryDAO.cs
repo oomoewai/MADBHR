@@ -1,5 +1,6 @@
 ﻿using MADBHR_Common.Extensions;
 using MADBHR_Data.Models;
+using MADBHR_Models.JobExperience;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
@@ -154,6 +155,106 @@ namespace MADBHR_Services.SqlDataAccess
             }
             cmd.Connection.Close();
             return lstJobHisotories;
+
+        }
+        public List<VMJobExperience> GetTotalJobExperience(IDbCommand cmd, string? EmployeeCode = null, string? StateDivisionCode = null, string? TownshipCode = null)
+        {
+
+            cmd.CommandText = "SP_GetTotalJobExperience";
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Clear();
+            cmd.Connection.Open();
+            cmd.AddParameter("@EmployeeCode", EmployeeCode);
+            cmd.AddParameter("@StateDivisionCode", StateDivisionCode);
+            cmd.AddParameter("@TownshipCode", TownshipCode);
+            SqlDataAdapter ResAdapter = new SqlDataAdapter((SqlCommand)cmd);
+            DataSet ResDs = new DataSet();
+            ResAdapter.Fill(ResDs);
+            List<VMJobExperience> lstJobExperience = new List<VMJobExperience>();
+            if (ResDs != null)
+            {
+                if (ResDs.Tables.Count > 0)
+                {
+                    if (ResDs.Tables[0] != null)
+                    {
+                        if (ResDs.Tables[0].Rows.Count > 0)
+                        {
+                            for (int i = 0; i < ResDs.Tables[0].Rows.Count; i++)
+                            {
+                                VMJobExperience jobExperience = new VMJobExperience
+                                {
+                                    SerialNumber= ResDs.Tables[0].Rows[i]["SerialNumber"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["SerialNumber"].ToString() : "",
+                                    //EmployeeCode = ResDs.Tables[0].Rows[i]["EmployeeCode"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["EmployeeCode"].ToString() : "",
+                                    EmployeeName = ResDs.Tables[0].Rows[i]["EmployeeName"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["EmployeeName"].ToString() : "",
+                                    RankType = ResDs.Tables[0].Rows[i]["RankType"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["RankType"].ToString() : "",
+                                    Department = ResDs.Tables[0].Rows[i]["Department"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Department"].ToString() : "",
+                                    NRC = ResDs.Tables[0].Rows[i]["NRC"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["NRC"].ToString() : "",
+                                    JoinDate = ResDs.Tables[0].Rows[i]["JEJoinDate"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["JEJoinDate"].ToString() : "",
+                                    JExpYear = ResDs.Tables[0].Rows[i]["JExpYear"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["JExpYear"].ToString() : "",
+                                    JExpMonth = ResDs.Tables[0].Rows[i]["JExpMonth"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["JExpMonth"].ToString() : "",
+                                    JExpDay = ResDs.Tables[0].Rows[i]["JExpDay"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["JExpDay"].ToString() : ""
+                                    //TotalExperienceYear = ResDs.Tables[0].Rows[i]["jobExp"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["jobExp"].ToString() : ""
+
+                                };
+
+                                lstJobExperience.Add(jobExperience);
+                            }
+                        }
+                    }
+                }
+            }
+            cmd.Connection.Close();
+            return lstJobExperience;
+
+        }
+        public List<VMJobExperience> GetCurrentJobExperience(IDbCommand cmd, string? EmployeeCode = null, string? StateDivisionCode = null, string? TownshipCode = null)
+        {
+
+            cmd.CommandText = "SP_GetCurrentJobExperience";
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Clear();
+            cmd.Connection.Open();
+            cmd.AddParameter("@EmployeeCode", EmployeeCode);
+            cmd.AddParameter("@StateDivisionCode", StateDivisionCode);
+            cmd.AddParameter("@TownshipCode", TownshipCode);
+            SqlDataAdapter ResAdapter = new SqlDataAdapter((SqlCommand)cmd);
+            DataSet ResDs = new DataSet();
+            ResAdapter.Fill(ResDs);
+            List<VMJobExperience> lstJobExperience = new List<VMJobExperience>();
+            if (ResDs != null)
+            {
+                if (ResDs.Tables.Count > 0)
+                {
+                    if (ResDs.Tables[0] != null)
+                    {
+                        if (ResDs.Tables[0].Rows.Count > 0)
+                        {
+                            for (int i = 0; i < ResDs.Tables[0].Rows.Count; i++)
+                            {
+                                VMJobExperience jobExperience = new VMJobExperience
+                                {
+                                    SerialNumber = ResDs.Tables[0].Rows[i]["SerialNumber"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["SerialNumber"].ToString() : "",
+                                    //EmployeeCode = ResDs.Tables[0].Rows[i]["EmployeeCode"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["EmployeeCode"].ToString() : "",
+                                    EmployeeName = ResDs.Tables[0].Rows[i]["EmployeeName"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["EmployeeName"].ToString() : "",
+                                    RankType = ResDs.Tables[0].Rows[i]["RankType"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["RankType"].ToString() : "",
+                                    Department = ResDs.Tables[0].Rows[i]["Department"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["Department"].ToString() : "",
+                                    NRC = ResDs.Tables[0].Rows[i]["NRC"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["NRC"].ToString() : "",
+                                    JoinDate = ResDs.Tables[0].Rows[i]["JEJoinDate"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["JEJoinDate"].ToString() : "",
+                                    JExpYear = ResDs.Tables[0].Rows[i]["JExpYear"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["JExpYear"].ToString() : "",
+                                    JExpMonth = ResDs.Tables[0].Rows[i]["JExpMonth"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["JExpMonth"].ToString() : "",
+                                    JExpDay = ResDs.Tables[0].Rows[i]["JExpDay"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["JExpDay"].ToString() : ""
+                                    //TotalExperienceYear = ResDs.Tables[0].Rows[i]["jobExp"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["jobExp"].ToString() : ""
+
+                                };
+
+                                lstJobExperience.Add(jobExperience);
+                            }
+                        }
+                    }
+                }
+            }
+            cmd.Connection.Close();
+            return lstJobExperience;
 
         }
         public void DeleteJobHistory(IDbCommand cmd, int jobHistoryPkid, int userId)

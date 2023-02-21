@@ -19,11 +19,13 @@ namespace MADBHR.Controllers
         private readonly MADBAdminSolutionContext _context;
         private readonly IInternationalKnowledgeServices _internationalKnowledgeServices;
         private readonly Pagination _pagination;
-        public InternationalKnowledgeController(MADBAdminSolutionContext context, IInternationalKnowledgeServices internationalKnowledgeServices, IOptions<Pagination> pagination)
+        private readonly IEmployeeDisposalServices _employeeDisposalServices;
+        public InternationalKnowledgeController(MADBAdminSolutionContext context, IInternationalKnowledgeServices internationalKnowledgeServices, IOptions<Pagination> pagination,IEmployeeDisposalServices employeeDisposalServices)
         {
             _context = context;
             _internationalKnowledgeServices = internationalKnowledgeServices;
             _pagination = pagination.Value;
+            _employeeDisposalServices = employeeDisposalServices;
         }
         public void Initialize(TbIntKnowledge tbIntKnowledge = null)
         {
@@ -104,7 +106,7 @@ namespace MADBHR.Controllers
                     var userInfo = _context.TbUserLogin.Where(x => x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
                     intKnowledge.UploadForTownship = userInfo.TownshipId == null || userInfo.TownshipId == "" ? userInfo.StateDivisionId : userInfo.TownshipId;
 
-                    intKnowledge.EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == intKnowledge.SerialNumber).Select(x => x.EmployeeCode).FirstOrDefault();
+                    intKnowledge.EmployeeCode =  _context.TbEmployee.Where(x => x.SerialNumber == intKnowledge.SerialNumber && x.IsDeleted == false).Select(x => x.EmployeeCode).FirstOrDefault();
                     var emp = await _internationalKnowledgeServices.SaveIntKnowledge(intKnowledge, Convert.ToInt32(userId), 0);
 
                     return RedirectToAction("Index");
@@ -123,8 +125,11 @@ namespace MADBHR.Controllers
         public IActionResult Edit(int Id)
         {
             var intKnowledge = _context.TbIntKnowledge.Where(x => x.IntKnowledgePkid == Id).FirstOrDefault();
-            intKnowledge.SerialNumber = _context.TbEmployee.Where(x => x.EmployeeCode == intKnowledge.EmployeeCode).Select(x => x.SerialNumber).FirstOrDefault();
+            intKnowledge.SerialNumber = _context.TbEmployee.Where(x => x.EmployeeCode == intKnowledge.EmployeeCode && x.IsDeleted == false).Select(x => x.SerialNumber).FirstOrDefault();
+            var empInfo = _employeeDisposalServices.GetEmployeeInfo(intKnowledge.SerialNumber);
             Initialize(intKnowledge);
+            ViewBag.Name = empInfo.Name;
+            ViewBag.Rank = empInfo.RankType;
             return View(intKnowledge);
         }
         [HttpPost]

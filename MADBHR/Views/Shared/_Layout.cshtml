@@ -253,17 +253,17 @@
                 <!-- sidebar menu: : style can be found in sidebar.less -->
                 <ul class="sidebar-menu" data-widget="tree" style="margin-top:60px;">
                     @*<li class="active treeview">
-                            <a href="#">
-                                <i class="fa fa-dashboard"></i> <span>Dashboard</span>
-                                <span class="pull-right-container">
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </span>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li class="active"><a href="#"><i class="fa fa-circle-o"></i> Dashboard v1</a></li>
-                                <li><a href="#"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>
-                            </ul>
-                        </li>*@
+            <a href="#">
+                <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                <li class="active"><a href="#"><i class="fa fa-circle-o"></i> Dashboard v1</a></li>
+                <li><a href="#"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>
+            </ul>
+        </li>*@
                     @*<li><a href="@Url.Action("Dashboard", "Home")"><i class="fa fa-home" style="font-size:20px;"></i> <span>ပင်မစာမျက်နှာ</span></a></li>*@
                     @{
 
@@ -382,16 +382,35 @@
                                 </li>
                             </ul>
                         </li>
+                        <li class="treeview active menu-open">
+                            <a href="#" class="active">
+                                <i class="fa fa-list"></i>
+                                <span style=" font-size: 20px;">လုပ်သက် ကြည့်ရန်</span>
 
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li>
+                                    <a class="active" href="@Url.Action("JobExperience", "JobHistory")" style="font-size: 16px;"><i class=""></i>စုစုပေါင်းလုပ်သက်ကြည့်ရန်</a>
+
+                                </li>
+                                <li>
+                                    <a class="active" href="@Url.Action("CurrentJobExperience", "JobHistory")" style="font-size: 16px;"><i class=""></i>လက်ရှိလုပ်သက်ကြည့်ရန်</a>
+
+                                </li>
+                            </ul>
+                        </li>
                     }
 
                     @*<li><a href="@Url.Action("ProposalApproveList", "ProposalProgress")"><i class="fa fa-inbox"></i> <span>ဝင်စာများ&nbsp;&nbsp;<span style="background-color:red;" class="badge badge-danger">@Context.Session.GetString("countDocIn")</span></span></a></li>
-                        <li><a href="@Url.Action("ProposalCaseOpenList", "ProposalProgress")"><i class="fa fa-paper-plane"></i> <span>ထွက်စာများ&nbsp;&nbsp;<span style="background-color:red;" class="badge badge-danger">@Context.Session.GetString("countDocOut")</span></span></a></li>
-                        <li><a href="@Url.Action("NoteSheetApproveList", "ProposalProgress")"><i class="fa fa-inbox"></i> <span>Note Sheet များ&nbsp;&nbsp;<span style="background-color:red;" class="badge badge-danger">@Context.Session.GetString("noteSheet")</span></span></a></li>
-                        <li><a href="@Url.Action("TrashDocumentList", "Operation")"><i class="fa fa-inbox"></i> <span>ပစ်စာများ</span></a></li>
+        <li><a href="@Url.Action("ProposalCaseOpenList", "ProposalProgress")"><i class="fa fa-paper-plane"></i> <span>ထွက်စာများ&nbsp;&nbsp;<span style="background-color:red;" class="badge badge-danger">@Context.Session.GetString("countDocOut")</span></span></a></li>
+        <li><a href="@Url.Action("NoteSheetApproveList", "ProposalProgress")"><i class="fa fa-inbox"></i> <span>Note Sheet များ&nbsp;&nbsp;<span style="background-color:red;" class="badge badge-danger">@Context.Session.GetString("noteSheet")</span></span></a></li>
+        <li><a href="@Url.Action("TrashDocumentList", "Operation")"><i class="fa fa-inbox"></i> <span>ပစ်စာများ</span></a></li>
 
-                        <li><a href="@Url.Action("DocsOut", "Operation")"><i class="fa fa-pencil"></i> <span>စာမှတ်ပုံတင်ခြင်း</span></a></li>
-                        <li><a href="@Url.Action("TrashDocument", "Operation")"><i class="fa fa-pencil"></i> <span>ပစ်စာမှတ်ပုံတင်ခြင်း</span></a></li>*@
+        <li><a href="@Url.Action("DocsOut", "Operation")"><i class="fa fa-pencil"></i> <span>စာမှတ်ပုံတင်ခြင်း</span></a></li>
+        <li><a href="@Url.Action("TrashDocument", "Operation")"><i class="fa fa-pencil"></i> <span>ပစ်စာမှတ်ပုံတင်ခြင်း</span></a></li>*@
 
                 </ul>
             </section>

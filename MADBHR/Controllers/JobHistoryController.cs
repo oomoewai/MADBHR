@@ -19,11 +19,13 @@ namespace MADBHR.Controllers
         private readonly MADBAdminSolutionContext _context;
         private readonly IJobHistoryServices _jobHistoryServices;
         private readonly Pagination _pagination;
-        public JobHistoryController(MADBAdminSolutionContext context, IJobHistoryServices jobHistoryServices, IOptions<Pagination> pagination)
+        private readonly IEmployeeDisposalServices _employeeDisposalServices;
+        public JobHistoryController(MADBAdminSolutionContext context, IJobHistoryServices jobHistoryServices, IOptions<Pagination> pagination,IEmployeeDisposalServices employeeDisposalServices)
         {
             _context = context;
             _jobHistoryServices = jobHistoryServices;
             _pagination = pagination.Value;
+            _employeeDisposalServices = employeeDisposalServices;
         }
         public void Initialize(TbJobHistory tbJobHistory = null)
         {
@@ -87,7 +89,7 @@ namespace MADBHR.Controllers
             var pageSize = _pagination.PageSize;
             ViewData["Page"] = page;
             ViewData["PageSize"] = pageSize;
-            var EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == SerialNumber).Select(x => x.EmployeeCode).FirstOrDefault();
+            var EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == SerialNumber && x.IsDeleted == false).Select(x => x.EmployeeCode).FirstOrDefault();
             var jobHistories = _jobHistoryServices.GetCurrentJobHistory(EmployeeCode,StateDivisionCode,TownshipCode).ToList();
             return View(jobHistories.OrderByDescending(x => x.CreatedDate).ToList().ToPagedList((int)page, pageSize));
         }
@@ -103,6 +105,84 @@ namespace MADBHR.Controllers
             //var EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == SerialNumber).Select(x => x.EmployeeCode).FirstOrDefault();
             var jobHistories = _jobHistoryServices.GetJobHistory(EmployeeCode,FromDate,ToDate).ToList();
             return View(jobHistories.OrderByDescending(x => x.CreatedDate).ToList().ToPagedList((int)page, pageSize));
+        }
+        public IActionResult JobExperience(string? SerialNumber = null, string? StateDivisionCode = null, string? TownshipCode = null, int? page = 1)
+        {
+            Initialize();
+            var pageSize = _pagination.PageSize;
+            ViewData["Page"] = page;
+            ViewData["PageSize"] = pageSize;
+            var userId = HttpContext.User.Identity.Name;
+            var userInfo = _context.TbUserLogin.Where(x => x.Status == "Enable" && x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
+            ViewBag.lstLogIn = userInfo;
+            ViewBag.AccountType = userInfo.AccountType;
+            ViewBag.TownshipId = userInfo.TownshipId;
+            if (userInfo.AccountType == "Super Admin")
+            {
+                StateDivisionCode = userInfo.StateDivisionId;
+                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).ToList();
+                ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision", stateDivisionCodes[0].StateDivisionCode);
+            }
+            else if (userInfo.AccountType == "Head Admin")
+            {
+                var stateDivisionCodes = _context.TbStateDivision.Select(x => new { x.StateDivision, x.StateDivisionCode }).ToList();
+                ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision");
+            }
+            else if (userInfo.AccountType == "User")
+            {
+                TownshipCode = _context.TbCurrentJobTownship.Where(x => x.UploadForTownship == userInfo.TownshipId).Select(x => x.TownshipCode).FirstOrDefault();
+                StateDivisionCode = userInfo.StateDivisionId;
+                TownshipCode = TownshipCode == null ? "0" : TownshipCode;
+                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).ToList();
+                ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision", stateDivisionCodes[0].StateDivisionCode);
+
+            }
+            TempData["SerialNumber"] = SerialNumber;
+            TempData["TownshipCode"] = TownshipCode;
+            TempData["StateDivisionCode"] = StateDivisionCode;
+            var EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == SerialNumber && x.IsDeleted==false).Select(x => x.EmployeeCode).FirstOrDefault();
+            TempData["EmployeeCode"] = EmployeeCode;
+            var jobExperiences = _jobHistoryServices.GetTotalJobExperience(EmployeeCode,StateDivisionCode,TownshipCode).ToList();
+            return View(jobExperiences.ToPagedList((int)page, pageSize));
+        }
+        public IActionResult CurrentJobExperience(string SerialNumber, string? StateDivisionCode = null, string? TownshipCode = null, int? page = 1)
+        {
+            Initialize();
+            var pageSize = _pagination.PageSize;
+            ViewData["Page"] = page;
+            ViewData["PageSize"] = pageSize;
+            var userId = HttpContext.User.Identity.Name;
+            var userInfo = _context.TbUserLogin.Where(x => x.Status == "Enable" && x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
+            ViewBag.lstLogIn = userInfo;
+            ViewBag.AccountType = userInfo.AccountType;
+            ViewBag.TownshipId = userInfo.TownshipId;
+            if (userInfo.AccountType == "Super Admin")
+            {
+                StateDivisionCode = userInfo.StateDivisionId;
+                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).ToList();
+                ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision", stateDivisionCodes[0].StateDivisionCode);
+            }
+            else if (userInfo.AccountType == "Head Admin")
+            {
+                var stateDivisionCodes = _context.TbStateDivision.Select(x => new { x.StateDivision, x.StateDivisionCode }).ToList();
+                ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision");
+            }
+            else if (userInfo.AccountType == "User")
+            {
+                TownshipCode = _context.TbCurrentJobTownship.Where(x => x.UploadForTownship == userInfo.TownshipId).Select(x => x.TownshipCode).FirstOrDefault();
+                StateDivisionCode = userInfo.StateDivisionId;
+                TownshipCode = TownshipCode == null ? "0" : TownshipCode;
+                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).ToList();
+                ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision", stateDivisionCodes[0].StateDivisionCode);
+
+            }
+            TempData["SerialNumber"] = SerialNumber;
+            TempData["TownshipCode"] = TownshipCode;
+            TempData["StateDivisionCode"] = StateDivisionCode;
+            var EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == SerialNumber && x.IsDeleted == false).Select(x => x.EmployeeCode).FirstOrDefault();
+            TempData["EmployeeCode"] = EmployeeCode;
+            var jobExperiences = _jobHistoryServices.GetCurrentJobExperience(EmployeeCode,StateDivisionCode, TownshipCode).ToList();
+            return View(jobExperiences.ToPagedList((int)page, pageSize));
         }
         public IActionResult Create()
         {
@@ -125,7 +205,7 @@ namespace MADBHR.Controllers
                     var userInfo = _context.TbUserLogin.Where(x => x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
                     jobHistory.UploadForTownship =userInfo.TownshipId == null || userInfo.TownshipId == "" ? userInfo.StateDivisionId : userInfo.TownshipId;
 
-                    jobHistory.EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == jobHistory.SerialNumber).Select(x => x.EmployeeCode).FirstOrDefault();
+                    jobHistory.EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == jobHistory.SerialNumber && x.IsDeleted == false).Select(x => x.EmployeeCode).FirstOrDefault();
                     var emp = await _jobHistoryServices.SaveJobHistory(jobHistory, Convert.ToInt32(userId), 0);
 
                     return RedirectToAction("Index");
@@ -144,8 +224,11 @@ namespace MADBHR.Controllers
         public IActionResult Edit(int Id)
         {
             var jobHistory = _context.TbJobHistory.Where(x => x.JobHistoryPkid == Id).FirstOrDefault();
-            jobHistory.SerialNumber = _context.TbEmployee.Where(x => x.EmployeeCode == jobHistory.EmployeeCode).Select(x => x.SerialNumber).FirstOrDefault();
+            jobHistory.SerialNumber = _context.TbEmployee.Where(x => x.EmployeeCode == jobHistory.EmployeeCode && x.IsDeleted == false).Select(x => x.SerialNumber).FirstOrDefault();
+            var empInfo = _employeeDisposalServices.GetEmployeeInfo(jobHistory.SerialNumber);
             Initialize(jobHistory);
+            ViewBag.Name = empInfo.Name;
+            ViewBag.Rank = empInfo.RankType;
             return View(jobHistory);
         }
         [HttpPost]

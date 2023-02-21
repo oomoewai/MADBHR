@@ -45,7 +45,8 @@ namespace MADBHR.Controllers
             {
                 ViewData["SerialNumber"] = serialNumber;
                 TempData["SerialNumber"] = serialNumber;
-                TempData["EmployeeCode"] = _context.TbEmployee.Where(x => x.SerialNumber ==serialNumber).Select(x=>x.EmployeeCode).FirstOrDefault(); 
+                TempData["EmployeeCode"] = _context.TbEmployee.Where(x => x.SerialNumber ==serialNumber && x.IsDeleted == false).Select(x=>x.EmployeeCode).FirstOrDefault();
+                ViewBag.EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == serialNumber && x.IsDeleted == false).Select(x => x.EmployeeCode).FirstOrDefault();
             }
             return View();
         }
@@ -91,8 +92,9 @@ namespace MADBHR.Controllers
         public IActionResult Edit(int Id)
         {
             var relationInfo = _context.TbRelationship.Where(x => x.RelationshipPkid == Id).FirstOrDefault();
-            ViewData["SerialNumber"] = _context.TbEmployee.Where(x => x.EmployeeCode == relationInfo.EmployeeCode).Select(x => x.SerialNumber).FirstOrDefault();
+            ViewData["SerialNumber"] = _context.TbEmployee.Where(x => x.EmployeeCode == relationInfo.EmployeeCode && x.IsDeleted == false).Select(x => x.SerialNumber).FirstOrDefault();
             Initialize(relationInfo);
+            ViewBag.EmployeeCode = relationInfo.EmployeeCode;
             return View(relationInfo);
         }
         [HttpPost]
@@ -114,7 +116,7 @@ namespace MADBHR.Controllers
                     }
                     else
                     {
-                        return RedirectToAction("Index");
+                        return RedirectToAction("Index",new { EmployeeCode = emp.EmployeeCode });
                     }
 
 

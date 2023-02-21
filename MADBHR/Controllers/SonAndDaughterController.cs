@@ -27,6 +27,7 @@ namespace MADBHR.Controllers
         {
             var userId = HttpContext.User.Identity.Name;
             ViewBag.lstLogIn = _context.TbUserLogin.Where(x => x.Status == "Enable" && x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
+            
 
         }
         public IActionResult Index(string? EmployeeCode = null, int? page = 1)
@@ -45,6 +46,7 @@ namespace MADBHR.Controllers
             {
                 ViewData["SerialNumber"] = serialNumber;
                 TempData["EmployeeCode"] = EmployeeCode;
+                ViewBag.EmployeeCode = EmployeeCode;
             }
             return View();
         }
@@ -83,8 +85,9 @@ namespace MADBHR.Controllers
         public IActionResult Edit(int Id)
         {
             var sonAndDaughter = _context.TbSonAndDaughter.Where(x => x.SonAndDaughterPkid == Id).FirstOrDefault();
-            ViewData["SerialNumber"] = _context.TbEmployee.Where(x => x.EmployeeCode == sonAndDaughter.EmployeeCode).Select(x => x.SerialNumber).FirstOrDefault();
+            ViewData["SerialNumber"] = _context.TbEmployee.Where(x => x.EmployeeCode == sonAndDaughter.EmployeeCode && x.IsDeleted == false).Select(x => x.SerialNumber).FirstOrDefault();
             Initialize(sonAndDaughter);
+            ViewBag.EmployeeCode = sonAndDaughter.EmployeeCode;
             return View(sonAndDaughter);
         }
         [HttpPost]
@@ -101,7 +104,7 @@ namespace MADBHR.Controllers
                     var userId = HttpContext.User.Identity.Name;
                     var emp = await _sonAndDaughterServices.SaveSonAndDaughter(sonAndDaughter, Convert.ToInt32(userId), sonAndDaughter.SonAndDaughterPkid);
 
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Index", new { EmployeeCode = emp.EmployeeCode });
 
                     //}
                 }

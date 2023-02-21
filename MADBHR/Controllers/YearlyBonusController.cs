@@ -19,11 +19,13 @@ namespace MADBHR.Controllers
         private readonly MADBAdminSolutionContext _context;
         private readonly IYearlyBonusServices _yearlyBonusServices;
         private readonly Pagination _pagination;
-        public YearlyBonusController(MADBAdminSolutionContext context, IYearlyBonusServices yearlyBonusServices, IOptions<Pagination> pagination)
+        private readonly IEmployeeDisposalServices _employeeDisposalServices;
+        public YearlyBonusController(MADBAdminSolutionContext context, IYearlyBonusServices yearlyBonusServices, IOptions<Pagination> pagination,IEmployeeDisposalServices employeeDisposalServices)
         {
             _context = context;
             _yearlyBonusServices = yearlyBonusServices;
             _pagination = pagination.Value;
+            _employeeDisposalServices = employeeDisposalServices;
         }
         public void Initialize(TbYearlyBonus tbYearlyBonus = null)
         {
@@ -100,7 +102,7 @@ namespace MADBHR.Controllers
                     var userInfo = _context.TbUserLogin.Where(x => x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
                     yearlyBonus.UploadForTownship = userInfo.TownshipId == null || userInfo.TownshipId == "" ? userInfo.StateDivisionId : userInfo.TownshipId;
 
-                    yearlyBonus.EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == yearlyBonus.SerialNumber).Select(x => x.EmployeeCode).FirstOrDefault();
+                    yearlyBonus.EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == yearlyBonus.SerialNumber && x.IsDeleted == false).Select(x => x.EmployeeCode).FirstOrDefault();
                     var emp = await _yearlyBonusServices.SaveYearlyBonus(yearlyBonus, Convert.ToInt32(userId), 0);
 
                     return RedirectToAction("Index");
@@ -119,8 +121,11 @@ namespace MADBHR.Controllers
         public IActionResult Edit(int Id)
         {
             var yearlyBonus = _context.TbYearlyBonus.Where(x => x.YearlyBonusPkid == Id).FirstOrDefault();
-            yearlyBonus.SerialNumber = _context.TbEmployee.Where(x => x.EmployeeCode == yearlyBonus.EmployeeCode).Select(x => x.SerialNumber).FirstOrDefault();
+            yearlyBonus.SerialNumber = _context.TbEmployee.Where(x => x.EmployeeCode == yearlyBonus.EmployeeCode && x.IsDeleted == false).Select(x => x.SerialNumber).FirstOrDefault();
+            var empInfo = _employeeDisposalServices.GetEmployeeInfo(yearlyBonus.SerialNumber);
             Initialize(yearlyBonus);
+            ViewBag.Name = empInfo.Name;
+            ViewBag.Rank = empInfo.RankType;
             return View(yearlyBonus);
         }
         [HttpPost]
