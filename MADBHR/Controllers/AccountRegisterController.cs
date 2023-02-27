@@ -121,6 +121,11 @@ namespace MADBHR.Controllers
                 {                 
                   
                     userLogin.UserPkid = 0;
+                    if(userLogin.StateDivisionIdForUser !=null)
+                    {
+                        userLogin.StateDivisionId = userLogin.StateDivisionIdForUser;
+                    }
+                    userLogin.Status = "Enable";
                     var emp = await _accountRegisterServices.SaveAccount(userLogin, Convert.ToInt32(userId), 0);
                     _logger.LogInformation("Successfully Create");
                     return RedirectToAction("Index");
@@ -162,8 +167,13 @@ namespace MADBHR.Controllers
 
                     //if (ModelState.IsValid)
                     //{
-                    
+
                     //account.UploadForTownship = userInfo.TownshipId == null || userInfo.TownshipId == "" ? userInfo.StateDivisionId : userInfo.TownshipId;
+                    if (account.StateDivisionIdForUser != null)
+                    {
+                        account.StateDivisionId = account.StateDivisionIdForUser;
+                    }
+                    account.Status = "Enable";
                     var emp = await _accountRegisterServices.SaveAccount(account, Convert.ToInt32(userId), 0);
                     _logger.LogInformation("Successfully Edit");
                     return RedirectToAction("Index");

@@ -13,6 +13,14 @@
             $("#StateDivision").hide();
             $("#townshipId").hide()
             $("#lblTownship").hide();
+            if ('@ViewBag.lstLogIn.AccountType' == "User")
+            {               
+                $("#office").prop("disabled", true);
+                $("#department").prop("disabled", true);
+                $("#accountType").prop("disabled", true);
+                $("#StateDivision").prop("disabled", true);
+                $("#townshipId").prop("disabled", true);
+            }
             $("#field-password").val('@ViewBag.Password');
             debugger;
             let accountType = '@ViewBag.account';
@@ -58,7 +66,7 @@
                                 option.value = res[i].townCode;
                                 option.text = res[i].townName;
                             }
-                           
+
                             selectList.appendChild(option);
                         }
                     }
@@ -113,7 +121,7 @@
                 $("#StateDivision").hide();
                 $("#townshipId").hide()
                 $("#lblTownship").hide();
-                
+
             }
         }
         function CheckEmail() {

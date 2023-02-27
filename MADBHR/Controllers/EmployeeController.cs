@@ -51,8 +51,17 @@ namespace MADBHR.Controllers
             }
             else if (userInfo.AccountType == "User")
             {
-                var currentJobTownships = _context.TbCurrentJobTownship.Where(x => x.Active == true && x.StateDivisionId == userInfo.StateDivisionId && x.UploadForTownship == userInfo.TownshipId).ToList();
-                ViewData["CurrentJobTownship"] = new SelectList(currentJobTownships, "TownshipCode", "Township", employee?.Occupation);
+              //if(userInfo.StateDivisionId =="113")
+              //  {
+              //      var currentJobTownships = _context.TbCurrentJobTownship.Where(x => x.Active == true && x.StateDivisionId == userInfo.StateDivisionId ).ToList();
+              //      ViewData["CurrentJobTownship"] = new SelectList(currentJobTownships, "TownshipCode", "Township", employee?.Occupation);
+              //  }
+                //else
+                //{
+                    var currentJobTownships = _context.TbCurrentJobTownship.Where(x => x.Active == true && x.StateDivisionId == userInfo.StateDivisionId && x.UploadForTownship == userInfo.TownshipId).ToList();
+                    ViewData["CurrentJobTownship"] = new SelectList(currentJobTownships, "TownshipCode", "Township", employee?.Occupation);
+                //}
+               
             }
             var educationTypeCodes = _context.TbEducationType.Where(x => x.Active == true).ToList();
             ViewData["EducationType"] = new SelectList(educationTypeCodes, "EducationTypeCode", "EducationType", employee?.EducationTypeCode);
@@ -76,7 +85,7 @@ namespace MADBHR.Controllers
             return View(employees.OrderByDescending(x => x.CreatedDate).ToList().ToPagedList((int)page, pageSize));
 
         }
-        public IActionResult AdminIndex(string StateDivisionCode = null, string TownshipCode = null,string? Status=null, int? page = 1)
+        public IActionResult AdminIndex(string StateDivisionCode = null, string TownshipCode = null, string? Name = null, string? SerialNumber = null, string? Status=null, int? page = 1)
         {
             Initialize();
             var userId = HttpContext.User.Identity.Name;
@@ -85,8 +94,17 @@ namespace MADBHR.Controllers
             //StateDivisionCode = userInfo.StateDivisionId;            
             if (userInfo.AccountType == "User")
             {
-                TownshipCode = _context.TbCurrentJobTownship.Where(x => x.Active == true && x.UploadForTownship == userInfo.TownshipId).Select(x => x.TownshipCode).FirstOrDefault();
-                TownshipCode = TownshipCode == null ? "0" : TownshipCode;
+                if(userInfo.TownshipId=="0010")
+                {
+                    //TownshipCode = _context.TbCurrentJobTownship.Where(x => x.Active == true && x.StateDivisionId == userInfo.StateDivisionId).Select(x => x.TownshipCode).FirstOrDefault();
+                    //TownshipCode = TownshipCode == null ? "0" : TownshipCode;
+                    StateDivisionCode = userInfo.StateDivisionId;
+                }
+                else
+                {
+                    TownshipCode = _context.TbCurrentJobTownship.Where(x => x.Active == true && x.UploadForTownship == userInfo.TownshipId).Select(x => x.TownshipCode).FirstOrDefault();
+                    TownshipCode = TownshipCode == null ? "0" : TownshipCode;
+                }
                 TempData["TownshipCode"] = TownshipCode;
                 var townshipCodes = _context.TbCurrentJobTownship.Where(x => x.StateDivisionId == userInfo.StateDivisionId && x.UploadForTownship == userInfo.TownshipId).ToList();
                 ViewData["TownshipCode"] = new SelectList(townshipCodes, "TownshipCode", "Township");
@@ -107,7 +125,7 @@ namespace MADBHR.Controllers
             var pageSize = _pagination.PageSize;
             ViewData["Page"] = page;
             ViewData["PageSize"] = pageSize;
-            var employees = _employeeServices.GetEmployeeForAdmin(StateDivisionCode, TownshipCode,Status).ToList();
+            var employees = _employeeServices.GetEmployeeForAdmin(StateDivisionCode, TownshipCode,Status,Name,SerialNumber).ToList();
             StateDivisionCode = null;
             TownshipCode = null;
             return View(employees.OrderByDescending(x => x.CreatedDate).ToList().ToPagedList((int)page, pageSize));
@@ -209,6 +227,18 @@ namespace MADBHR.Controllers
                             employee.Form66Pic = uploadRes.ResponseUri.AbsolutePath;
                         }
                     }
+                    if (employee.DegreeImageFile != null)
+                    {
+                        var filename = employee.DegreeImageFile != null ? FtpHelper.ftpImageFolderPath + employee.DegreeImageFile.GetUniqueName() : "";
+
+                        didUploaded = false;
+                        var uploadRes = FtpHelper.UploadFileToServer(employee.DegreeImageFile, filename);
+                        if (uploadRes.IsSucceed())
+                        {
+                            didUploaded = true;
+                            employee.DegreePic = uploadRes.ResponseUri.AbsolutePath;
+                        }
+                    }
                     if (didUploaded)
                     {
                         employee.UploadForTownship = userInfo.TownshipId == null || userInfo.TownshipId == "" ? userInfo.StateDivisionId : userInfo.TownshipId;
@@ -225,7 +255,7 @@ namespace MADBHR.Controllers
                         _logger.LogInformation("Successfully Create");
                         if (RedirectToRelationship == true)
                         {
-                            return RedirectToAction("Create", "Relationship", new { SerialNumber = emp.SerialNumber });
+                            return RedirectToAction("Create", "Relationship", new { SerialNumber = emp.SerialNumber,Address=emp.Address });
                         }
                         else
                         {
@@ -255,6 +285,7 @@ namespace MADBHR.Controllers
             employeeInfo.ImageContent = employeeInfo.ProfilePic.GetBase64();
             employeeInfo.NRCImageContent = employeeInfo.Nrcpic.GetBase64();
             employeeInfo.Form66ImageContent = employeeInfo.Form66Pic.GetBase64();
+            employeeInfo.DegreeImageContent = employeeInfo.DegreePic.GetBase64();
             Initialize(employeeInfo);
             return View(employeeInfo);
         }
@@ -340,6 +371,30 @@ namespace MADBHR.Controllers
                             {
                                 didUploaded = true;
                                 employee.Form66Pic = uploadRes.ResponseUri.AbsolutePath;
+                            }
+                        }
+                    }
+                    if (employee.DegreeImageFile != null)
+                    {
+                        didUploaded = false;
+                        var filename = employee.DegreeImageFile != null ? FtpHelper.ftpImageFolderPath + employee.DegreeImageFile.GetUniqueName() : "";
+                        var uploadRes = FtpHelper.UploadFileToServer(employee.DegreeImageFile, filename);
+                        if (uploadRes.IsSucceed())
+                        {
+                            var didDeleted = true;
+                            if (FtpHelper.CheckIfFileExistsOnServer(employee.DegreePic))
+                            {
+                                didDeleted = false;
+                                var deleteRes = FtpHelper.DeleteFileOnServer(employee.DegreePic);
+                                if (deleteRes.IsSucceed())
+                                {
+                                    didDeleted = true;
+                                }
+                            }
+                            if (didDeleted)
+                            {
+                                didUploaded = true;
+                                employee.DegreePic = uploadRes.ResponseUri.AbsolutePath;
                             }
                         }
                     }

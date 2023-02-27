@@ -124,7 +124,11 @@
                                 </td>
 
                                 <td>
-                                    <button class="onoff" onclick="onoff(this,@item.UserPkid, '@isActive')" id="btnSwitch+@count" style="@fontColor"><div>@isActive</div></button>
+                                    @if (ViewBag.lstLogIn.AccountType != "User")
+                                    {
+                                        <button class="onoff" onclick="onoff(this,@item.UserPkid, '@isActive')" id="btnSwitch+@count" style="@fontColor"><div>@isActive</div></button>
+
+                                    }
 
                                 </td>
 
@@ -286,7 +290,7 @@
             if (buttonstate) {
                 blabel = "Active";
                 //bstyle = "green";
-                //bcolor = "lightgreen";
+                bcolor = "white";
             }
             else {
                 blabel = "Inactive";
@@ -302,6 +306,7 @@
                 url: `/AccountRegister/UpdateUserStatus?UserId=${userId}&Active=${buttonstate}`,
                 type: 'get',
                 success: function (res) {
+                    window.location = "/AccountRegister/Index";
                     //if (res) {
                     //    if (buttonstate == 1) {
                     //        Swal.fire({

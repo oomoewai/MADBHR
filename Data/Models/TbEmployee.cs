@@ -45,6 +45,7 @@ namespace MADBHR_Data.Models
         public string ProfilePic { get; set; }
         public string Form66Pic { get; set; }
         public string Nrcpic { get; set; }
+        public string DegreePic { get; set; }
         public string Status { get; set; }
         public string RejectComment { get; set; }
         public string EditRequest { get; set; }
@@ -61,6 +62,9 @@ namespace MADBHR_Data.Models
         public string Form66ImageContent { get; set; }
         [NotMapped]
         [SkipProperty]
+        public string DegreeImageContent { get; set; }
+        [NotMapped]
+        [SkipProperty]
         public IFormFile ImageFile { get; set; }
         [NotMapped]
         [SkipProperty]
@@ -68,6 +72,9 @@ namespace MADBHR_Data.Models
         [NotMapped]
         [SkipProperty]
         public IFormFile Form66ImageFile { get; set; }
+        [NotMapped]
+        [SkipProperty]
+        public IFormFile DegreeImageFile { get; set; }
         [NotMapped]
         [SkipProperty]
         public string CurrentRank { get; set; }

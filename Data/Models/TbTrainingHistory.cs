@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using static MADBHR_Data.Models.Attributes.CustomAttribute;
@@ -28,6 +29,7 @@ namespace MADBHR_Data.Models
         public DateTime? CreatedDate { get; set; }
         public int? CreatedBy { get; set; }
         public string UploadForTownship { get; set; }
+        public string CertificatePic { get; set; }
         [NotMapped]
         [SkipProperty]
         public string SerialNumber { get; set; }
@@ -52,6 +54,12 @@ namespace MADBHR_Data.Models
         [NotMapped]
         [SkipProperty]
         public string Department { get; set; }
+        [NotMapped]
+        [SkipProperty]
+        public string CertificateImageContent { get; set; }
+        [NotMapped]
+        [SkipProperty]
+        public IFormFile CertificateImageFile { get; set; }
 
     }
 }

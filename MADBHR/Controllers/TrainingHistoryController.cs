@@ -21,7 +21,7 @@ namespace MADBHR.Controllers
         private readonly IEmployeeDisposalServices _employeeDisposalServices;
         private readonly Pagination _pagination;
 
-        public TrainingHistoryController(MADBAdminSolutionContext context, ITrainingHistoryServices trainingHistoryServices, IOptions<Pagination> pagination,IEmployeeDisposalServices employeeDisposalServices)
+        public TrainingHistoryController(MADBAdminSolutionContext context, ITrainingHistoryServices trainingHistoryServices, IOptions<Pagination> pagination, IEmployeeDisposalServices employeeDisposalServices)
         {
             _context = context;
             _trainingHistoryServices = trainingHistoryServices;
@@ -38,7 +38,7 @@ namespace MADBHR.Controllers
             ViewData["Location"] = new SelectList(lstLocation, traingHistory?.Location);
 
         }
-        public IActionResult Index(string? SerialNumber = null, string SchoolName = null, string? StateDivisionCode = null, string? TownshipCode = null ,int? page = 1)
+        public IActionResult Index(string? SerialNumber = null, string SchoolName = null, string? StateDivisionCode = null, string? TownshipCode = null, int? page = 1)
         {
             Initialize();
             var userId = HttpContext.User.Identity.Name;
@@ -76,7 +76,7 @@ namespace MADBHR.Controllers
             var trainingHistories = _trainingHistoryServices.GetTrainingHistoryForAdmin(StateDivisionCode, TownshipCode).ToList();
             return View(trainingHistories.OrderByDescending(x => x.CreatedDate).ToList().ToPagedList((int)page, pageSize));
         }
-        public IActionResult Detail(string EmployeeCode,string? SchoolName=null, int? page = 1)
+        public IActionResult Detail(string EmployeeCode, string? SchoolName = null, int? page = 1)
         {
             Initialize();
             var pageSize = _pagination.PageSize;
@@ -103,18 +103,30 @@ namespace MADBHR.Controllers
                 try
                 {
 
-                    //if (ModelState.IsValid)
-                    //{
-                    var userId = HttpContext.User.Identity.Name;
-                    var userInfo = _context.TbUserLogin.Where(x => x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
-                    trainingHistory.UploadForTownship = userInfo.TownshipId == null || userInfo.TownshipId == "" ? userInfo.StateDivisionId : userInfo.TownshipId;
+                    var didUploaded = true;
+                    if (trainingHistory.CertificateImageFile != null)
+                    {
+                        var filename = trainingHistory.CertificateImageFile != null ? FtpHelper.ftpImageFolderPath + trainingHistory.CertificateImageFile.GetUniqueName() : "";
+                        didUploaded = false;
+                        var uploadRes = FtpHelper.UploadFileToServer(trainingHistory.CertificateImageFile, filename);
+                        if (uploadRes.IsSucceed())
+                        {
+                            didUploaded = true;
+                            trainingHistory.CertificatePic = uploadRes.ResponseUri.AbsolutePath;
+                        }
+                    }
+                    if (didUploaded)
+                    {
+                        var userId = HttpContext.User.Identity.Name;
+                        var userInfo = _context.TbUserLogin.Where(x => x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
+                        trainingHistory.UploadForTownship = userInfo.TownshipId == null || userInfo.TownshipId == "" ? userInfo.StateDivisionId : userInfo.TownshipId;
 
-                    trainingHistory.EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == trainingHistory.SerialNumber && x.IsDeleted == false).Select(x => x.EmployeeCode).FirstOrDefault();
-                    var emp = await _trainingHistoryServices.SaveTrainingHistory(trainingHistory, Convert.ToInt32(userId), 0);
+                        trainingHistory.EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == trainingHistory.SerialNumber && x.IsDeleted == false).Select(x => x.EmployeeCode).FirstOrDefault();
+                        var emp = await _trainingHistoryServices.SaveTrainingHistory(trainingHistory, Convert.ToInt32(userId), 0);
 
-                    return RedirectToAction("Index");
+                        return RedirectToAction("Index");
 
-                    //}
+                    }
                 }
                 catch (Exception e)
                 {
@@ -127,9 +139,10 @@ namespace MADBHR.Controllers
         }
         public IActionResult Edit(int Id)
         {
-            var trainingHistory = _context.TbTrainingHistory.Where(x => x.TrainingHistoryPkid == Id).FirstOrDefault();         
+            var trainingHistory = _context.TbTrainingHistory.Where(x => x.TrainingHistoryPkid == Id).FirstOrDefault();
             trainingHistory.SerialNumber = _context.TbEmployee.Where(x => x.EmployeeCode == trainingHistory.EmployeeCode && x.IsDeleted == false).Select(x => x.SerialNumber).FirstOrDefault();
             var empInfo = _employeeDisposalServices.GetEmployeeInfo(trainingHistory.SerialNumber);
+            trainingHistory.CertificateImageContent = trainingHistory.CertificatePic.GetBase64();
             Initialize(trainingHistory);
             ViewBag.Name = empInfo.Name;
             ViewBag.Rank = empInfo.RankType;
@@ -181,7 +194,7 @@ namespace MADBHR.Controllers
         [HttpGet]
         public async Task<IActionResult> ExcelExportForIndex()
         {
-            string? SerialNumber = TempData["SerialNumber"] == null ? null : TempData["SerialNumber"].ToString();        
+            string? SerialNumber = TempData["SerialNumber"] == null ? null : TempData["SerialNumber"].ToString();
             string? TownshipCode = TempData["TownshipCode"] == null ? null : TempData["TownshipCode"].ToString();
             string? StateDivisionCode = TempData["StateDivisionCode"] == null ? null : TempData["StateDivisionCode"].ToString();
             var trainingHistories = _trainingHistoryServices.GetTrainingHistoryForAdmin(StateDivisionCode, TownshipCode).ToList();
@@ -205,7 +218,7 @@ namespace MADBHR.Controllers
                 worksheet.Cells[i + 2, 4].Value = trainingHistories[i].RankType;
                 worksheet.Cells[i + 2, 5].Value = trainingHistories[i].Department;
                 worksheet.Cells[i + 2, 6].Value = trainingHistories[i].TrainingTitle;
-                worksheet.Cells[i + 2, 7].Value = trainingHistories[i].SchoolName;              
+                worksheet.Cells[i + 2, 7].Value = trainingHistories[i].SchoolName;
             }
             var stream = new MemoryStream();
             package.SaveAs(stream);
@@ -218,7 +231,7 @@ namespace MADBHR.Controllers
         public async Task<IActionResult> ExcelExportForDetail()
         {
 
-         
+
             string? EmployeeCode = TempData["EmployeeCode"] == null ? null : TempData["EmployeeCode"].ToString();
             string? SchoolName = TempData["SchoolName"] == null ? null : TempData["SchoolName"].ToString();
             var trainingHistories = _trainingHistoryServices.GetTrainingHistory(SchoolName, EmployeeCode).ToList();
@@ -245,7 +258,7 @@ namespace MADBHR.Controllers
                 worksheet.Cells[i + 2, 4].Value = trainingHistories[i].RankType;
                 worksheet.Cells[i + 2, 5].Value = trainingHistories[i].Department;
                 worksheet.Cells[i + 2, 6].Value = trainingHistories[i].TrainingTitle;
-                worksheet.Cells[i + 2, 7].Value = trainingHistories[i].SchoolName;               
+                worksheet.Cells[i + 2, 7].Value = trainingHistories[i].SchoolName;
                 worksheet.Cells[i + 2, 8].Value = trainingHistories[i].StartDateStr;
                 worksheet.Cells[i + 2, 9].Value = trainingHistories[i].EndDateStr;
             }

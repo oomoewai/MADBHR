@@ -9,6 +9,8 @@
     var StateDivisionCode = query["StateDivisionCode"];
     var TownshipCode = query["TownshipCode"];
     var Status = query["Status"];
+    var SerialNumber = query["SerialNumber"];
+    var Name = query["Name"];
     ViewData["Query"] = query;
     ViewData["ActionName"] = "AdminIndex";
 
@@ -31,15 +33,15 @@
                 <form method="get" action="/@controller/AdminIndex">
                     <div class="row">
                         @*<div class="col-md-3">
-                                <div class="form-group">
-                                    <label class="form-label" for="ToDate">တိုင်းဒေသကြီးများ</label>
-                                    <div class="controls">
-                                        <select class="form-control" name="StateDivisionCode" value="@StateDivisionCode" asp-items="ViewBag.StateDivision" id="stateDivision" onchange="Change()">
-                                            <option selected="selected" value="">---ရွေးရန်---</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>*@
+            <div class="form-group">
+                <label class="form-label" for="ToDate">တိုင်းဒေသကြီးများ</label>
+                <div class="controls">
+                    <select class="form-control" name="StateDivisionCode" value="@StateDivisionCode" asp-items="ViewBag.StateDivision" id="stateDivision" onchange="Change()">
+                        <option selected="selected" value="">---ရွေးရန်---</option>
+                    </select>
+                </div>
+            </div>
+        </div>*@
                         <input asp-for="@StateDivisionCode" hidden />
                         <div class="col-md-3">
                             <div class="form-group">
@@ -55,6 +57,22 @@
                                 <select class="form-control" name="Status" value="@Status" asp-items="ViewBag.Status" id="status" disabled>
                                     <option selected="selected" value="">---ရွေးရန်---</option>
                                 </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="form-label" for="ToDate">ကိုယ်ပိုင်အမှတ်</label>
+                                <div class="controls">
+                                    <input type="text" class="form-control" name="SerialNumber" value="@SerialNumber" id="serialNumber">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="form-label" for="ToDate">အမည်</label>
+                                <div class="controls">
+                                    <input type="text" class="form-control" name="EmpName" value="@Name" id="name">
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-3">

@@ -36,15 +36,25 @@ namespace MADBHR.Controllers
             var pageSize = _pagination.PageSize;
             ViewData["Page"] = page;
             ViewData["PageSize"] = pageSize;
+            ViewBag.EmployeeCode = EmployeeCode;
             var sonAndDaughters = _context.TbSonAndDaughter.Where(x => x.EmployeeCode == EmployeeCode && (x.IsDeleted == false||x.IsDeleted==null)).ToList();
             return View(sonAndDaughters.OrderByDescending(x => x.CreatedDate).ToList().ToPagedList((int)page, pageSize));
         }
-        public IActionResult Create(string? serialNumber = null,string? EmployeeCode=null)
+        public IActionResult Create(string? serialNumber = null,string? EmployeeCode=null,string? Address=null)
         {
             Initialize();
             if (serialNumber != null)
             {
                 ViewData["SerialNumber"] = serialNumber;
+                ViewData["Address"] = Address;
+                TempData["EmployeeCode"] = EmployeeCode;
+                ViewBag.EmployeeCode = EmployeeCode;
+            }
+            else
+            {
+                var empInfo = _context.TbEmployee.Where(x => x.EmployeeCode == EmployeeCode).FirstOrDefault();
+                ViewData["SerialNumber"] = empInfo.SerialNumber;
+                ViewData["Address"] =empInfo.Address;
                 TempData["EmployeeCode"] = EmployeeCode;
                 ViewBag.EmployeeCode = EmployeeCode;
             }
@@ -88,6 +98,7 @@ namespace MADBHR.Controllers
             ViewData["SerialNumber"] = _context.TbEmployee.Where(x => x.EmployeeCode == sonAndDaughter.EmployeeCode && x.IsDeleted == false).Select(x => x.SerialNumber).FirstOrDefault();
             Initialize(sonAndDaughter);
             ViewBag.EmployeeCode = sonAndDaughter.EmployeeCode;
+            ViewBag.Address = sonAndDaughter.SonAndDaughterAddress;
             return View(sonAndDaughter);
         }
         [HttpPost]

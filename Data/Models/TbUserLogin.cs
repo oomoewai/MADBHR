@@ -29,6 +29,9 @@ namespace MADBHR_Data.Models
         public string StateDivision { get; set; }
         [NotMapped]
         [SkipProperty]
+        public string StateDivisionIdForUser { get; set; }
+        [NotMapped]
+        [SkipProperty]
         public string Township { get; set; }
     }
 }

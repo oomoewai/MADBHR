@@ -32,6 +32,7 @@ namespace MADBHR_Services.SqlDataAccess
                 cmd.AddParameter("@IsDeleted",false);
                 cmd.AddParameter("@CreatedBy", userId);
                 cmd.AddParameter("@UploadForTownship", history.UploadForTownship);
+                cmd.AddParameter("@CertificatePic", history.CertificatePic);
 
 
                 cmd.ExecuteNonQuery();

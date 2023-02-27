@@ -59,6 +59,7 @@ namespace MADBHR_Services.SqlDataAccess
                 cmd.AddParameter("@EditStatus", employee.EditRequest);
                 cmd.AddParameter("@EditComment", employee.EditComment);
                 cmd.AddParameter("@DeleteStatus", employee.DeleteRequest);
+                cmd.AddParameter("@DegreePic", employee.DegreePic);
                 cmd.ExecuteNonQuery();
                 cmd.Connection.Close();
                 return employee;
@@ -260,7 +261,7 @@ namespace MADBHR_Services.SqlDataAccess
 
         }
 
-        public List<TbEmployee> GetEmployeeForAdmin(IDbCommand cmd, string? SateDivisionCode=null,string? TownshipCode=null, string? Status = null)
+        public List<TbEmployee> GetEmployeeForAdmin(IDbCommand cmd, string? SateDivisionCode=null,string? TownshipCode=null, string? Status = null, string? Name = null, string? SerialNumber = null)
         {
 
             cmd.CommandText = "SP_GetEmployeeForAdmin";
@@ -270,6 +271,8 @@ namespace MADBHR_Services.SqlDataAccess
             cmd.AddParameter("@DivisionCode", SateDivisionCode);
             cmd.AddParameter("@TownshipCode", TownshipCode);
             cmd.AddParameter("@Status", Status);
+            cmd.AddParameter("@Name", Name);
+            cmd.AddParameter("@SerialNumber", SerialNumber);
 
             SqlDataAdapter ResAdapter = new SqlDataAdapter((SqlCommand)cmd);
             DataSet ResDs = new DataSet();

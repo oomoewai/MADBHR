@@ -104,7 +104,7 @@ namespace MADBHR_Services
                 return emps;
             }
         }
-        public List<TbEmployee> GetEmployeeForAdmin(string? StateDivisionCode = null,string? TownshipCode=null,string? Status=null)
+        public List<TbEmployee> GetEmployeeForAdmin(string? StateDivisionCode = null,string? TownshipCode=null,string? Status=null,string? Name=null,string? SerialNumber=null)
         {
 
             try
@@ -112,7 +112,7 @@ namespace MADBHR_Services
                 IDbConnection connection = new SqlConnection(_connectionStrings.DefaultConnection);
                 IDbConnection myCon = connection;
                 IDbCommand cmd = myCon.CreateCommand();
-                var employees = _employeeDAO.GetEmployeeForAdmin(cmd, StateDivisionCode,TownshipCode,Status);
+                var employees = _employeeDAO.GetEmployeeForAdmin(cmd, StateDivisionCode,TownshipCode,Status,Name,SerialNumber);
 
                 return employees;
             }

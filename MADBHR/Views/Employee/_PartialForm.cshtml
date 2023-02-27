@@ -199,7 +199,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-4 form-group">
+                            <div class="col-md-3 form-group">
                                 <label class="form-label" for="Name">လိုင်စင်ဓာတ်ပုံ</label>
                                 <span class="desc"></span>
                                 <div class="controls">
@@ -211,7 +211,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4 form-group">
+                            <div class="col-md-3 form-group">
                                 <label class="form-label" for="Name">သန်းခေါင်စာရင်း</label>
                                 <span class="desc"></span>
                                 <div class="controls">
@@ -223,7 +223,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4 form-group">
+                            <div class="col-md-3 form-group">
                                 <label class="form-label" for="Name">မှတ်ပုံတင်</label>
                                 <span class="desc"></span>
                                 <div class="controls">
@@ -232,6 +232,18 @@
                                     <input name="NRCImageFile" id="fileNRcupload" type="file" style="display:none;" />
                                     <div>
                                         <img id="dvNrcPreview" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 form-group">
+                                <label class="form-label" for="Name">ဘွဲ့လက်မှတ်</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input asp-for="DegreePic" hidden />
+                                    <input asp-for="DegreeImageContent" hidden />
+                                    <input name="DegreeImageFile" id="fileDegreeupload" type="file" style="display:none;" />
+                                    <div>
+                                        <img id="dvDegreePreview" />
                                     </div>
                                 </div>
                             </div>

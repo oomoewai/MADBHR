@@ -38,12 +38,13 @@ namespace MADBHR.Controllers
             var relationshipInfo = _context.TbRelationship.Where(x => x.EmployeeCode == EmployeeCode && (x.IsDeleted == false || x.IsDeleted ==null)).ToList();
             return View(relationshipInfo.OrderByDescending(x => x.CreatedDate).ToList().ToPagedList((int)page, pageSize));
         }
-        public IActionResult Create(string? serialNumber=null)
+        public IActionResult Create(string? serialNumber=null,string? Address=null)
         {
             Initialize();
             if (serialNumber != null)
             {
                 ViewData["SerialNumber"] = serialNumber;
+                ViewData["Address"] = Address;
                 TempData["SerialNumber"] = serialNumber;
                 TempData["EmployeeCode"] = _context.TbEmployee.Where(x => x.SerialNumber ==serialNumber && x.IsDeleted == false).Select(x=>x.EmployeeCode).FirstOrDefault();
                 ViewBag.EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == serialNumber && x.IsDeleted == false).Select(x => x.EmployeeCode).FirstOrDefault();
@@ -67,7 +68,7 @@ namespace MADBHR.Controllers
                     var emp = await _relationshipServices.SaveRelationShip(relationship, Convert.ToInt32(userId),0);
                     if (RedirectToSonAndDaughter == true)
                     {
-                        return RedirectToAction("Create", "SonAndDaughter", new { SerialNumber = TempData["SerialNumber"].ToString(), EmployeeCode=emp.EmployeeCode});
+                        return RedirectToAction("Create", "SonAndDaughter", new { SerialNumber = TempData["SerialNumber"].ToString(), EmployeeCode=emp.EmployeeCode,Address=relationship.RelationAddress});
                     }
                     else
                     {
@@ -95,6 +96,7 @@ namespace MADBHR.Controllers
             ViewData["SerialNumber"] = _context.TbEmployee.Where(x => x.EmployeeCode == relationInfo.EmployeeCode && x.IsDeleted == false).Select(x => x.SerialNumber).FirstOrDefault();
             Initialize(relationInfo);
             ViewBag.EmployeeCode = relationInfo.EmployeeCode;
+            ViewBag.Address = relationInfo.RelationAddress;
             return View(relationInfo);
         }
         [HttpPost]
