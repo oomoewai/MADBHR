@@ -76,11 +76,19 @@ namespace MADBHR.Controllers
             //StateDivisionCode = userInfo.StateDivisionId;            
             if (userInfo.AccountType == "User")
             {
-                TownshipCode = _context.TbCurrentJobTownship.Where(x => x.Active == true && x.UploadForTownship == userInfo.TownshipId).Select(x => x.TownshipCode).FirstOrDefault();
-                TownshipCode = TownshipCode == null ? "0" : TownshipCode;
-                TempData["TownshipCode"] = TownshipCode;
+                if (userInfo.TownshipId == "0010")
+                {
+                    StateDivisionCode = userInfo.StateDivisionId;
+                }
+                else
+                {
+                    TownshipCode = _context.TbCurrentJobTownship.Where(x => x.Active == true && x.UploadForTownship == userInfo.TownshipId).Select(x => x.TownshipCode).FirstOrDefault();
+                    TownshipCode = TownshipCode == null ? "0" : TownshipCode;
+                    TempData["TownshipCode"] = TownshipCode;
+                }
                 var townshipCodes = _context.TbCurrentJobTownship.Where(x => x.StateDivisionId == userInfo.StateDivisionId && x.UploadForTownship == userInfo.TownshipId).ToList();
                 ViewData["TownshipCode"] = new SelectList(townshipCodes, "TownshipCode", "Township");
+
             }
             else
             {
