@@ -65,7 +65,7 @@ namespace MADBHR_Services
                 return emps;
             }
         }
-        public List<TbIntKnowledge> GetIntKnowledgeForAdmin(string? StateDivisionCode = null, string? TownshipCode = null)
+        public List<TbIntKnowledge> GetIntKnowledgeForAdmin(string? StateDivisionCode = null, string? TownshipCode = null, string? Name = null, string? SerialNumber = null)
         {
 
             try
@@ -73,7 +73,7 @@ namespace MADBHR_Services
                 IDbConnection connection = new SqlConnection(_connectionStrings.DefaultConnection);
                 IDbConnection myCon = connection;
                 IDbCommand cmd = myCon.CreateCommand();
-                var knowledges = _internationalKnowledgeDAO.GetIntKnowledgeForAdmn(cmd, StateDivisionCode, TownshipCode);
+                var knowledges = _internationalKnowledgeDAO.GetIntKnowledgeForAdmn(cmd, StateDivisionCode, TownshipCode,Name,SerialNumber);
 
                 return knowledges;
             }

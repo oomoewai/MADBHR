@@ -96,7 +96,7 @@ namespace MADBHR_Services.SqlDataAccess
             return lstLeaveentitlements;
 
         }
-        public List<TbLeaveEntitlement> GetLeaveEntitlementForAdmin(IDbCommand cmd, string? StateDivisionCode = null, string? TownshipCode = null)
+        public List<TbLeaveEntitlement> GetLeaveEntitlementForAdmin(IDbCommand cmd, string? StateDivisionCode = null, string? TownshipCode = null, string? Name = null, string? SerialNumber = null)
         {
 
             cmd.CommandText = "SP_GetLeaveEntitlementForAdmin";
@@ -105,7 +105,8 @@ namespace MADBHR_Services.SqlDataAccess
             cmd.Connection.Open();
             cmd.AddParameter("@DivisionCode", StateDivisionCode);
             cmd.AddParameter("@TownshipCode", TownshipCode);
-
+            cmd.AddParameter("@Name", Name);
+            cmd.AddParameter("@SerialNumber", SerialNumber);
 
             SqlDataAdapter ResAdapter = new SqlDataAdapter((SqlCommand)cmd);
             DataSet ResDs = new DataSet();

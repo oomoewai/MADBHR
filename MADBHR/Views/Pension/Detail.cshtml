@@ -35,16 +35,15 @@
                                 </select>
                             </div>
                         </div>
-                        @*<div class="col-md-3">
-            <div class="form-group">
-                <label class="form-label" for="field-4">ပြုန်းတီးအမျိုးအစား</label>
-                <div class="controls">
-                    <select class="form-control" name="DisposalType" value="@DisposalTypeCode" asp-items="ViewBag.DisposalTypeCode" id="disposalType">
-                        <option selected="selected" value="">ပြုန်းတီးအမျိုးအစားရွေးပါ </option>
-                    </select>
-                </div>
-            </div>
-        </div>*@
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="form-label" for="ToDate">ကိုယ်ပိုင်အမှတ်</label>
+                                <div class="controls">
+                                    <input type="text" class="form-control" name="SerialNumber" value="@SerialNumber" id="serialNumber">
+                                </div>
+                            </div>
+                        </div>
+                        
 
 
                         <div class="col-md-3">
@@ -52,7 +51,7 @@
                                 <label class="form-label">&nbsp;</label>
                                 <div class="controls">
                                     <button type="submit" class="btn btn-primary gradient-blue">ရှာဖွေရန်</button>
-                                    <a asp-controller="@controller" asp-action="Detail"  asp-route-StateDivisionCode="@StateDivisionCode" class="btn btn-primary">Cancel</a>
+                                    <a asp-controller="@controller" asp-action="Detail" asp-route-StateDivisionCode="@StateDivisionCode" class="btn btn-primary">Cancel</a>
                                 </div>
                             </div>
                         </div>

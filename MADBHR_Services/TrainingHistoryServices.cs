@@ -66,7 +66,7 @@ namespace MADBHR_Services
                 return emps;
             }
         }
-        public List<TbTrainingHistory> GetTrainingHistoryForAdmin( string? StateDivisionCode = null, string? TownshipCode = null)
+        public List<TbTrainingHistory> GetTrainingHistoryForAdmin( string? StateDivisionCode = null, string? TownshipCode = null, string? SerialNumber = null, string Name = null)
         {
 
             try
@@ -74,7 +74,7 @@ namespace MADBHR_Services
                 IDbConnection connection = new SqlConnection(_connectionStrings.DefaultConnection);
                 IDbConnection myCon = connection;
                 IDbCommand cmd = myCon.CreateCommand();
-                var history = _trainingHistoryDAO.GetTrainingHistoryForAdmin(cmd, StateDivisionCode,TownshipCode);
+                var history = _trainingHistoryDAO.GetTrainingHistoryForAdmin(cmd, StateDivisionCode,TownshipCode,SerialNumber,Name);
 
                 return history;
             }

@@ -65,7 +65,7 @@ namespace MADBHR_Services
                 return emps;
             }
         }
-        public List<TbAward> GetAwardForAdmin(string? StateDivisionCode = null, string? TownshipCode = null)
+        public List<TbAward> GetAwardForAdmin(string? StateDivisionCode = null, string? TownshipCode = null, string? Name = null, string? SerialNumber = null)
         {
 
             try
@@ -73,7 +73,7 @@ namespace MADBHR_Services
                 IDbConnection connection = new SqlConnection(_connectionStrings.DefaultConnection);
                 IDbConnection myCon = connection;
                 IDbCommand cmd = myCon.CreateCommand();
-                var awards = _awardDAO.GetAwardForAdmin(cmd, StateDivisionCode, TownshipCode);
+                var awards = _awardDAO.GetAwardForAdmin(cmd, StateDivisionCode, TownshipCode,Name,SerialNumber);
 
                 return awards;
             }

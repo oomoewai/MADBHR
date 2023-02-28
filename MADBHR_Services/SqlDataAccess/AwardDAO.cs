@@ -91,7 +91,7 @@ namespace MADBHR_Services.SqlDataAccess
             return lstAwards;
 
         }
-        public List<TbAward> GetAwardForAdmin(IDbCommand cmd, string? StateDivisionCode = null, string? TownshipCode = null)
+        public List<TbAward> GetAwardForAdmin(IDbCommand cmd, string? StateDivisionCode = null, string? TownshipCode = null, string? Name = null, string? SerialNumber = null)
         {
 
             cmd.CommandText = "SP_GetAwardForAdmin";
@@ -100,6 +100,8 @@ namespace MADBHR_Services.SqlDataAccess
             cmd.Connection.Open();
             cmd.AddParameter("@DivisionCode", StateDivisionCode);
             cmd.AddParameter("@TownshipCode", TownshipCode);
+            cmd.AddParameter("@Name", Name);
+            cmd.AddParameter("@SerialNumber", SerialNumber);
 
             SqlDataAdapter ResAdapter = new SqlDataAdapter((SqlCommand)cmd);
             DataSet ResDs = new DataSet();

@@ -52,12 +52,12 @@ namespace MADBHR.Controllers
             if (userInfo.AccountType == "Super Admin")
             {
                 StateDivisionCode = userInfo.StateDivisionId;
-                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).ToList();
+                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).OrderBy(x => x.StateDivision).ToList();
                 ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision", stateDivisionCodes[0].StateDivisionCode);
             }
             else
             {
-                var stateDivisionCodes = _context.TbStateDivision.Select(x => new { x.StateDivision, x.StateDivisionCode }).ToList();
+                var stateDivisionCodes = _context.TbStateDivision.Select(x => new { x.StateDivision, x.StateDivisionCode }).OrderBy(x => x.StateDivision).ToList();
                 ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision");
             }
             var pageSize = _pagination.PageSize;
@@ -86,13 +86,13 @@ namespace MADBHR.Controllers
                     TownshipCode = TownshipCode == null ? "0" : TownshipCode;
                     TempData["TownshipCode"] = TownshipCode;
                 }
-                var townshipCodes = _context.TbCurrentJobTownship.Where(x => x.StateDivisionId == userInfo.StateDivisionId && x.UploadForTownship == userInfo.TownshipId).ToList();
+                var townshipCodes = _context.TbCurrentJobTownship.Where(x => x.StateDivisionId == userInfo.StateDivisionId && x.UploadForTownship == userInfo.TownshipId).OrderBy(x => x.Township).ToList();
                 ViewData["TownshipCode"] = new SelectList(townshipCodes, "TownshipCode", "Township");
 
             }
             else
             {
-                var townshipCodes = _context.TbCurrentJobTownship.Where(x => x.StateDivisionId == StateDivisionCode).ToList();
+                var townshipCodes = _context.TbCurrentJobTownship.Where(x => x.StateDivisionId == StateDivisionCode).OrderBy(x => x.Township).ToList();
                 TempData["TownshipCode"] = TownshipCode;
                 ViewData["TownshipCode"] = new SelectList(townshipCodes, "TownshipCode", "Township");
             }

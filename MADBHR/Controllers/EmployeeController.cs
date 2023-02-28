@@ -41,12 +41,12 @@ namespace MADBHR.Controllers
             ViewData["PlaceOfBirth"] = new SelectList(placeOfBirths, "TownCode", "TownName", employee?.PlaceOfBirth);
             if (userInfo.AccountType == "Head Admin")
             {
-                var currentJobTownships = _context.TbCurrentJobTownship.Where(x => x.Active == true).ToList();
+                var currentJobTownships = _context.TbCurrentJobTownship.Where(x => x.Active == true).OrderBy(x=>x.Township).ToList();
                 ViewData["CurrentJobTownship"] = new SelectList(currentJobTownships, "TownshipCode", "Township", employee?.Occupation);
             }
             else if (userInfo.AccountType == "Super Admin")
             {
-                var currentJobTownships = _context.TbCurrentJobTownship.Where(x => x.Active == true && x.StateDivisionId == userInfo.StateDivisionId).ToList();
+                var currentJobTownships = _context.TbCurrentJobTownship.Where(x => x.Active == true && x.StateDivisionId == userInfo.StateDivisionId).OrderBy(x => x.Township).ToList();
                 ViewData["CurrentJobTownship"] = new SelectList(currentJobTownships, "TownshipCode", "Township", employee?.Occupation);
             }
             else if (userInfo.AccountType == "User")
@@ -58,7 +58,7 @@ namespace MADBHR.Controllers
               //  }
                 //else
                 //{
-                    var currentJobTownships = _context.TbCurrentJobTownship.Where(x => x.Active == true && x.StateDivisionId == userInfo.StateDivisionId && x.UploadForTownship == userInfo.TownshipId).ToList();
+                    var currentJobTownships = _context.TbCurrentJobTownship.Where(x => x.Active == true && x.StateDivisionId == userInfo.StateDivisionId && x.UploadForTownship == userInfo.TownshipId).OrderBy(x => x.Township).ToList();
                     ViewData["CurrentJobTownship"] = new SelectList(currentJobTownships, "TownshipCode", "Township", employee?.Occupation);
                 //}
                
@@ -106,13 +106,13 @@ namespace MADBHR.Controllers
                     TownshipCode = TownshipCode == null ? "0" : TownshipCode;
                 }
                 TempData["TownshipCode"] = TownshipCode;
-                var townshipCodes = _context.TbCurrentJobTownship.Where(x => x.StateDivisionId == userInfo.StateDivisionId && x.UploadForTownship == userInfo.TownshipId).ToList();
+                var townshipCodes = _context.TbCurrentJobTownship.Where(x => x.StateDivisionId == userInfo.StateDivisionId && x.UploadForTownship == userInfo.TownshipId).OrderBy(x => x.Township).ToList();
                 ViewData["TownshipCode"] = new SelectList(townshipCodes, "TownshipCode", "Township");
             }
             else
             {
                 TempData["TownshipCode"] = TownshipCode;
-                var townshipCodes = _context.TbCurrentJobTownship.Where(x => x.StateDivisionId == StateDivisionCode).ToList();
+                var townshipCodes = _context.TbCurrentJobTownship.Where(x => x.StateDivisionId == StateDivisionCode).OrderBy(x => x.Township).ToList();
                 ViewData["TownshipCode"] = new SelectList(townshipCodes, "TownshipCode", "Township");
             }
             List<string> status = new List<string>();
@@ -140,12 +140,12 @@ namespace MADBHR.Controllers
             if (userInfo.AccountType == "Super Admin")
             {
                 StateDivisionCode = userInfo.StateDivisionId;
-                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).ToList();
+                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).OrderBy(x => x.StateDivision).ToList();
                 ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision", stateDivisionCodes[0].StateDivisionCode);
             }
             else
             {
-                var stateDivisionCodes = _context.TbStateDivision.Select(x => new { x.StateDivision, x.StateDivisionCode }).ToList();
+                var stateDivisionCodes = _context.TbStateDivision.Select(x => new { x.StateDivision, x.StateDivisionCode }).OrderBy(x => x.StateDivision).ToList();
                 ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision");
             }
             

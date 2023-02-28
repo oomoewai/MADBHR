@@ -10,7 +10,7 @@ namespace MADBHR_Services.Base
     {
         Task<dynamic> SavePunishment(TbPunishment punishment, int userId, int Id);
         List<TbPunishment> GetPunishment(string? PunishmentTypeCode = null, string? EmployeeCode = null, DateTime? FromDate = null, DateTime? ToDate = null);
-        List<TbPunishment> GetPunishmentForAdmin(string? StateDivisionCode = null, string? TownshipCode = null);
+        List<TbPunishment> GetPunishmentForAdmin(string? StateDivisionCode = null, string? TownshipCode = null, string? Name = null, string? SerialNumber = null);
         void DeletePunishment(int punishmentPkid, int userId);
     }
 }

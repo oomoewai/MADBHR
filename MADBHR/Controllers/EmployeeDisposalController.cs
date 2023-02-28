@@ -49,7 +49,7 @@ namespace MADBHR.Controllers
             return Json(empInfo);
         }
 
-        public IActionResult Index(string? StateDivisionCode = null, string? TownshipCode = null, int? page = 1)
+        public IActionResult Index(string? StateDivisionCode = null, string? TownshipCode = null, string? Name = null, string? SerialNumber = null, int? page = 1)
         {
             Initialize();
             var userId = HttpContext.User.Identity.Name;
@@ -60,20 +60,27 @@ namespace MADBHR.Controllers
             if (userInfo.AccountType == "Super Admin")
             {
                 StateDivisionCode = userInfo.StateDivisionId;
-                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).ToList();
+                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).OrderBy(x => x.StateDivision).ToList();
                 ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision", stateDivisionCodes[0].StateDivisionCode);
             }
             else if (userInfo.AccountType == "Head Admin")
             {
-                var stateDivisionCodes = _context.TbStateDivision.Select(x => new { x.StateDivision, x.StateDivisionCode }).ToList();
+                var stateDivisionCodes = _context.TbStateDivision.Select(x => new { x.StateDivision, x.StateDivisionCode }).OrderBy(x => x.StateDivision).ToList();
                 ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision");
             }
             else if (userInfo.AccountType == "User")
             {
-                TownshipCode = _context.TbCurrentJobTownship.Where(x => x.UploadForTownship == userInfo.TownshipId).Select(x => x.TownshipCode).FirstOrDefault();
-                StateDivisionCode = userInfo.StateDivisionId;
-                TownshipCode = TownshipCode == null ? "0" : TownshipCode;
-                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).ToList();
+                if (userInfo.TownshipId == "0010")
+                {
+                    StateDivisionCode = userInfo.StateDivisionId;
+                }
+                else
+                {
+                    TownshipCode = _context.TbCurrentJobTownship.Where(x => x.UploadForTownship == userInfo.TownshipId).Select(x => x.TownshipCode).FirstOrDefault();
+                    StateDivisionCode = userInfo.StateDivisionId;
+                    TownshipCode = TownshipCode == null ? "0" : TownshipCode;
+                }
+                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).OrderBy(x => x.StateDivision).ToList();
                 ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision", stateDivisionCodes[0].StateDivisionCode);
 
             }
@@ -83,7 +90,7 @@ namespace MADBHR.Controllers
             TempData["TownshipCode"] = TownshipCode;
             TempData["StateDivisionCode"] = StateDivisionCode;
             //var EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == SerialNumber).Select(x => x.EmployeeCode).FirstOrDefault();
-            var disposals = _employeeDisposalServices.GetEmployeeDisposalForAdmin(StateDivisionCode, TownshipCode).ToList();
+            var disposals = _employeeDisposalServices.GetEmployeeDisposalForAdmin(StateDivisionCode, TownshipCode,Name,SerialNumber).ToList();
             return View(disposals.OrderByDescending(x => x.CreatedDate).ToList().ToPagedList((int)page, pageSize));
         }
         public IActionResult Detail(string EmployeeCode = null, string? DisposalTypeCode = null, int? page = 1)

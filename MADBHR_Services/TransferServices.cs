@@ -47,7 +47,7 @@ namespace MADBHR_Services
             }
 
         }
-        public List<TbTransfer> GetTransferForAdmin(string? StateDivisionCode = null, string? TownshipCode = null)
+        public List<TbTransfer> GetTransferForAdmin(string? StateDivisionCode = null, string? TownshipCode = null, string? SerialNumber = null, string Name = null)
         {
 
             try
@@ -55,7 +55,7 @@ namespace MADBHR_Services
                 IDbConnection connection = new SqlConnection(_connectionStrings.DefaultConnection);
                 IDbConnection myCon = connection;
                 IDbCommand cmd = myCon.CreateCommand();
-                var transfers = _transferDAO.GetTransferForAdmin(cmd, StateDivisionCode, TownshipCode);
+                var transfers = _transferDAO.GetTransferForAdmin(cmd, StateDivisionCode, TownshipCode,SerialNumber,Name);
 
                 return transfers;
             }

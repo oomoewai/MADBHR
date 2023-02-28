@@ -35,7 +35,7 @@ namespace MADBHR.Controllers
             ViewData["PunishmentType"] = new SelectList(punishmentTypeCode, "PunishmentTypeCode", "PunishmentType", tbPunishment?.PunishmentTypeCode);
 
         }
-        public IActionResult Index(string? StateDivisionCode = null, string? TownshipCode = null, int? page = 1)
+        public IActionResult Index(string? StateDivisionCode = null, string? TownshipCode = null, string? Name = null, string? SerialNumber = null, int? page = 1)
         {
             Initialize();
             var userId = HttpContext.User.Identity.Name;
@@ -46,12 +46,12 @@ namespace MADBHR.Controllers
             if (userInfo.AccountType == "Super Admin")
             {
                 StateDivisionCode = userInfo.StateDivisionId;
-                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).ToList();
+                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).OrderBy(x => x.StateDivision).ToList();
                 ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision", stateDivisionCodes[0].StateDivisionCode);
             }
             else if (userInfo.AccountType == "Head Admin")
             {
-                var stateDivisionCodes = _context.TbStateDivision.Select(x => new { x.StateDivision, x.StateDivisionCode }).ToList();
+                var stateDivisionCodes = _context.TbStateDivision.Select(x => new { x.StateDivision, x.StateDivisionCode }).OrderBy(x => x.StateDivision).ToList();
                 ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision");
             }
             else if (userInfo.AccountType == "User")
@@ -65,7 +65,7 @@ namespace MADBHR.Controllers
                     TownshipCode = _context.TbCurrentJobTownship.Where(x => x.UploadForTownship == userInfo.TownshipId).Select(x => x.TownshipCode).FirstOrDefault();
                     StateDivisionCode = userInfo.StateDivisionId;
                 }
-                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).ToList();
+                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).OrderBy(x => x.StateDivision).ToList();
                 ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision", stateDivisionCodes[0].StateDivisionCode);
 
             }
@@ -75,7 +75,7 @@ namespace MADBHR.Controllers
             TempData["TownshipCode"] = TownshipCode;
             TempData["StateDivisionCode"] = StateDivisionCode;
             //var EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == SerialNumber).Select(x => x.EmployeeCode).FirstOrDefault();
-            var awrds = _punishmentServices.GetPunishmentForAdmin(StateDivisionCode, TownshipCode).ToList();
+            var awrds = _punishmentServices.GetPunishmentForAdmin(StateDivisionCode, TownshipCode,Name,SerialNumber).ToList();
             return View(awrds.OrderByDescending(x => x.CreatedDate).ToList().ToPagedList((int)page, pageSize));
         }
         public IActionResult Detail(string? EmployeeCode = null, string PunishmentType = null, int? page = 1)

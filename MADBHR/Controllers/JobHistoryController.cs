@@ -35,17 +35,17 @@ namespace MADBHR.Controllers
            
             if (userInfo.AccountType == "Head Admin")
             {
-                var currentJobTownships = _context.TbCurrentJobTownship.Where(x => x.Active == true).ToList();
+                var currentJobTownships = _context.TbCurrentJobTownship.Where(x => x.Active == true).OrderBy(x => x.Township).ToList();
                 ViewData["TownshipCode"] = new SelectList(currentJobTownships, "TownshipCode", "Township", tbJobHistory?.DepartmentName);
             }
             else if (userInfo.AccountType == "Super Admin")
             {
-                var currentJobTownships = _context.TbCurrentJobTownship.Where(x => x.Active == true && x.StateDivisionId == userInfo.StateDivisionId).ToList();
+                var currentJobTownships = _context.TbCurrentJobTownship.Where(x => x.Active == true && x.StateDivisionId == userInfo.StateDivisionId).OrderBy(x => x.Township).ToList();
                 ViewData["TownshipCode"] = new SelectList(currentJobTownships, "TownshipCode", "Township", tbJobHistory?.DepartmentName);
             }
             else if (userInfo.AccountType == "User")
             {
-                var currentJobTownships = _context.TbCurrentJobTownship.Where(x => x.Active == true && x.StateDivisionId == userInfo.StateDivisionId && x.UploadForTownship == userInfo.TownshipId).ToList();
+                var currentJobTownships = _context.TbCurrentJobTownship.Where(x => x.Active == true && x.StateDivisionId == userInfo.StateDivisionId && x.UploadForTownship == userInfo.TownshipId).OrderBy(x => x.Township).ToList();
                 ViewData["TownshipCode"] = new SelectList(currentJobTownships, "TownshipCode", "Township", tbJobHistory?.DepartmentName);
             }
 
@@ -64,12 +64,12 @@ namespace MADBHR.Controllers
             if (userInfo.AccountType == "Super Admin")
             {
                 StateDivisionCode = userInfo.StateDivisionId;
-                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).ToList();
+                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).OrderBy(x => x.StateDivision).ToList();
                 ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision", stateDivisionCodes[0].StateDivisionCode);
             }
             else if(userInfo.AccountType == "Head Admin")
             {
-                var stateDivisionCodes = _context.TbStateDivision.Select(x => new { x.StateDivision, x.StateDivisionCode }).ToList();
+                var stateDivisionCodes = _context.TbStateDivision.Select(x => new { x.StateDivision, x.StateDivisionCode }).OrderBy(x => x.StateDivision).ToList();
                 ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision");
             }
             else if(userInfo.AccountType=="User")
@@ -85,7 +85,7 @@ namespace MADBHR.Controllers
                     TownshipCode = TownshipCode == null ? "0" : TownshipCode;
                 }
                
-                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).ToList();
+                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).OrderBy(x => x.StateDivision).ToList();
                 ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision", stateDivisionCodes[0].StateDivisionCode);
 
             }

@@ -98,7 +98,7 @@ namespace MADBHR_Services.SqlDataAccess
             return lstHistory;
 
         }
-        public List<TbTrainingHistory> GetTrainingHistoryForAdmin(IDbCommand cmd, string? StateDivisionCode = null, string? TownshipCode = null)
+        public List<TbTrainingHistory> GetTrainingHistoryForAdmin(IDbCommand cmd, string? StateDivisionCode = null, string? TownshipCode = null, string? SerialNumber = null, string Name = null)
         {
 
             cmd.CommandText = "Sp_GetTrainingHistoryForAdmin";
@@ -107,6 +107,8 @@ namespace MADBHR_Services.SqlDataAccess
             cmd.Connection.Open();
             cmd.AddParameter("@DivisionCode", StateDivisionCode);
             cmd.AddParameter("@TownshipCode", TownshipCode);
+            cmd.AddParameter("@SerialNumber", SerialNumber);
+            cmd.AddParameter("@Name", Name);
 
             SqlDataAdapter ResAdapter = new SqlDataAdapter((SqlCommand)cmd);
             DataSet ResDs = new DataSet();

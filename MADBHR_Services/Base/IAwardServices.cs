@@ -10,7 +10,7 @@ namespace MADBHR_Services.Base
     {
        Task<dynamic> SaveAward(TbAward award, int userId, int Id);
         List<TbAward> GetAward(string? AwardTypeCode = null, string? EmployeeCode = null, DateTime? FromDate = null, DateTime? ToDate = null);
-        List<TbAward> GetAwardForAdmin(string? StateDivisionCode = null, string? TownshipCode = null);
+        List<TbAward> GetAwardForAdmin(string? StateDivisionCode = null, string? TownshipCode = null, string? Name = null, string? SerialNumber = null);
         void DeleteAward(int awardPkid, int userId);
     }
 }

@@ -10,7 +10,7 @@ namespace MADBHR_Services.Base
     {
         Task<dynamic> SaveYearlyBonus(TbYearlyBonus yearlyBonus, int userId, int Id);
         List<TbYearlyBonus> GetYearlyBonus(string? EmployeeCode = null, DateTime? ApprovedDate = null);
-        List<TbYearlyBonus> GetYearlyBonusForAdmin(string? StateDivisionCode = null, string? TownshipCode = null);
+        List<TbYearlyBonus> GetYearlyBonusForAdmin(string? StateDivisionCode = null, string? TownshipCode = null, string? SerialNumber = null, string Name = null);
         void DeleteYearlyBonus(int yearlyBonusPkid, int userId);
     }
 }

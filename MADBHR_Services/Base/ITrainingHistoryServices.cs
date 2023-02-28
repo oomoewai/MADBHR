@@ -10,7 +10,7 @@ namespace MADBHR_Services.Base
     {
         Task<dynamic> SaveTrainingHistory(TbTrainingHistory history, int userId, int Id);
         List<TbTrainingHistory> GetTrainingHistory(string? Name = null, string? EmployeeCode = null, DateTime? FromDate = null, DateTime? ToDate = null);
-        List<TbTrainingHistory> GetTrainingHistoryForAdmin(string? StateDivisionCode = null, string? TownshipCode = null);
+        List<TbTrainingHistory> GetTrainingHistoryForAdmin(string? StateDivisionCode = null, string? TownshipCode = null, string? SerialNumber = null, string Name = null);
         void DeleteTrainingHistory(int traingHistoryPkid, int userId);
     }
 }

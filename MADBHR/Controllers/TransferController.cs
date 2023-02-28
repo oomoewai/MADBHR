@@ -35,13 +35,13 @@ namespace MADBHR.Controllers
             var userInfo = _context.TbUserLogin.Where(x => x.Status == "Enable" && x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
             ViewBag.lstLogIn = userInfo;
             ViewBag.lstLogIn = _context.TbUserLogin.Where(x => x.Status == "Enable" && x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
-            var currentJobTownships = _context.TbCurrentJobTownship.Where(x => x.Active == true).ToList();
+            var currentJobTownships = _context.TbCurrentJobTownship.Where(x => x.Active == true).OrderBy(x => x.Township).ToList();
             ViewData["FromTownshipCode"] = new SelectList(currentJobTownships, "TownshipCode", "Township", tbTransfer?.FromTownshipCode);
             ViewData["ToTownshipCode"] = new SelectList(currentJobTownships, "TownshipCode", "Township", tbTransfer?.ToTownshipCode);
             var rankTypeCode = _context.TbRankType.Select(x => new { x.RankTypeCode, x.RankType }).ToList();
             ViewData["RankTypeCode"] = new SelectList(rankTypeCode, "RankTypeCode", "RankType", tbTransfer?.RankTypeCode);
         }
-        public IActionResult Index(string? StateDivisionCode = null, string? TownshipCode = null, int? page = 1)
+        public IActionResult Index(string? StateDivisionCode = null, string? TownshipCode = null, string? SerialNumber = null, string Name = null, int? page = 1)
         {
             Initialize();
             var userId = HttpContext.User.Identity.Name;
@@ -52,12 +52,12 @@ namespace MADBHR.Controllers
             if (userInfo.AccountType == "Super Admin")
             {
                 StateDivisionCode = userInfo.StateDivisionId;
-                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).ToList();
+                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).OrderBy(x => x.StateDivision).ToList();
                 ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision", stateDivisionCodes[0].StateDivisionCode);
             }
             else if (userInfo.AccountType == "Head Admin")
             {
-                var stateDivisionCodes = _context.TbStateDivision.Select(x => new { x.StateDivision, x.StateDivisionCode }).ToList();
+                var stateDivisionCodes = _context.TbStateDivision.Select(x => new { x.StateDivision, x.StateDivisionCode }).OrderBy(x => x.StateDivision).ToList();
                 ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision");
             }
             else if (userInfo.AccountType == "User")
@@ -72,7 +72,7 @@ namespace MADBHR.Controllers
                     StateDivisionCode = userInfo.StateDivisionId;
                     TownshipCode = TownshipCode == null ? "0" : TownshipCode;
                 }
-                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).ToList();
+                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).OrderBy(x => x.StateDivision).ToList();
                 ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision", stateDivisionCodes[0].StateDivisionCode);
 
             }
@@ -82,7 +82,7 @@ namespace MADBHR.Controllers
             TempData["TownshipCode"] = TownshipCode;
             TempData["StateDivisionCode"] = StateDivisionCode;
             //var EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == SerialNumber).Select(x => x.EmployeeCode).FirstOrDefault();
-            var transfers = _transferServices.GetTransferForAdmin(StateDivisionCode, TownshipCode).ToList();
+            var transfers = _transferServices.GetTransferForAdmin(StateDivisionCode, TownshipCode,SerialNumber,Name).ToList();
             return View(transfers.OrderByDescending(x => x.CreatedDate).ToList().ToPagedList((int)page, pageSize));
         }
         public IActionResult Detail(string EmployeeCode = null, string? FromTownshipCode = null, string? ToTownshipCode = null, int? page = 1)

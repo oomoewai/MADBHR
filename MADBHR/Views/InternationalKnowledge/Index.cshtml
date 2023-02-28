@@ -8,6 +8,8 @@
     var query = Context.Request.Query;
     var StateDivisionCode = query["StateDivisionCode"];
     var TownshipCode = query["TownshipCode"];
+    var SerialNumber = query["SerialNumber"];
+    var Name = query["Name"];
     ViewData["Query"] = query;
 
 }
@@ -44,7 +46,22 @@
                                 </select>
                             </div>
                         </div>
-                       
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="form-label" for="ToDate">ကိုယ်ပိုင်အမှတ်</label>
+                                <div class="controls">
+                                    <input type="text" class="form-control" name="SerialNumber" value="@SerialNumber" id="serialNumber">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="form-label" for="ToDate">အမည်</label>
+                                <div class="controls">
+                                    <input type="text" class="form-control" name="EmpName" value="@Name" id="name">
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="col-md-3">
                             <div class="form-group">

@@ -35,7 +35,7 @@ namespace MADBHR.Controllers
             ViewData["LeaveType"] = new SelectList(LeaveType, "LeaveTypeCode", "LeaveType", tbLeaveEntitlement?.LeaveTypeCode);
             
         }
-        public IActionResult Index(string? StateDivisionCode = null,string? TownshipCode=null, int? page = 1)
+        public IActionResult Index(string? StateDivisionCode = null,string? TownshipCode=null, string? Name = null, string? SerialNumber = null, int? page = 1)
         {
             Initialize();
             var userId = HttpContext.User.Identity.Name;
@@ -46,12 +46,12 @@ namespace MADBHR.Controllers
             if (userInfo.AccountType == "Super Admin")
             {
                 StateDivisionCode = userInfo.StateDivisionId;
-                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).ToList();
+                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).OrderBy(x => x.StateDivision).ToList();
                 ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision", stateDivisionCodes[0].StateDivisionCode);
             }
             else if (userInfo.AccountType == "Head Admin")
             {
-                var stateDivisionCodes = _context.TbStateDivision.Select(x => new { x.StateDivision, x.StateDivisionCode }).ToList();
+                var stateDivisionCodes = _context.TbStateDivision.Select(x => new { x.StateDivision, x.StateDivisionCode }).OrderBy(x => x.StateDivision).ToList();
                 ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision");
             }
             else if (userInfo.AccountType == "User")
@@ -66,7 +66,7 @@ namespace MADBHR.Controllers
                     StateDivisionCode = userInfo.StateDivisionId;
                     TownshipCode = TownshipCode == null ? "0" : TownshipCode;
                 }
-                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).ToList();
+                var stateDivisionCodes = _context.TbStateDivision.Where(x => x.StateDivisionCode == userInfo.StateDivisionId).OrderBy(x => x.StateDivision).ToList();
                 ViewData["StateDivision"] = new SelectList(stateDivisionCodes, "StateDivisionCode", "StateDivision", stateDivisionCodes[0].StateDivisionCode);
 
             }
@@ -76,7 +76,7 @@ namespace MADBHR.Controllers
             TempData["TownshipCode"] = TownshipCode;
             TempData["StateDivisionCode"] = StateDivisionCode;
             //var EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == SerialNumber).Select(x => x.EmployeeCode).FirstOrDefault();
-            var leaves = _leaveEntitlementServices.GetLeaveEntitlementForAdmin(StateDivisionCode, TownshipCode).ToList();
+            var leaves = _leaveEntitlementServices.GetLeaveEntitlementForAdmin(StateDivisionCode, TownshipCode,Name,SerialNumber).ToList();
             return View(leaves.OrderByDescending(x => x.CreatedDate).ToList().ToPagedList((int)page, pageSize));
         }
         public IActionResult Detail(string EmployeeCode, DateTime? FromDate = null, DateTime? ToDate = null, int? page = 1)
