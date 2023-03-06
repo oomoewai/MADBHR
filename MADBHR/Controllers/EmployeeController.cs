@@ -37,7 +37,7 @@ namespace MADBHR.Controllers
             var userId = HttpContext.User.Identity.Name;
             var userInfo = _context.TbUserLogin.Where(x => x.Status == "Enable" && x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
             ViewBag.lstLogIn = userInfo;
-            var placeOfBirths = _context.TbTownAndDivision.Select(x => new { x.TownCode, x.TownName }).ToList();
+            var placeOfBirths = _context.TbTownAndDivision.Select(x => new { x.TownCode, x.TownName }).OrderBy(x=>x.TownName).ToList();
             ViewData["PlaceOfBirth"] = new SelectList(placeOfBirths, "TownCode", "TownName", employee?.PlaceOfBirth);
             if (userInfo.AccountType == "Head Admin")
             {
@@ -63,7 +63,7 @@ namespace MADBHR.Controllers
                 //}
                
             }
-            var educationTypeCodes = _context.TbEducationType.Where(x => x.Active == true).ToList();
+            var educationTypeCodes = _context.TbEducationType.Where(x => x.Active == true).OrderBy(x=>x.EducationType).ToList();
             ViewData["EducationType"] = new SelectList(educationTypeCodes, "EducationTypeCode", "EducationType", employee?.EducationTypeCode);
 
 
@@ -493,7 +493,7 @@ namespace MADBHR.Controllers
                 worksheet.Cells[i + 2, 11].Value = employees[i].Ancestor;
                 worksheet.Cells[i + 2, 12].Value = employees[i].Nrcnumber;
                 worksheet.Cells[i + 2, 13].Value = employees[i].DateOfBirthString;
-                worksheet.Cells[i + 2, 14].Value = employees[i].PlaceOfBirth;
+                worksheet.Cells[i + 2, 14].Value = employees[i].PlaceOfBirthName;
                 worksheet.Cells[i + 2, 15].Value = employees[i].EducationType;
                 worksheet.Cells[i + 2, 16].Value = employees[i].JoinDateString;
                 worksheet.Cells[i + 2, 17].Value = employees[i].Address;

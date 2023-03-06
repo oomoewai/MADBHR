@@ -31,7 +31,7 @@ namespace MADBHR.Controllers
         {
             var userId = HttpContext.User.Identity.Name;
             ViewBag.lstLogIn = _context.TbUserLogin.Where(x => x.Status == "Enable" && x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
-            var punishmentTypeCode = _context.TbPunishmentType.Where(x => x.Active == true).ToList();
+            var punishmentTypeCode = _context.TbPunishmentType.Where(x => x.Active == true).OrderBy(x=>x.PunishmentType).ToList();
             ViewData["PunishmentType"] = new SelectList(punishmentTypeCode, "PunishmentTypeCode", "PunishmentType", tbPunishment?.PunishmentTypeCode);
 
         }

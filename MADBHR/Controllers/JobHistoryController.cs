@@ -49,7 +49,7 @@ namespace MADBHR.Controllers
                 ViewData["TownshipCode"] = new SelectList(currentJobTownships, "TownshipCode", "Township", tbJobHistory?.DepartmentName);
             }
 
-            var rankType = _context.TbRankType.Select(x => new { x.RankTypeCode,x.RankType }).ToList();
+            var rankType = _context.TbRankType.Select(x => new { x.RankTypeCode,x.RankType }).OrderBy(x=>x.RankType).ToList();
             ViewData["RankType"] = new SelectList(rankType, "RankTypeCode", "RankType", tbJobHistory?.RankTypeCode1);
 
         }

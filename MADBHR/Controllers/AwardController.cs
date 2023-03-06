@@ -36,7 +36,7 @@ namespace MADBHR.Controllers
         {
             var userId = HttpContext.User.Identity.Name;
             ViewBag.lstLogIn = _context.TbUserLogin.Where(x => x.Status == "Enable" && x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
-            var awardTypeCode = _context.TbAwardType.Where(x => x.Active == true).ToList();
+            var awardTypeCode = _context.TbAwardType.Where(x => x.Active == true).OrderBy(x=>x.AwardType).ToList();
             ViewData["AwardType"] = new SelectList(awardTypeCode,"AwardTypeCode","AwardType" ,tbAward?.AwardTypeCode);
 
         }

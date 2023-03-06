@@ -30,7 +30,7 @@ namespace MADBHR.Controllers
         {
             var userId = HttpContext.User.Identity.Name;
             ViewBag.lstLogIn = _context.TbUserLogin.Where(x => x.Status == "Enable" && x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
-            var disposalType = _context.TbDisposalType.Where(x => x.Active == true).ToList();
+            var disposalType = _context.TbDisposalType.Where(x => x.Active == true).OrderBy(x=>x.DisposalType).ToList();
             ViewData["DisposalTypeCode"] = new SelectList(disposalType, "DisposalTypeCode", "DisposalType", tbDisposal?.DisposalTypeCode);
         }
         [HttpGet]

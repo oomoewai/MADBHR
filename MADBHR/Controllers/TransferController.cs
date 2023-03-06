@@ -38,7 +38,7 @@ namespace MADBHR.Controllers
             var currentJobTownships = _context.TbCurrentJobTownship.Where(x => x.Active == true).OrderBy(x => x.Township).ToList();
             ViewData["FromTownshipCode"] = new SelectList(currentJobTownships, "TownshipCode", "Township", tbTransfer?.FromTownshipCode);
             ViewData["ToTownshipCode"] = new SelectList(currentJobTownships, "TownshipCode", "Township", tbTransfer?.ToTownshipCode);
-            var rankTypeCode = _context.TbRankType.Select(x => new { x.RankTypeCode, x.RankType }).ToList();
+            var rankTypeCode = _context.TbRankType.Select(x => new { x.RankTypeCode, x.RankType }).OrderBy(x=>x.RankType).ToList();
             ViewData["RankTypeCode"] = new SelectList(rankTypeCode, "RankTypeCode", "RankType", tbTransfer?.RankTypeCode);
         }
         public IActionResult Index(string? StateDivisionCode = null, string? TownshipCode = null, string? SerialNumber = null, string Name = null, int? page = 1)

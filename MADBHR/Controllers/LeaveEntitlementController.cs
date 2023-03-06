@@ -31,7 +31,7 @@ namespace MADBHR.Controllers
         {
             var userId = HttpContext.User.Identity.Name;
             ViewBag.lstLogIn = _context.TbUserLogin.Where(x => x.Status == "Enable" && x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
-            var LeaveType = _context.TbLeaveType.Select(x => new { x.LeaveTypeCode, x.LeaveType }).ToList();
+            var LeaveType = _context.TbLeaveType.Select(x => new { x.LeaveTypeCode, x.LeaveType }).OrderBy(x=>x.LeaveType).ToList();
             ViewData["LeaveType"] = new SelectList(LeaveType, "LeaveTypeCode", "LeaveType", tbLeaveEntitlement?.LeaveTypeCode);
             
         }
