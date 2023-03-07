@@ -443,7 +443,7 @@ namespace MADBHR.Controllers
                 _logger.LogError(e.Message);
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(AdminIndex));
         }
 
         [HttpGet]
