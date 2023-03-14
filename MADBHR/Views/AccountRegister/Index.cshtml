@@ -74,8 +74,11 @@
             <div class="pull-right header_style">
                 @*<button type="button" data-href="/@controller/Create" class="btn btn-click">Create</button>*@
                 <a asp-controller="@controller" asp-action="ExcelExportForIndex" class="btn btn-xs btn-secondary" style="width: 80px; height: 25px; padding: 3px;">Excel Export</a>
-                <a asp-controller="@controller" asp-action="Create" class="btn btn-xs btn-secondary" style="width: 80px; height: 25px; padding: 3px;">Create</a>
-            </div>
+                @if (ViewBag.lstLogIn.AccountType == "Head Admin")
+                {
+                    <a asp-controller="@controller" asp-action="Create" class="btn btn-xs btn-secondary" style="width: 80px; height: 25px; padding: 3px;">Create</a>
+                }
+                </div>
         </header>
         <div class="box-body" style="margin-top: 30px;">
             <div class="row">

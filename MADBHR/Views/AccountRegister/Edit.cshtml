@@ -13,6 +13,7 @@
             $("#StateDivision").hide();
             $("#townshipId").hide()
             $("#lblTownship").hide();
+            
             if ('@ViewBag.lstLogIn.AccountType' == "User")
             {               
                 $("#office").prop("disabled", true);
@@ -20,6 +21,7 @@
                 $("#accountType").prop("disabled", true);
                 $("#StateDivision").prop("disabled", true);
                 $("#townshipId").prop("disabled", true);
+                $("#field-email").prop("disabled", true);
             }
             $("#field-password").val('@ViewBag.Password');
             debugger;

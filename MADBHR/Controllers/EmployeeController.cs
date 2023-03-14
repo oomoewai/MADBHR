@@ -173,15 +173,29 @@ namespace MADBHR.Controllers
             //ViewData["PlaceOfBirth"] = new SelectList(townships, "TownshipCode", "Township");
             return Json(townships);
         }
+        public IActionResult GetEmployeeInformation(string SerialNumber)
+        {
+            var EmpSerialNumber = _context.TbEmployee.Where(x => x.SerialNumber == SerialNumber).FirstOrDefault();
+            if (EmpSerialNumber != null)
+            {
+                return Json(EmpSerialNumber);
+            }
+            else
+            {
+                return null;
+            }
+        }
         public IActionResult Create()
         {
             Initialize();
             return View();
         }
+
         [HttpPost]
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(TbEmployee employee, bool? RedirectToRelationship = null)
         {
+           
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {
                 var userId = HttpContext.User.Identity.Name;
@@ -406,7 +420,7 @@ namespace MADBHR.Controllers
                         _logger.LogInformation("Successfully Edit");
                         if (RedirectToRelationship == true)
                         {
-                            return RedirectToAction("Index", "Relationship", new { EmployeeCode = employee.EmployeeCode });
+                            return RedirectToAction("Create", "Relationship", new { SerialNumber = emp.SerialNumber, Address = emp.Address });
                         }
                         else
                         {

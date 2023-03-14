@@ -30,7 +30,7 @@
                                 <label class="form-label" for="field-1">ကိုယ်ပိုင်အမှတ် (ကိန်းဂဏန်း ၄ လုံးသာထည့်ရန်)</label>
                                 <span class="desc"></span>
                                 <div class="controls">
-                                    <input type="number" class="form-control" id="field-1" asp-for="SerialNumber" minlength="1" maxlength="4">
+                                    <input type="number" class="form-control" id="field-1" asp-for="SerialNumber" minlength="1" maxlength="4" onchange="SerialNumberChange()">
                                     <span asp-validation-for="SerialNumber" class="text-danger"></span>
                                 </div>
                             </div>
