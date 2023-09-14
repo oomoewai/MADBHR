@@ -1,4 +1,6 @@
-﻿@using MADBHR.Enum
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@using MADBHR.Enum
 @using X.PagedList
 @model IPagedList<MADBHR_Data.Models.TbUserLogin>
 @{
@@ -24,7 +26,7 @@
         </div>
         <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne1">
             <div class="panel-body">
-                <form method="get" action="/@controller/Index">
+                <form method="get" action="@Configuration.GetSection("AppUrls").GetSection("TestUrl").Value/@controller/Index">
                     <div class="row">
 
                         <div class="col-md-3">
@@ -78,7 +80,7 @@
                 {
                     <a asp-controller="@controller" asp-action="Create" class="btn btn-xs btn-secondary" style="width: 80px; height: 25px; padding: 3px;">Create</a>
                 }
-                </div>
+            </div>
         </header>
         <div class="box-body" style="margin-top: 30px;">
             <div class="row">
@@ -105,7 +107,7 @@
                             {
                                 var isActive = "";
                                 var fontColor = "";
-                            @if (item.Status == "Disable")
+                                @if (item.Status == "Disable")
                                 {
                                     isActive = "Inactive";
                                     fontColor = "color:red;";
@@ -114,30 +116,30 @@
                                 {
                                     isActive = "Active";
                                 }
-                            <tr>
-                                <td class="text-center">@((((int)ViewBag.Page - 1) * (int)ViewBag.PageSize) + count)</td>
-                                <td class="text-center">@item.StateDivision</td>
-                                <td class="text-center">@item.Township</td>
-                                <td class="text-center">@item.Name</td>
-                                <td class="text-center">@item.UsernameOrEmail</td>
+                                <tr>
+                                    <td class="text-center">@((((int)ViewBag.Page - 1) * (int)ViewBag.PageSize) + count)</td>
+                                    <td class="text-center">@item.StateDivision</td>
+                                    <td class="text-center">@item.Township</td>
+                                    <td class="text-center">@item.Name</td>
+                                    <td class="text-center">@item.UsernameOrEmail</td>
 
-                                <td class="text-center">
-                                    <a asp-controller="@controller" asp-action="Edit" asp-route-Id="@item.UserPkid" class="btn btn-xs btn-secondary">Edit</a>
+                                    <td class="text-center">
+                                        <a asp-controller="@controller" asp-action="Edit" asp-route-Id="@item.UserPkid" class="btn btn-xs btn-secondary">Edit</a>
 
-                                </td>
+                                    </td>
 
-                                <td>
-                                    @if (ViewBag.lstLogIn.AccountType != "User")
-                                    {
-                                        <button class="onoff" onclick="onoff(this,@item.UserPkid, '@isActive')" id="btnSwitch+@count" style="@fontColor"><div>@isActive</div></button>
+                                    <td>
+                                        @if (ViewBag.lstLogIn.AccountType != "User")
+                                        {
+                                            <button class="onoff" onclick="onoff(this,@item.UserPkid, '@isActive')" id="btnSwitch+@count" style="@fontColor"><div>@isActive</div></button>
 
-                                    }
+                                        }
 
-                                </td>
+                                    </td>
 
 
 
-                            </tr>
+                                </tr>
                                 count++;
                             }
                         </tbody>
@@ -154,12 +156,13 @@
 <link rel="stylesheet" href="~/Content/css/style.css" asp-append-version="true">
 @section Scripts{
     <script>
+        const commonUrl = @Json.Serialize(@Configuration.GetSection("AppUrls").GetSection("TestUrl").Value);
         var buttonstate = 0;
          $(document).ready(function () {
             if ('@ViewBag.account' == "Super Admin") {
                 document.getElementById("stateDivision").setAttribute("disabled", "disabled");
                 $.ajax({
-                    url: '/AccountRegister/GetTownhsipByDivision?divisonCode=' + $("#stateDivision").val(),
+                    url: commonUrl+ '/AccountRegister/GetTownhsipByDivision?divisonCode=' + $("#stateDivision").val(),
                     type: 'GET',
                     ContentType: 'application/json;utf-8',
                     datatype: 'json',
@@ -178,7 +181,7 @@
             else if ('@ViewBag.account' == "User") {
 
                 $.ajax({
-                    url: '/AccountRegister/GetTownship?divisonCode=' + $("#stateDivision").val() + '&TownshipCode=@ViewBag.TownshipId',
+                    url: commonUrl+ '/AccountRegister/GetTownship?divisonCode=' + $("#stateDivision").val() + '&TownshipCode=@ViewBag.TownshipId',
                     type: 'GET',
                     ContentType: 'application/json;utf-8',
                     datatype: 'json',
@@ -199,7 +202,7 @@
 
              //$.ajax({
 
-             //    url: `/AccountRegister/GetAccounts`,
+             //    url: commonUrl+ `/AccountRegister/GetAccounts`,
              //    type: 'get',
              //    success: function (res) {
              //        debugger;
@@ -245,7 +248,7 @@
             debugger;
             $.ajax({
 
-                url: '/AccountRegister/GetTownhsipByDivision?divisonCode=' + $("#stateDivision").val(),
+                url: commonUrl+ '/AccountRegister/GetTownhsipByDivision?divisonCode=' + $("#stateDivision").val(),
                 type: 'GET',
                 ContentType: 'application/json;utf-8',
                 datatype: 'json',
@@ -306,10 +309,10 @@
             child.innerHTML = blabel;
             $.ajax({
 
-                url: `/AccountRegister/UpdateUserStatus?UserId=${userId}&Active=${buttonstate}`,
+                url: commonUrl+ `/AccountRegister/UpdateUserStatus?UserId=${userId}&Active=${buttonstate}`,
                 type: 'get',
                 success: function (res) {
-                    window.location = "/AccountRegister/Index";
+                    window.location = commonUrl+"/AccountRegister/Index";
                     //if (res) {
                     //    if (buttonstate == 1) {
                     //        Swal.fire({

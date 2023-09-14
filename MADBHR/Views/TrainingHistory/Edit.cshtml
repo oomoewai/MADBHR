@@ -1,4 +1,6 @@
-﻿@using MADBHR.Enum
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@using MADBHR.Enum
 @{
     ViewData["Title"] = "Edit TrainingHistory";
     ViewData["Action"] = ViewEnum.Action.Edit.ToDescription();
@@ -9,6 +11,8 @@
 {
     <link href="~/Content/css/common.css" rel="stylesheet" type="text/css" />
     <script>
+        const commonUrl = @Json.Serialize(@Configuration.GetSection("AppUrls").GetSection("TestUrl").Value);
+
         $(document).ready(function () {
             $("#dvCertificatePreview").attr("src", $('#CertificateImageContent').val());
             $("#dvCertificatePreview").attr("class", "thumbnail");
@@ -43,7 +47,7 @@
             console.log("serialnumber:", serialNumber);
             $.ajax({
 
-                url: `/EmployeeDisposal/GetEmployeeInformation?SerialNumber=${serialNumber}`,
+                url: commonUrl+ `/EmployeeDisposal/GetEmployeeInformation?SerialNumber=${serialNumber}`,
                 type: 'get',
                 success: function (res) {
                     if (res) {

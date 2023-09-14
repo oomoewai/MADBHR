@@ -33,21 +33,21 @@ namespace MADBHR.Controllers
             var userInfo = _context.TbUserLogin.Where(x => x.Status == "Enable" && x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
             ViewBag.lstLogIn = userInfo;
            
-            if (userInfo.AccountType == "Head Admin")
-            {
+            //if (userInfo.AccountType == "Head Admin")
+            //{
                 var currentJobTownships = _context.TbCurrentJobTownship.Where(x => x.Active == true).OrderBy(x => x.Township).ToList();
                 ViewData["TownshipCode"] = new SelectList(currentJobTownships, "TownshipCode", "Township", tbJobHistory?.DepartmentName);
-            }
-            else if (userInfo.AccountType == "Super Admin")
-            {
-                var currentJobTownships = _context.TbCurrentJobTownship.Where(x => x.Active == true && x.StateDivisionId == userInfo.StateDivisionId).OrderBy(x => x.Township).ToList();
-                ViewData["TownshipCode"] = new SelectList(currentJobTownships, "TownshipCode", "Township", tbJobHistory?.DepartmentName);
-            }
-            else if (userInfo.AccountType == "User")
-            {
-                var currentJobTownships = _context.TbCurrentJobTownship.Where(x => x.Active == true && x.StateDivisionId == userInfo.StateDivisionId && x.UploadForTownship == userInfo.TownshipId).OrderBy(x => x.Township).ToList();
-                ViewData["TownshipCode"] = new SelectList(currentJobTownships, "TownshipCode", "Township", tbJobHistory?.DepartmentName);
-            }
+            //}
+            //else if (userInfo.AccountType == "Super Admin")
+            //{
+            //    var currentJobTownships = _context.TbCurrentJobTownship.Where(x => x.Active == true && x.StateDivisionId == userInfo.StateDivisionId).OrderBy(x => x.Township).ToList();
+            //    ViewData["TownshipCode"] = new SelectList(currentJobTownships, "TownshipCode", "Township", tbJobHistory?.DepartmentName);
+            //}
+            //else if (userInfo.AccountType == "User")
+            //{
+            //    var currentJobTownships = _context.TbCurrentJobTownship.Where(x => x.Active == true && x.StateDivisionId == userInfo.StateDivisionId && x.UploadForTownship == userInfo.TownshipId).OrderBy(x => x.Township).ToList();
+            //    ViewData["TownshipCode"] = new SelectList(currentJobTownships, "TownshipCode", "Township", tbJobHistory?.DepartmentName);
+            //}
 
             var rankType = _context.TbRankType.Select(x => new { x.RankTypeCode,x.RankType }).OrderBy(x=>x.RankType).ToList();
             ViewData["RankType"] = new SelectList(rankType, "RankTypeCode", "RankType", tbJobHistory?.RankTypeCode1);
@@ -221,31 +221,38 @@ namespace MADBHR.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(TbJobHistory jobHistory)
         {
-            using (var transaction = await _context.Database.BeginTransactionAsync())
+            var empSerialNumberinfo = _context.TbEmployee.Where(x => x.SerialNumber == jobHistory.SerialNumber && x.Status=="Pending").FirstOrDefault();
+            if (empSerialNumberinfo != null)
             {
-                try
+                return View();
+            }
+            else
+            {
+                using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
+                    try
+                    {
 
-                    //if (ModelState.IsValid)
-                    //{
-                    var userId = HttpContext.User.Identity.Name;
-                    var userInfo = _context.TbUserLogin.Where(x => x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
-                    jobHistory.UploadForTownship =userInfo.TownshipId == null || userInfo.TownshipId == "" ? userInfo.StateDivisionId : userInfo.TownshipId;
+                        //if (ModelState.IsValid)
+                        //{
+                        var userId = HttpContext.User.Identity.Name;
+                        var userInfo = _context.TbUserLogin.Where(x => x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
+                        jobHistory.UploadForTownship = userInfo.TownshipId == null || userInfo.TownshipId == "" ? userInfo.StateDivisionId : userInfo.TownshipId;
 
-                    jobHistory.EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == jobHistory.SerialNumber && x.IsDeleted == false).Select(x => x.EmployeeCode).FirstOrDefault();
-                    var emp = await _jobHistoryServices.SaveJobHistory(jobHistory, Convert.ToInt32(userId), 0);
+                        jobHistory.EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == jobHistory.SerialNumber && x.IsDeleted == false).Select(x => x.EmployeeCode).FirstOrDefault();
+                        var emp = await _jobHistoryServices.SaveJobHistory(jobHistory, Convert.ToInt32(userId), 0);
 
-                    return RedirectToAction("Index");
+                        return RedirectToAction("Index");
 
-                    //}
-                }
-                catch (Exception e)
-                {
+                        //}
+                    }
+                    catch (Exception e)
+                    {
 
-                    await transaction.RollbackAsync();
+                        await transaction.RollbackAsync();
+                    }
                 }
             }
-
             return View();
         }
         public IActionResult Edit(int Id)

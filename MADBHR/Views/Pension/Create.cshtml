@@ -1,4 +1,6 @@
-﻿@using MADBHR.Enum
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@using MADBHR.Enum
 @{
     ViewData["Title"] = "Create Pension";
     ViewData["Action"] = ViewEnum.Action.Create.ToDescription();
@@ -8,6 +10,8 @@
 @section Scripts
 {
     <script>
+    const commonUrl = @Json.Serialize(@Configuration.GetSection("AppUrls").GetSection("TestUrl").Value);
+
     $(document).ready(function () {
 
     });
@@ -16,7 +20,7 @@
         console.log("serialnumber:", serialNumber);
         $.ajax({
 
-            url: `/EmployeeDisposal/GetEmployeeInformation?SerialNumber=${serialNumber}`,
+            url: commonUrl+ `/EmployeeDisposal/GetEmployeeInformation?SerialNumber=${serialNumber}`,
             type: 'get',
             success: function (res) {
                 if (res) {
@@ -38,10 +42,10 @@
                             if (result.isConfirmed) {
                                 console.log("account ", '@ViewBag.lstLogIn.AccountType');
                                 if ('@ViewBag.lstLogIn.AccountType' == "Head Admin" || '@ViewBag.lstLogIn.AccountType' == "Super Admin") {
-                                    window.location.href = "/Pension/Index";
+                                    window.location.href = commonUrl+ "/Pension/Index";
                                 }
                                 else {
-                                    window.location.href = "/Pension/Detail";
+                                    window.location.href = commonUrl+ "/Pension/Detail";
                                 }
                             }
                         })
@@ -60,10 +64,10 @@
                             if (result.isConfirmed) {
                                 console.log("account ", '@ViewBag.lstLogIn.AccountType');
                                 if ('@ViewBag.lstLogIn.AccountType' == "Head Admin" || '@ViewBag.lstLogIn.AccountType' == "Super Admin") {
-                                    window.location.href = "/Pension/Index";
+                                    window.location.href = commonUrl +"/Pension/Index";
                                 }
                                 else {
-                                    window.location.href = "/Pension/Detail";
+                                    window.location.href = commonUrl +"/Pension/Detail";
                                 }
                             }
                         })

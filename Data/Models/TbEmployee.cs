@@ -110,5 +110,6 @@ namespace MADBHR_Data.Models
         [NotMapped]
         [SkipProperty]
         public int Age { get; set; }
+       
     }
 }

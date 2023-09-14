@@ -128,6 +128,53 @@ namespace MADBHR.Controllers
             var employees = _employeeServices.GetEmployeeForAdmin(StateDivisionCode, TownshipCode,Status,Name,SerialNumber).ToList();
             StateDivisionCode = null;
             TownshipCode = null;
+            return View(employees.ToPagedList((int)page, pageSize));
+
+        }
+
+        public IActionResult PendingAdminIndex(string StateDivisionCode = null, string TownshipCode = null, string? Name = null, string? SerialNumber = null, string? Status = null, int? page = 1)
+        {
+            Initialize();
+            var userId = HttpContext.User.Identity.Name;
+            var userInfo = _context.TbUserLogin.Where(x => x.Status == "Enable" && x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
+            ViewBag.lstLogIn = userInfo;
+            //StateDivisionCode = userInfo.StateDivisionId;            
+            if (userInfo.AccountType == "User")
+            {
+                if (userInfo.TownshipId == "0010")
+                {
+                    //TownshipCode = _context.TbCurrentJobTownship.Where(x => x.Active == true && x.StateDivisionId == userInfo.StateDivisionId).Select(x => x.TownshipCode).FirstOrDefault();
+                    //TownshipCode = TownshipCode == null ? "0" : TownshipCode;
+                    StateDivisionCode = userInfo.StateDivisionId;
+                }
+                else
+                {
+                    TownshipCode = _context.TbCurrentJobTownship.Where(x => x.Active == true && x.UploadForTownship == userInfo.TownshipId).Select(x => x.TownshipCode).FirstOrDefault();
+                    TownshipCode = TownshipCode == null ? "0" : TownshipCode;
+                }
+                TempData["TownshipCode"] = TownshipCode;
+                var townshipCodes = _context.TbCurrentJobTownship.Where(x => x.StateDivisionId == userInfo.StateDivisionId && x.UploadForTownship == userInfo.TownshipId).OrderBy(x => x.Township).ToList();
+                ViewData["TownshipCode"] = new SelectList(townshipCodes, "TownshipCode", "Township");
+            }
+            else
+            {
+                TempData["TownshipCode"] = TownshipCode;
+                var townshipCodes = _context.TbCurrentJobTownship.Where(x => x.StateDivisionId == StateDivisionCode).OrderBy(x => x.Township).ToList();
+                ViewData["TownshipCode"] = new SelectList(townshipCodes, "TownshipCode", "Township");
+            }
+            List<string> status = new List<string>();
+            status.Add("Pending");
+            status.Add("Approve");
+            status.Add("Reject");
+            ViewData["Status"] = new SelectList(status);
+            TempData["StateDivisionCode"] = StateDivisionCode;
+            ViewBag.StateDivisionCode = StateDivisionCode;
+            var pageSize = _pagination.PageSize;
+            ViewData["Page"] = page;
+            ViewData["PageSize"] = pageSize;
+            var employees = _employeeServices.GetEmployeeForAdmin(StateDivisionCode, TownshipCode, Status, Name, SerialNumber).Where(x=>x.Status== "Pending").ToList();
+            StateDivisionCode = null;
+            TownshipCode = null;
             return View(employees.OrderByDescending(x => x.CreatedDate).ToList().ToPagedList((int)page, pageSize));
 
         }
@@ -195,100 +242,108 @@ namespace MADBHR.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(TbEmployee employee, bool? RedirectToRelationship = null)
         {
-           
-            using (var transaction = await _context.Database.BeginTransactionAsync())
+            var empSerialNumberinfo = _context.TbEmployee.Where(x => x.SerialNumber == employee.SerialNumber).FirstOrDefault();
+            if(empSerialNumberinfo!=null)
             {
-                var userId = HttpContext.User.Identity.Name;
-                var userInfo = _context.TbUserLogin.Where(x => x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
-                MappedDiagnosticsLogicalContext.Set("userId", userInfo.UserPkid);
-                try
+                return View();
+            }
+            else
+            {
+                using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
-                  
-                    //if (ModelState.IsValid)
-                    //{
-                    var didUploaded = true;
-                    if (employee.ImageFile != null)
+                    var userId = HttpContext.User.Identity.Name;
+                    var userInfo = _context.TbUserLogin.Where(x => x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
+                    MappedDiagnosticsLogicalContext.Set("userId", userInfo.UserPkid);
+                    try
                     {
-                        var filename = employee.ImageFile != null ? FtpHelper.ftpImageFolderPath + employee.ImageFile.GetUniqueName() : "";
-                        didUploaded = false;
-                        var uploadRes = FtpHelper.UploadFileToServer(employee.ImageFile, filename);
-                        if (uploadRes.IsSucceed())
-                        {
-                            didUploaded = true;
-                            employee.ProfilePic = uploadRes.ResponseUri.AbsolutePath;
-                        }
-                    }
-                    if (employee.NRCImageFile != null)
-                    {
-                        var filename = employee.NRCImageFile != null ? FtpHelper.ftpImageFolderPath + employee.NRCImageFile.GetUniqueName() : "";
-                        didUploaded = false;
-                        var uploadRes = FtpHelper.UploadFileToServer(employee.NRCImageFile, filename);
-                        if (uploadRes.IsSucceed())
-                        {
-                            didUploaded = true;
-                            employee.Nrcpic = uploadRes.ResponseUri.AbsolutePath;
-                        }
-                    }
-                    if (employee.Form66ImageFile != null)
-                    {
-                        var filename = employee.Form66ImageFile != null ? FtpHelper.ftpImageFolderPath + employee.Form66ImageFile.GetUniqueName() : "";
 
-                        didUploaded = false;
-                        var uploadRes = FtpHelper.UploadFileToServer(employee.Form66ImageFile, filename);
-                        if (uploadRes.IsSucceed())
+                        //if (ModelState.IsValid)
+                        //{
+                        var didUploaded = true;
+                        if (employee.ImageFile != null)
                         {
-                            didUploaded = true;
-                            employee.Form66Pic = uploadRes.ResponseUri.AbsolutePath;
+                            var filename = employee.ImageFile != null ? FtpHelper.ftpImageFolderPath + employee.ImageFile.GetUniqueName() : "";
+                            didUploaded = false;
+                            var uploadRes = FtpHelper.UploadFileToServer(employee.ImageFile, filename);
+                            if (uploadRes.IsSucceed())
+                            {
+                                didUploaded = true;
+                                employee.ProfilePic = uploadRes.ResponseUri.AbsolutePath;
+                            }
                         }
-                    }
-                    if (employee.DegreeImageFile != null)
-                    {
-                        var filename = employee.DegreeImageFile != null ? FtpHelper.ftpImageFolderPath + employee.DegreeImageFile.GetUniqueName() : "";
+                        if (employee.NRCImageFile != null)
+                        {
+                            var filename = employee.NRCImageFile != null ? FtpHelper.ftpImageFolderPath + employee.NRCImageFile.GetUniqueName() : "";
+                            didUploaded = false;
+                            var uploadRes = FtpHelper.UploadFileToServer(employee.NRCImageFile, filename);
+                            if (uploadRes.IsSucceed())
+                            {
+                                didUploaded = true;
+                                employee.Nrcpic = uploadRes.ResponseUri.AbsolutePath;
+                            }
+                        }
+                        if (employee.Form66ImageFile != null)
+                        {
+                            var filename = employee.Form66ImageFile != null ? FtpHelper.ftpImageFolderPath + employee.Form66ImageFile.GetUniqueName() : "";
 
-                        didUploaded = false;
-                        var uploadRes = FtpHelper.UploadFileToServer(employee.DegreeImageFile, filename);
-                        if (uploadRes.IsSucceed())
-                        {
-                            didUploaded = true;
-                            employee.DegreePic = uploadRes.ResponseUri.AbsolutePath;
+                            didUploaded = false;
+                            var uploadRes = FtpHelper.UploadFileToServer(employee.Form66ImageFile, filename);
+                            if (uploadRes.IsSucceed())
+                            {
+                                didUploaded = true;
+                                employee.Form66Pic = uploadRes.ResponseUri.AbsolutePath;
+                            }
                         }
-                    }
-                    if (didUploaded)
-                    {
-                        employee.UploadForTownship = userInfo.TownshipId == null || userInfo.TownshipId == "" ? userInfo.StateDivisionId : userInfo.TownshipId;
-                        if(userInfo.AccountType == "User" || userInfo.AccountType == "Super Admin")
+                        if (employee.DegreeImageFile != null)
                         {
-                            employee.Status = "Pending";
+                            var filename = employee.DegreeImageFile != null ? FtpHelper.ftpImageFolderPath + employee.DegreeImageFile.GetUniqueName() : "";
+
+                            didUploaded = false;
+                            var uploadRes = FtpHelper.UploadFileToServer(employee.DegreeImageFile, filename);
+                            if (uploadRes.IsSucceed())
+                            {
+                                didUploaded = true;
+                                employee.DegreePic = uploadRes.ResponseUri.AbsolutePath;
+                            }
                         }
-                        else
+                        if (didUploaded)
                         {
-                            employee.Status = "Approve";
-                        }
-                        var emp = await _employeeServices.SaveEmployee(employee, Convert.ToInt32(userId), 0);
-                        
-                        _logger.LogInformation("Successfully Create");
-                        if (RedirectToRelationship == true)
-                        {
-                            return RedirectToAction("Create", "Relationship", new { SerialNumber = emp.SerialNumber,Address=emp.Address });
-                        }
-                        else
-                        {
-                            if (userInfo.AccountType == "Head Admin" || userInfo.AccountType == "Super Admin")
-                                return RedirectToAction("AdminDivisionIndex");
+                            employee.UploadForTownship = userInfo.TownshipId == null || userInfo.TownshipId == "" ? userInfo.StateDivisionId : userInfo.TownshipId;
+                            if (userInfo.AccountType == "User" || userInfo.AccountType == "Super Admin")
+                            {
+                                employee.Status = "Pending";
+                            }
                             else
-                                return RedirectToAction("AdminIndex");
+                            {
+                                employee.Status = "Approve";
+                            }
+                            var emp = await _employeeServices.SaveEmployee(employee, Convert.ToInt32(userId), 0);
+
+                            _logger.LogInformation("Successfully Create");
+                            if (RedirectToRelationship == true)
+                            {
+                                return RedirectToAction("Create", "Relationship", new { SerialNumber = emp.SerialNumber, Address = emp.Address });
+                            }
+                            else
+                            {
+                                if (userInfo.AccountType == "Head Admin" || userInfo.AccountType == "Super Admin")
+                                    return RedirectToAction("AdminDivisionIndex");
+                                else
+                                    return RedirectToAction("AdminIndex");
+                            }
                         }
+                        throw new Exception();
+                        //}
                     }
-                    throw new Exception();
-                    //}
-                }
-                catch (Exception e)
-                {
-                    
-                    _logger.LogError(e.Message);
-                    await transaction.RollbackAsync();
+                    catch (Exception e)
+                    {
+
+                        _logger.LogError(e.Message);
+                        await transaction.RollbackAsync();
+                    }
                 }
             }
+          
 
             return View();
         }
@@ -416,6 +471,14 @@ namespace MADBHR.Controllers
                     {
                         employee.UploadForTownship = userInfo.TownshipId == null || userInfo.TownshipId == "" ? userInfo.StateDivisionId : userInfo.TownshipId;
                         employee.EditRequest = null;
+                        if (userInfo.AccountType == "User" || userInfo.AccountType == "Super Admin")
+                        {
+                            employee.Status = "Pending";
+                        }
+                        else
+                        {
+                            employee.Status = "Approve";
+                        }
                         var emp = await _employeeServices.SaveEmployee(employee, Convert.ToInt32(userId), employee.EmployeePkid);
                         _logger.LogInformation("Successfully Edit");
                         if (RedirectToRelationship == true)

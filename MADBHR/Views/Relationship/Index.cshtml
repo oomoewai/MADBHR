@@ -1,4 +1,6 @@
-﻿@using MADBHR.Enum
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@using MADBHR.Enum
 @using X.PagedList
 @model IPagedList<MADBHR_Data.Models.TbRelationship>
 @{
@@ -55,7 +57,7 @@
                                         <a asp-controller="SonAndDaughter" asp-action="Index" asp-route-EmployeeCode="@item.EmployeeCode" class="btn btn-xs btn-secondary">သား/သမီးအချက်အလက်ကြည့်ရန်</a>
                                         <a asp-controller="@controller" asp-action="Edit" asp-route-Id="@item.RelationshipPkid" class="btn btn-xs btn-secondary">ပြင်ရန်</a>
                                         <a asp-controller="@controller" asp-action="Delete" asp-route-Id="@item.RelationshipPkid" class="btn btn-xs btn-secondary"
-                                                onclick="DeleteConfirm('/@controller/Delete/',@item.RelationshipPkid)">
+                                           onclick="DeleteConfirm('/@controller/Delete/',@item.RelationshipPkid)">
                                             ပယ်ဖျက်ရန်
                                         </a>
                                     </td>

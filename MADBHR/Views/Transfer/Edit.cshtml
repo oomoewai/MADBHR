@@ -1,4 +1,6 @@
-﻿@using MADBHR.Enum
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@using MADBHR.Enum
 @{
     ViewData["Title"] = "Edit Transfer";
     ViewData["Action"] = ViewEnum.Action.Edit.ToDescription();
@@ -8,9 +10,11 @@
 @section Scripts
 {
     <script>
+         const commonUrl = @Json.Serialize(@Configuration.GetSection("AppUrls").GetSection("TestUrl").Value);
+
         $(document).ready(function () {
            // document.getElementById("townshipId").setAttribute("disabled", "disabled");
-           
+
         });
     function ChangeNumber() {
         debugger;
@@ -18,7 +22,7 @@
         console.log("serialnumber:", serialNumber);
         $.ajax({
 
-            url: `/EmployeeDisposal/GetEmployeeInformation?SerialNumber=${serialNumber}`,
+            url: commonUrl+ `/EmployeeDisposal/GetEmployeeInformation?SerialNumber=${serialNumber}`,
             type: 'get',
             success: function (res) {
                 if (res) {

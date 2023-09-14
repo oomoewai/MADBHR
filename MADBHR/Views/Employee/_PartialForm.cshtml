@@ -1,4 +1,6 @@
-﻿@using MADBHR.Enum
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@using MADBHR.Enum
 @*@model MADBHR_Models.Employee.VMRequestEmployee*@
 @model MADBHR_Data.Models.TbEmployee
 @{
@@ -15,14 +17,14 @@
         </div>
         <div class="box-body">
             <div class="row">
-                <form action="/@controller/@ViewData["Action"]" method="post" enctype="multipart/form-data">
+                <form action="@Configuration.GetSection("AppUrls").GetSection("TestUrl").Value/@controller/@ViewData["Action"]" method="post" enctype="multipart/form-data">
 
                     @if (ViewData["Action"].ToString() == ViewEnum.Action.Edit.ToDescription())
                     {
                         <input asp-for="EmployeeCode" hidden />
-                        
-                    }                  
-                     <input asp-for="EmployeePkid" id="EmpCode" hidden />
+
+                    }
+                    <input asp-for="EmployeePkid" id="EmpCode" hidden />
                     @*}*@
                     <div class="col-xs-12">
                         <div class="row">

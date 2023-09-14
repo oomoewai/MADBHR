@@ -1,4 +1,6 @@
-﻿@using MADBHR.Enum
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@using MADBHR.Enum
 @{
     ViewData["Title"] = "Edit Emplyee";
     ViewData["Action"] = ViewEnum.Action.Edit.ToDescription();
@@ -10,6 +12,7 @@
     @*<script src="~/js/image-upload.js"></script>*@
     <link href="~/Content/css/common.css" rel="stylesheet" type="text/css" />
     <script>
+        const commonUrl = @Json.Serialize(@Configuration.GetSection("AppUrls").GetSection("TestUrl").Value);
         $(document).ready(function () {
 
             $("#dvPreview").attr("src", $('#ImageContent').val());
@@ -28,7 +31,7 @@
             $('#btnApprove').click(function () {
                 $.ajax({
 
-                    url: '/Employee/EmployeeStatusChange?EmployeeCode=' + $('#EmpCode').val() + '&Status=' +"Approve",
+                    url: commonUrl+ '/Employee/EmployeeStatusChange?EmployeeCode=' + $('#EmpCode').val() + '&Status=' +"Approve",
                     type: 'POST',
                     ContentType: 'application/json;utf-8',
                     datatype: 'json',
@@ -41,7 +44,7 @@
             $('#btnYes').click(function () {
                 $.ajax({
 
-                    url: '/Employee/EmployeeStatusChange?EmployeeCode=' + $('#EmpCode').val() + '&Status=' + "Reject" + '&Comment=' + $('#txtComment').val(),
+                    url: commonUrl+ '/Employee/EmployeeStatusChange?EmployeeCode=' + $('#EmpCode').val() + '&Status=' + "Reject" + '&Comment=' + $('#txtComment').val(),
                     type: 'POST',
                     ContentType: 'application/json;utf-8',
                     datatype: 'json',

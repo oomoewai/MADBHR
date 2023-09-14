@@ -24,6 +24,7 @@ namespace MADBHR_Data.Models
         public DateTime? ModifiedDate { get; set; }
         public string CreatedBy { get; set; }
         public DateTime? CreatedDate { get; set; }
+        public bool? AccountCloseStatus { get; set; }
         [NotMapped]
         [SkipProperty]
         public string StateDivision { get; set; }

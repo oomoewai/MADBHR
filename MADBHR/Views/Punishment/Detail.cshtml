@@ -1,4 +1,6 @@
-﻿@using MADBHR.Enum
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@using MADBHR.Enum
 @using X.PagedList
 @model IPagedList<MADBHR_Data.Models.TbPunishment>
 @{
@@ -26,10 +28,10 @@
         </div>
         <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne1">
             <div class="panel-body">
-                <form method="get" action="/@controller/Index">
+                <form method="get" action="@Configuration.GetSection("AppUrls").GetSection("TestUrl").Value/@controller/Index">
                     <div class="row">
 
-                       
+
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="form-label" for="field-4">ပြစ်ဒဏ်အမျိုးအစား</label>
@@ -65,9 +67,8 @@
         </header>
         <div class="box-body">
             <div class="row">
-                <div class="col-xs-12">
-
-                    <table id="example" class="display table table-hover table-condensed">
+                <div class="table-responsive">
+                    <table id="example" class="table table-striped table-hover table-bordered">
                         <thead>
                             <tr>
                                 <th>စဉ်</th>
@@ -86,25 +87,25 @@
                         <tbody>
                             @foreach (var item in Model)
                             {
-                            <tr>
-                                <td class="text-center">@((((int)ViewBag.Page - 1) * (int)ViewBag.PageSize) + count)</td>
-                                <td class="text-center">@item.EmployeeName</td>
-                                <td class="text-center">@item.RankType</td>
-                                <td class="text-center">@item.Department</td>
-                                <td class="text-center">@item.OrderDateStr</td>
-                                <td class="text-center">@item.OrderNo</td>
-                                <td class="text-center">@item.CrimeYear</td>
-                                <td class="text-center">@item.PunishmentType</td>
-                                <td class="text-center">@item.Description</td>
-                                <td class="text-center">
-                                    <a asp-controller="@controller" asp-action="Edit" asp-route-Id="@item.PunishmentPkid" class="btn btn-xs btn-secondary">ပြင်ရန်</a>
-                                    <button asp-controller="@controller" asp-action="Delete" asp-route-Id="@item.PunishmentPkid" class="btn btn-xs btn-secondary"
-                                            onclick="DeleteConfirm('/@controller/Delete/',@item.PunishmentPkid)">
-                                        ပယ်ဖျက်ရန်
-                                    </button>
-                                </td>
+                                <tr>
+                                    <td class="text-center">@((((int)ViewBag.Page - 1) * (int)ViewBag.PageSize) + count)</td>
+                                    <td class="text-center">@item.EmployeeName</td>
+                                    <td class="text-center">@item.RankType</td>
+                                    <td class="text-center">@item.Department</td>
+                                    <td class="text-center">@item.OrderDateStr</td>
+                                    <td class="text-center">@item.OrderNo</td>
+                                    <td class="text-center">@item.CrimeYear</td>
+                                    <td class="text-center">@item.PunishmentType</td>
+                                    <td class="text-center">@item.Description</td>
+                                    <td class="text-center">
+                                        <a asp-controller="@controller" asp-action="Edit" asp-route-Id="@item.PunishmentPkid" class="btn btn-xs btn-secondary">ပြင်ရန်</a>
+                                        <button asp-controller="@controller" asp-action="Delete" asp-route-Id="@item.PunishmentPkid" class="btn btn-xs btn-secondary"
+                                                onclick="DeleteConfirm('/@controller/Delete/',@item.PunishmentPkid)">
+                                            ပယ်ဖျက်ရန်
+                                        </button>
+                                    </td>
 
-                            </tr>
+                                </tr>
                                 count++;
                             }
                         </tbody>

@@ -1,4 +1,6 @@
-﻿@using MADBHR.Enum
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@using MADBHR.Enum
 @*@model MADBHR_Models.Employee.VMRequestEmployee*@
 @model MADBHR_Data.Models.TbDisposal
 @{
@@ -15,7 +17,7 @@
         </div>
         <div class="box-body">
             <div class="row">
-                <form action="/@controller/@ViewData["Action"]" method="post" enctype="multipart/form-data">
+                <form action="@Configuration.GetSection("AppUrls").GetSection("TestUrl").Value/@controller/@ViewData["Action"]" method="post" enctype="multipart/form-data">
 
                     @if (ViewData["Action"].ToString() == ViewEnum.Action.Edit.ToDescription())
                     {
@@ -24,97 +26,97 @@
                     }
                     <input asp-for="DisposalPkid" hidden />
                     @*}*@
-                <div class="col-xs-12">
-                    <div class="row">
-                        <div class="col-md-6 form-group">
-                            <label class="form-label" for="field-1">ကိုယ်ပိုင်အမှတ်</label>
-                            <span class="desc"></span>
-                            <div class="controls">
-                                <input type="text" class="form-control" id="field-1" asp-for="SerialNumber" onchange="ChangeNumber()">
-                                <span asp-validation-for="SerialNumber" class="text-danger"></span>
+                    <div class="col-xs-12">
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-1">ကိုယ်ပိုင်အမှတ်</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="text" class="form-control" id="field-1" asp-for="SerialNumber" onchange="ChangeNumber()">
+                                    <span asp-validation-for="SerialNumber" class="text-danger"></span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label class="form-label" for="field-name">အမည်</label>
-                            <span class="desc"></span>
-                            <div class="controls">
-                                <input type="text" class="form-control" id="field-name" value="@ViewBag.Name">
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-name">အမည်</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="text" class="form-control" id="field-name" value="@ViewBag.Name">
+                                </div>
                             </div>
-                        </div>
 
 
-                       
-                    </div>
 
-                    <div class="row">
-                        <div class="col-md-6 form-group">
-                            <label class="form-label" for="field-2">ရာထူး</label>
-                            <span class="desc"></span>
-                            <div class="controls">
-                                <input type="text" class="form-control" id="field-rank" value="@ViewBag.Rank">
-                            </div>
                         </div>
 
-                        <div class="col-md-6 form-group">
-                            <label class="form-label" for="field-4">ပညာအရည်အချင်း</label>
-                            <input type="text" class="form-control" id="field-education" value="@ViewBag.Education">
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-2">ရာထူး</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="text" class="form-control" id="field-rank" value="@ViewBag.Rank">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-4">ပညာအရည်အချင်း</label>
+                                <input type="text" class="form-control" id="field-education" value="@ViewBag.Education">
+                            </div>
+
                         </div>
-                       
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 form-group">
-                            <label class="form-label" for="field-2">မွေးသက္ကရာဇ်</label>
-                            <span class="desc"></span>
-                            <div class="controls">
-                                <input type="text" class="form-control" id="field-dob" value="@ViewBag.DateOfBirth">
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-2">မွေးသက္ကရာဇ်</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="text" class="form-control" id="field-dob" value="@ViewBag.DateOfBirth">
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-3">အမြဲတမ်းဝန်ထမ်းစတင်ဖြစ်သည့်နေ့</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="text" class="form-control" id="field-joindate" value="@ViewBag.JoinDate">
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-6 form-group">
-                            <label class="form-label" for="field-3">အမြဲတမ်းဝန်ထမ်းစတင်ဖြစ်သည့်နေ့</label>
-                            <span class="desc"></span>
-                            <div class="controls">
-                                <input type="text" class="form-control" id="field-joindate" value="@ViewBag.JoinDate">
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-3">လက်ရှိရာထူးရသည့်နေ့</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="text" class="form-control" id="field-fromdate" value="@ViewBag.FromDate">
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-18">​ပြုန်းတီးအမျိုးအစား</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <select class="form-control" asp-for="DisposalTypeCode" asp-items="ViewBag.DisposalTypeCode">
+                                        <option selected="selected" value="">ပြုန်းတီးအမျိုးအစားရွေးပါ </option>
+                                    </select>
+                                    <span asp-validation-for="DisposalTypeCode" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-18">ပြုန်းတီးရက်စွဲ</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="date" class="form-control" id="field-5" asp-for="DisposalDate">
+                                    <span asp-validation-for="DisposalDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-18">မှတ်ချက်</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="text" class="form-control" id="field-6" asp-for="Remark">
+                                    <span asp-validation-for="Remark" class="text-danger"></span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 form-group">
-                            <label class="form-label" for="field-3">လက်ရှိရာထူးရသည့်နေ့</label>
-                            <span class="desc"></span>
-                            <div class="controls">
-                                <input type="text" class="form-control" id="field-fromdate" value="@ViewBag.FromDate">
-                            </div>
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label class="form-label" for="field-18">​ပြုန်းတီးအမျိုးအစား</label>
-                            <span class="desc"></span>
-                            <div class="controls">
-                                <select class="form-control" asp-for="DisposalTypeCode" asp-items="ViewBag.DisposalTypeCode">
-                                    <option selected="selected" value="">ပြုန်းတီးအမျိုးအစားရွေးပါ </option>
-                                </select>
-                                <span asp-validation-for="DisposalTypeCode" class="text-danger"></span>
-                            </div>
-                        </div>
-                        
-                    </div>                  
-                    <div class="row">
-                        <div class="col-md-6 form-group">
-                            <label class="form-label" for="field-18">ပြုန်းတီးရက်စွဲ</label>
-                            <span class="desc"></span>
-                            <div class="controls">
-                                <input type="date" class="form-control" id="field-5" asp-for="DisposalDate">
-                                <span asp-validation-for="DisposalDate" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label class="form-label" for="field-18">မှတ်ချက်</label>
-                            <span class="desc"></span>
-                            <div class="controls">
-                                <input type="text" class="form-control" id="field-6" asp-for="Remark">
-                                <span asp-validation-for="Remark" class="text-danger"></span>
-                            </div>
-                        </div>
-                    </div>
 
                         <div class="col-xs-12  padding-bottom-30">
                             <div class="text-left">
@@ -125,7 +127,7 @@
                     </div>
 
 
-</form>
+                </form>
             </div>
         </div>
     </div>

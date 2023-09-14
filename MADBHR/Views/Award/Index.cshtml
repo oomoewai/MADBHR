@@ -1,4 +1,6 @@
-﻿@using MADBHR.Enum
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@using MADBHR.Enum
 @using X.PagedList
 @model IPagedList<MADBHR_Data.Models.TbAward>
 @{
@@ -25,7 +27,7 @@
         </div>
         <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne1">
             <div class="panel-body">
-                <form method="get" action="/@controller/Index">
+                <form method="get" action="@Configuration.GetSection("AppUrls").GetSection("TestUrl").Value/@controller/Index">
                     <div class="row">
 
                         <div class="col-md-3">
@@ -90,9 +92,8 @@
         </header>
         <div class="box-body" style="margin-top: 30px;">
             <div class="row">
-                <div class="col-xs-12">
-
-                    <table id="example" class="display table table-hover table-condensed">
+                <div class="table-responsive">
+                    <table id="example" class="table table-striped table-hover table-bordered">
                         <thead>
                             <tr>
                                 <th>စဉ်</th>
@@ -110,23 +111,23 @@
                         <tbody>
                             @foreach (var item in Model)
                             {
-                            <tr>
-                                <td class="text-center">@((((int)ViewBag.Page - 1) * (int)ViewBag.PageSize) + count)</td>
-                                <td class="text-center">@item.StateDivision</td>
-                                <td class="text-center">@item.Township</td>
-                                <td class="text-center">@item.EmployeeName</td>
-                                <td class="text-center">@item.RankType</td>
-                                <td class="text-center">@item.Department</td>
-                                <td class="text-center">@item.AwardType</td>
-                                <td class="text-center">
-                                    <a asp-controller="@controller" asp-action="Detail" asp-route-EmployeeCode="@item.EmployeeCode" class="btn btn-xs btn-secondary">အသေးစိတ်ကြည့်ရန်</a>
-                                    @*<button asp-controller="@controller" asp-action="Delete" asp-route-Id="@item.AwardPkid" class="btn btn-xs btn-secondary"
-                    onclick="DeleteConfirm('/@controller/Delete/',@item.AwardPkid)">
-                ပယ်ဖျက်ရန်
-            </button>*@
-                                </td>
+                                <tr>
+                                    <td class="text-center">@((((int)ViewBag.Page - 1) * (int)ViewBag.PageSize) + count)</td>
+                                    <td class="text-center">@item.StateDivision</td>
+                                    <td class="text-center">@item.Township</td>
+                                    <td class="text-center">@item.EmployeeName</td>
+                                    <td class="text-center">@item.RankType</td>
+                                    <td class="text-center">@item.Department</td>
+                                    <td class="text-center">@item.AwardType</td>
+                                    <td class="text-center">
+                                        <a asp-controller="@controller" asp-action="Detail" asp-route-EmployeeCode="@item.EmployeeCode" class="btn btn-xs btn-secondary">အသေးစိတ်ကြည့်ရန်</a>
+                                        @*<button asp-controller="@controller" asp-action="Delete" asp-route-Id="@item.AwardPkid" class="btn btn-xs btn-secondary"
+                                                    onclick="DeleteConfirm('/@controller/Delete/',@item.AwardPkid)">
+                                                ပယ်ဖျက်ရန်
+                                            </button>*@
+                                    </td>
 
-                            </tr>
+                                </tr>
                                 count++;
                             }
                         </tbody>
@@ -142,11 +143,12 @@
     </div>*@
 @section Scripts{
     <script>
+        const commonUrl = @Json.Serialize(@Configuration.GetSection("AppUrls").GetSection("TestUrl").Value);
          $(document).ready(function () {
             if ('@ViewBag.AccountType' == "Super Admin") {
                 document.getElementById("stateDivision").setAttribute("disabled", "disabled");
                 $.ajax({
-                    url: '/Employee/GetTownhsipByDivision?divisonCode=' + $("#stateDivision").val(),
+                    url: commonUrl+ '/Employee/GetTownhsipByDivision?divisonCode=' + $("#stateDivision").val(),
                     type: 'GET',
                     ContentType: 'application/json;utf-8',
                     datatype: 'json',
@@ -165,7 +167,7 @@
             else if ('@ViewBag.AccountType' == "User") {
 
                 $.ajax({
-                    url: '/Employee/GetTownship?divisonCode=' + $("#stateDivision").val() + '&TownshipCode=@ViewBag.TownshipId',
+                    url: commonUrl+ '/Employee/GetTownship?divisonCode=' + $("#stateDivision").val() + '&TownshipCode=@ViewBag.TownshipId',
                     type: 'GET',
                     ContentType: 'application/json;utf-8',
                     datatype: 'json',
@@ -192,7 +194,7 @@
             debugger;
             $.ajax({
 
-                url: '/Employee/GetTownhsipByDivision?divisonCode=' + $("#stateDivision").val(),
+                url: commonUrl+ '/Employee/GetTownhsipByDivision?divisonCode=' + $("#stateDivision").val(),
                 type: 'GET',
                 ContentType: 'application/json;utf-8',
                 datatype: 'json',

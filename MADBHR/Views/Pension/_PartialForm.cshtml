@@ -1,4 +1,6 @@
-﻿@using MADBHR.Enum
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@using MADBHR.Enum
 @*@model MADBHR_Models.Employee.VMRequestEmployee*@
 @model MADBHR_Data.Models.TbPension
 @{
@@ -14,7 +16,7 @@
         </div>
         <div class="box-body">
             <div class="row">
-                <form action="/@controller/@ViewData["Action"]" method="post" enctype="multipart/form-data">
+                <form action="@Configuration.GetSection("AppUrls").GetSection("TestUrl").Value/@controller/@ViewData["Action"]" method="post" enctype="multipart/form-data">
 
                     @if (ViewData["Action"].ToString() == ViewEnum.Action.Edit.ToDescription())
                     {
@@ -23,158 +25,158 @@
                     }
                     <input asp-for="PensionPkid" hidden />
                     @*}*@
-                <div class="col-xs-12">
-                    <div class="row">
-                        <div class="col-md-6 form-group">
-                            <label class="form-label" for="field-1">ကိုယ်ပိုင်အမှတ်</label>
-                            <span class="desc"></span>
-                            <div class="controls">
-                                <input type="text" class="form-control" id="field-1" asp-for="SerialNumber" onchange="ChangeNumber()">
-                                <span asp-validation-for="SerialNumber" class="text-danger"></span>
+                    <div class="col-xs-12">
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-1">ကိုယ်ပိုင်အမှတ်</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="text" class="form-control" id="field-1" asp-for="SerialNumber" onchange="ChangeNumber()">
+                                    <span asp-validation-for="SerialNumber" class="text-danger"></span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label class="form-label" for="field-name">အမည်</label>
-                            <span class="desc"></span>
-                            <div class="controls">
-                                <input type="text" class="form-control" id="field-name" asp-for="Name">
-                                <span asp-validation-for="Name" class="text-danger"></span>
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-name">အမည်</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="text" class="form-control" id="field-name" asp-for="Name">
+                                    <span asp-validation-for="Name" class="text-danger"></span>
 
+                                </div>
                             </div>
-                        </div>
 
-                    </div>
-
-                    <div class="row">
-
-                        <div class="col-md-6 form-group">
-                            <label class="form-label" for="field-name">အဘအမည်</label>
-                            <span class="desc"></span>
-                            <div class="controls">
-                                <input type="text" class="form-control" id="field-fathername" asp-for="FatherName">
-                                <span asp-validation-for="FatherName" class="text-danger"></span>
-
-                            </div>
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label class="form-label" for="field-2">မွေးသက္ကရာဇ်</label>
-                            <span class="desc"></span>
-                            <div class="controls">
-                                <input type="text" class="form-control" id="field-dob" asp-for="DateOfBirth">
-                                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
-                            </div>
                         </div>
 
+                        <div class="row">
 
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 form-group">
-                            <label class="form-label" for="field-2">ရာထူး</label>
-                            <span class="desc"></span>
-                            <div class="controls">
-                                <input type="text" class="form-control" id="field-rank" asp-for="RankType">
-                                <span asp-validation-for="RankType" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label class="form-label" for="field-4">ဌာန</label>
-                            <input type="text" class="form-control" id="field-department" asp-for="Department">
-                            <span asp-validation-for="Department" class="text-danger"></span>
-                        </div>
-                      
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 form-group">
-                            <label class="form-label" for="field-3">ပင်စင်ဉီးစီးရုံး၏ စာရင်းစစ် အစီရင်ခံစာအမှတ်</label>
-                            <span class="desc"></span>
-                            <div class="controls">
-                                <input type="text" class="form-control" id="field-3" asp-for="PensionReportNo">
-                                <span asp-validation-for="PensionReportNo" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label class="form-label" for="field-3">ပင်စင်ဉီးစီးရုံး၏ စာရင်းစစ် ရက်စွဲ</label>
-                            <span class="desc"></span>
-                            <div class="controls">
-                                <input type="date" class="form-control" id="field-fromdate" asp-for="PensionDate">
-                                <span asp-validation-for="PensionDate" class="text-danger"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 form-group">
-                            <label class="form-label" for="field-18">​ပင်စင်အမျိုးအစား</label>
-                            <span class="desc"></span>
-                            <div class="controls">
-                                <select class="form-control" asp-for="PensionTypeCode" asp-items="ViewBag.PensionTypeCode">
-                                    <option selected="selected" value="">ပင်စင်အမျိုးအစားရွေးပါ </option>
-                                </select>
-                                <span asp-validation-for="PensionTypeCode" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label class="form-label" for="field-18">နောက်ဆုံးထုတ်ယူခဲ့သည့်လစာ</label>
-                            <span class="desc"></span>
-                            <div class="controls">
-                                <input type="text" class="form-control" id="field-5" asp-for="LatestSalary">
-                                <span asp-validation-for="LatestSalary" class="text-danger"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 form-group">
-                            <label class="form-label" for="field-18">လစဉ်ပင်စင်</label>
-                            <span class="desc"></span>
-                            <div class="controls">
-                                <input type="text" class="form-control" id="field-6" asp-for="MonthlyPension">
-                                <span asp-validation-for="MonthlyPension" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label class="form-label" for="field-18">ဆုငွေ</label>
-                            <span class="desc"></span>
-                            <div class="controls">
-                                <input type="text" class="form-control" id="field-6" asp-for="Saving">
-                                <span asp-validation-for="Saving" class="text-danger"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 form-group">
-                            <label class="form-label" for="field-18">ပင်စင်စတင်ခွင့်ပြုသည့်နေ့</label>
-                            <span class="desc"></span>
-                            <div class="controls">
-                                <input type="date" class="form-control" id="field-6" asp-for="PensionStartDate">
-                                <span asp-validation-for="PensionStartDate" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label class="form-label" for="field-18">ပင်စင်လစာထုတ်ယူသည့်ဘဏ်</label>
-                            <span class="desc"></span>
-                            <div class="controls">
-                                <input type="text" class="form-control" id="field-6" asp-for="PensionBank">
-                                <span asp-validation-for="PensionBank" class="text-danger"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 form-group">
-                            <label class="form-label" for="field-18">မှတ်ချက်</label>
-                            <span class="desc"></span>
-                            <div class="controls">
-                                <input type="text" class="form-control" id="field-6" asp-for="Remark">
-                                <span asp-validation-for="Remark" class="text-danger"></span>
-                            </div>
-                        </div>
-                    </div>
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-name">အဘအမည်</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="text" class="form-control" id="field-fathername" asp-for="FatherName">
+                                    <span asp-validation-for="FatherName" class="text-danger"></span>
 
-                    <div class="col-xs-12  padding-bottom-30">
-                        <div class="text-left">
-                            <button type="submit" class="btn btn-primary gradient-blue">သိမ်းမည်</button>
-                            <a asp-controller="@controller" asp-action="Index" class="btn btn-primary">ရှေ့သို့ပြန်သွားမည်</a>
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-2">မွေးသက္ကရာဇ်</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="text" class="form-control" id="field-dob" asp-for="DateOfBirth">
+                                    <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-2">ရာထူး</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="text" class="form-control" id="field-rank" asp-for="RankType">
+                                    <span asp-validation-for="RankType" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-4">ဌာန</label>
+                                <input type="text" class="form-control" id="field-department" asp-for="Department">
+                                <span asp-validation-for="Department" class="text-danger"></span>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-3">ပင်စင်ဉီးစီးရုံး၏ စာရင်းစစ် အစီရင်ခံစာအမှတ်</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="text" class="form-control" id="field-3" asp-for="PensionReportNo">
+                                    <span asp-validation-for="PensionReportNo" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-3">ပင်စင်ဉီးစီးရုံး၏ စာရင်းစစ် ရက်စွဲ</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="date" class="form-control" id="field-fromdate" asp-for="PensionDate">
+                                    <span asp-validation-for="PensionDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-18">​ပင်စင်အမျိုးအစား</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <select class="form-control" asp-for="PensionTypeCode" asp-items="ViewBag.PensionTypeCode">
+                                        <option selected="selected" value="">ပင်စင်အမျိုးအစားရွေးပါ </option>
+                                    </select>
+                                    <span asp-validation-for="PensionTypeCode" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-18">နောက်ဆုံးထုတ်ယူခဲ့သည့်လစာ</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="text" class="form-control" id="field-5" asp-for="LatestSalary">
+                                    <span asp-validation-for="LatestSalary" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-18">လစဉ်ပင်စင်</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="text" class="form-control" id="field-6" asp-for="MonthlyPension">
+                                    <span asp-validation-for="MonthlyPension" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-18">ဆုငွေ</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="text" class="form-control" id="field-6" asp-for="Saving">
+                                    <span asp-validation-for="Saving" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-18">ပင်စင်စတင်ခွင့်ပြုသည့်နေ့</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="date" class="form-control" id="field-6" asp-for="PensionStartDate">
+                                    <span asp-validation-for="PensionStartDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="form-label" for="field-18">ပင်စင်လစာထုတ်ယူသည့်ဘဏ်</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="text" class="form-control" id="field-6" asp-for="PensionBank">
+                                    <span asp-validation-for="PensionBank" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 form-group">
+                                <label class="form-label" for="field-18">မှတ်ချက်</label>
+                                <span class="desc"></span>
+                                <div class="controls">
+                                    <input type="text" class="form-control" id="field-6" asp-for="Remark">
+                                    <span asp-validation-for="Remark" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12  padding-bottom-30">
+                            <div class="text-left">
+                                <button type="submit" class="btn btn-primary gradient-blue">သိမ်းမည်</button>
+                                <a asp-controller="@controller" asp-action="Index" class="btn btn-primary">ရှေ့သို့ပြန်သွားမည်</a>
+                            </div>
                         </div>
                     </div>
-                </div>
 
 
                 </form>

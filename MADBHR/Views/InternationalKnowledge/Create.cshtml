@@ -1,4 +1,6 @@
-﻿@using MADBHR.Enum
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@using MADBHR.Enum
 @{
     ViewData["Title"] = "Create InternationalKnowledge";
     ViewData["Action"] = ViewEnum.Action.Create.ToDescription();
@@ -8,6 +10,7 @@
 @section Scripts
 {
     <script>
+        const commonUrl = @Json.Serialize(@Configuration.GetSection("AppUrls").GetSection("TestUrl").Value);
     $(document).ready(function () {
 
     });
@@ -17,7 +20,7 @@
         console.log("serialnumber:", serialNumber);
         $.ajax({
 
-            url: `/EmployeeDisposal/GetEmployeeInformation?SerialNumber=${serialNumber}`,
+            url: commonUrl+ `/EmployeeDisposal/GetEmployeeInformation?SerialNumber=${serialNumber}`,
             type: 'get',
             success: function (res) {
                 if (res) {
@@ -34,7 +37,7 @@
                             confirmButtonText: 'OK'
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                window.location.href = "/InternationalKnowledge/Index";
+                                window.location.href = commonUrl+"/InternationalKnowledge/Index";
                             }
                         })
 

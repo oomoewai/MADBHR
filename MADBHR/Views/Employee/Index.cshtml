@@ -1,4 +1,6 @@
-﻿@using MADBHR.Enum
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@using MADBHR.Enum
 @using X.PagedList
 @model IPagedList<MADBHR_Data.Models.TbEmployee>
 @{
@@ -163,9 +165,8 @@
         </header>
         <div class="box-body">
             <div class="row">
-                <div class="col-xs-12">
-
-                    <table id="example" class="display table table-hover table-condensed">
+                <div class="table-responsive">
+                    <table id="example" class="table table-striped table-hover table-bordered">
                         <thead>
                             <tr>
                                 <th>စဉ်</th‌>
@@ -177,7 +178,7 @@
                                 <th>အကြောင်းအရာများ</th>
                                 <th>Edit Request Confirm</th>
                                 <th>Delete Request Confirm</th>
-                                
+
                             </tr>
                         </thead>
                         <tbody>
@@ -197,7 +198,7 @@
                                             <a class="btn btn-xs btn-secondary" onclick="Confirm('@item.EmployeeCode','Edit')">Confirm</a>
                                         }
 
-                                        
+
                                     </td>
                                     <td class="text-center">
                                         @if (item.DeleteRequest == "Requesting")
@@ -222,15 +223,16 @@
     </div>*@
 @section Scripts{
     <script>
-        function Confirm(EmployeeCode,requestType) {
+        const commonUrl = @Json.Serialize(@Configuration.GetSection("AppUrls").GetSection("TestUrl").Value);
+        function Confirm(EmployeeCode, requestType) {
             $.ajax({
 
-                url: '/Employee/ChangeConfirm?EmployeeCode=' + EmployeeCode + '&RequestType=' + requestType,
+                url: commonUrl+ '/Employee/ChangeConfirm?EmployeeCode=' + EmployeeCode + '&RequestType=' + requestType,
                 type: 'POST',
                 ContentType: 'application/json;utf-8',
                 datatype: 'json',
                 success: function (res) {
-                    window.location = "/Employee/Index";
+                    window.location = commonUrl+"/Employee/Index";
                 }
 
             });

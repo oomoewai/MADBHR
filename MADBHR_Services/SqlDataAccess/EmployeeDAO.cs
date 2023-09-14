@@ -331,7 +331,8 @@ namespace MADBHR_Services.SqlDataAccess
                                     RejectComment = ResDs.Tables[0].Rows[i]["RejectComment"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["RejectComment"].ToString() : "",
                                     EditRequest = ResDs.Tables[0].Rows[i]["EditRequest"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["EditRequest"].ToString() : "",
                                     EditComment = ResDs.Tables[0].Rows[i]["EditComment"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["EditComment"].ToString() : "",
-                                    DeleteRequest = ResDs.Tables[0].Rows[i]["DeleteRequest"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["DeleteRequest"].ToString() : ""
+                                    DeleteRequest = ResDs.Tables[0].Rows[i]["DeleteRequest"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["DeleteRequest"].ToString() : "",
+                                    //RankLevel = ResDs.Tables[0].Rows[i]["RankLevel"] != DBNull.Value ? Convert.ToInt32(ResDs.Tables[0].Rows[i]["RankLevel"]) : 0
                                 };
 
                                 emps.Add(employee);

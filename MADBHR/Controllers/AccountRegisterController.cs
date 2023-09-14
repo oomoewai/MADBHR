@@ -157,11 +157,23 @@ namespace MADBHR.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(TbUserLogin account, bool? RedirectToSonAndDaughter = null)
         {
+           
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {
                 var userId = HttpContext.User.Identity.Name;
                 var userInfo = _context.TbUserLogin.Where(x => x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
                 MappedDiagnosticsLogicalContext.Set("userId",userInfo.UserPkid);
+                if(userInfo.AccountType=="User")
+                {
+
+                    account.UsernameOrEmail = userInfo.UsernameOrEmail;
+                    account.AccountType = userInfo.AccountType;
+                    account.Department = userInfo.Department;
+                    account.Office = userInfo.Office;
+                    account.StateDivisionId = userInfo.StateDivisionId;
+                    account.TownshipId = userInfo.TownshipId;
+
+                }
                 try
                 {
 

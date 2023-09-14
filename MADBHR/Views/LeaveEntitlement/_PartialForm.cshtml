@@ -1,4 +1,5 @@
-﻿
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
 @using MADBHR.Enum
 @*@model MADBHR_Models.Employee.VMRequestEmployee*@
 @model MADBHR_Data.Models.TbLeaveEntitlement
@@ -15,7 +16,7 @@
         </div>
         <div class="box-body">
             <div class="row">
-                <form action="/@controller/@ViewData["Action"]" method="post" enctype="multipart/form-data">
+                <form action="@Configuration.GetSection("AppUrls").GetSection("TestUrl").Value/@controller/@ViewData["Action"]" method="post" enctype="multipart/form-data">
 
                     @if (ViewData["Action"].ToString() == ViewEnum.Action.Edit.ToDescription())
                     {
@@ -100,13 +101,13 @@
                                 <label class="form-label" for="field-2">ကာလ</label>
                                 <span class="desc"></span>
                                 <div class="controls">
-                                    <input type="text" class="form-control" id="field-2" asp-for="Period" >
+                                    <input type="text" class="form-control" id="field-2" asp-for="Period">
                                     <span asp-validation-for="Period" class="text-danger"></span>
                                 </div>
                             </div>
 
                         </div>
-                       
+
                         <div class="col-xs-12  padding-bottom-30">
                             <div class="text-left">
                                 <button type="submit" class="btn btn-primary gradient-blue">သိမ်းမည်</button>

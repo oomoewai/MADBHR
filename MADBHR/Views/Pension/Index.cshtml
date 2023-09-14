@@ -1,4 +1,6 @@
-﻿@using MADBHR.Enum
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@using MADBHR.Enum
 @using X.PagedList
 @model IPagedList<MADBHR_Models.Employee.VMPensionEmpCount>
 @{
@@ -21,7 +23,7 @@
         </div>
         <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne1">
             <div class="panel-body">
-                <form method="get" action="/@controller/Index">
+                <form method="get" action="@Configuration.GetSection("AppUrls").GetSection("TestUrl").Value/@controller/Index">
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
@@ -59,9 +61,8 @@
         </header>
         <div class="box-body" style="margin-top:30px;">
             <div class="row">
-                <div class="col-xs-12">
-
-                    <table id="example" class="display table table-hover table-condensed">
+                <div class="table-responsive">
+                    <table id="example" class="table table-striped table-hover table-bordered">
                         <thead>
                             <tr>
                                 <th>စဉ်</th‌>

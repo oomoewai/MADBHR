@@ -1,4 +1,6 @@
-﻿@using MADBHR.Enum
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@using MADBHR.Enum
 @{
     ViewData["Title"] = "Create Emplyee";
     ViewData["Action"] = ViewEnum.Action.Create.ToDescription();
@@ -10,6 +12,7 @@
     @*<script src="~/js/image-upload.js"></script>*@
     <link href="~/Content/css/common.css" rel="stylesheet" type="text/css" />
     <script>
+        const commonUrl = @Json.Serialize(@Configuration.GetSection("AppUrls").GetSection("TestUrl").Value);
         $(document).ready(function () {
 
             $("#dvPreview").attr("src", $('#ImageContent').val());
@@ -120,12 +123,12 @@
             console.log("serialnumber:", serialNumber);
             $.ajax({
 
-                url: `/Employee/GetEmployeeInformation?SerialNumber=${serialNumber}`,
+                url: commonUrl+ `/Employee/GetEmployeeInformation?SerialNumber=${serialNumber}`,
                 type: 'get',
                 success: function (res) {
                     if (res) {
-                       
-                        if (res!=null) {
+
+                        if (res != null) {
                             Swal.fire({
                                 title: '',
                                 text: "တူညီနေသော ကိုယ်ပိုင်အမှတ်ရှိနေပါသည်",

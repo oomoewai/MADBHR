@@ -46,38 +46,47 @@ namespace MADB.Controllers
             try
             {
                 var userInfo = _context.TbUserLogin.Where(x => x.UsernameOrEmail == username && x.Password == password).FirstOrDefault();
-                //var pass = MADBHR.Helper.EncryptAndDecrypt.Decrypt(userInfo.Password, username.Trim() + "MADB").Equals(password);
-                MappedDiagnosticsLogicalContext.Set("userId", userInfo.UserPkid);
-                if (userInfo != null)
+                if(userInfo.AccountCloseStatus==true)
                 {
-                    var userActivate = _context.TbUserLogin.Where(x => x.Status == "Enable" && x.UsernameOrEmail == username && x.Password == password).FirstOrDefault();
-                    if(userActivate!=null)
+                    ViewBag.Error = "Your Account Temporary Close bacause Monthly Account Closing Process Running!!!";
+                }
+                else
+                {
+                    if (userInfo != null)
                     {
-                        var claims = new List<Claim>
+                        MappedDiagnosticsLogicalContext.Set("userId", userInfo.UserPkid);
+
+                        var userActivate = _context.TbUserLogin.Where(x => x.Status == "Enable" && x.UsernameOrEmail == username && x.Password == password).FirstOrDefault();
+                        if (userActivate != null)
+                        {
+                            var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.Name, Convert.ToString(userInfo.UserPkid),ClaimValueTypes.Integer64)
                     };
 
-                        var claimsIdentity = new ClaimsIdentity(claims, "Login");
-                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-                        _logger.LogInformation("Successfully Login");
-                        if (userInfo.AccountType == "Head Admin" || userInfo.AccountType == "Super Admin")
-                            return RedirectToAction("AdminDivisionIndex", "Employee");
+                            var claimsIdentity = new ClaimsIdentity(claims, "Login");
+                            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+                            _logger.LogInformation("Successfully Login");
+                            if (userInfo.AccountType == "Head Admin" || userInfo.AccountType == "Super Admin")
+                                return RedirectToAction("AdminDivisionIndex", "Employee");
+                            else
+                                return RedirectToAction("AdminIndex", "Employee");
+                        }
                         else
-                            return RedirectToAction("AdminIndex", "Employee");
+                        {
+                            ViewBag.Error = "Your account is not activate!";
+                        }
+
+
                     }
                     else
                     {
-                        ViewBag.Error = "Your account is not activate!";
+                        ViewBag.Error = "Your UserName or Password Wrong!";
+
                     }
-                   
-
                 }
-                else
-                {
-                    ViewBag.Error = "Your UserName or Password Wrong!";
-
-                }
+                //var pass = MADBHR.Helper.EncryptAndDecrypt.Decrypt(userInfo.Password, username.Trim() + "MADB").Equals(password);
+                
             }
             catch (Exception ex)
             {

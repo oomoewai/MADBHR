@@ -107,32 +107,39 @@ namespace MADBHR.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(TbTransfer transfer)
         {
-            using (var transaction = await _context.Database.BeginTransactionAsync())
+            var empSerialNumberinfo = _context.TbEmployee.Where(x => x.SerialNumber == transfer.SerialNumber && x.Status == "Pending").FirstOrDefault();
+            if (empSerialNumberinfo != null)
             {
-                try
+                return View();
+            }
+            else
+            {
+                using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
+                    try
+                    {
 
-                    //if (ModelState.IsValid)
-                    //{
-                    var userId = HttpContext.User.Identity.Name;
-                    var userInfo = _context.TbUserLogin.Where(x => x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
+                        //if (ModelState.IsValid)
+                        //{
+                        var userId = HttpContext.User.Identity.Name;
+                        var userInfo = _context.TbUserLogin.Where(x => x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
 
-                    transfer.EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == transfer.SerialNumber && x.IsDeleted == false).Select(x => x.EmployeeCode).FirstOrDefault();
-                    var emp = await _transferServices.SaveTransfer(transfer, Convert.ToInt32(userId), 0);
-                    TbDisposal tbDisposal = new TbDisposal();
-                    tbDisposal.EmployeeCode = transfer.EmployeeCode;
-                    tbDisposal.DisposalTypeCode = "101";
-                    tbDisposal.DisposalDate = DateTime.Now;
-                    tbDisposal.IsDeleted = false;
-                    tbDisposal.IsRecordEdited = true;
-                    tbDisposal.CreatedBy = userInfo.UserPkid;
-                    tbDisposal.UploadForTownship = userInfo.TownshipId == null || userInfo.TownshipId == "" ? userInfo.StateDivisionId : userInfo.TownshipId;
-                     var transferId = _context.TbTransfer.Where(x=>x.IsDeleted==false).OrderByDescending(x=>x.TransferPkid).Select(x => x.TransferPkid).FirstOrDefault();
-                    tbDisposal.TransferId = Convert.ToInt32(transferId);
-                    var disposal = await _employeeDisposalServices.SaveEmployeeDisposal(tbDisposal, Convert.ToInt32(userId), 0,true);
-                    //var jobHistoryInfo = _context.TbJobHistory.Where(x => x.RankTypeCode == transfer.RankTypeCode && x.DepartmentCode == transfer.FromTownshipCode && x.DepartmentName == transfer.FromTownshipCode && x.IsCurrent == true).ToList();
-                    //if(jobHistoryInfo.Count>0)
-                    //{
+                        transfer.EmployeeCode = _context.TbEmployee.Where(x => x.SerialNumber == transfer.SerialNumber && x.IsDeleted == false).Select(x => x.EmployeeCode).FirstOrDefault();
+                        var emp = await _transferServices.SaveTransfer(transfer, Convert.ToInt32(userId), 0);
+                        TbDisposal tbDisposal = new TbDisposal();
+                        tbDisposal.EmployeeCode = transfer.EmployeeCode;
+                        tbDisposal.DisposalTypeCode = "101";
+                        tbDisposal.DisposalDate = DateTime.Now;
+                        tbDisposal.IsDeleted = false;
+                        tbDisposal.IsRecordEdited = true;
+                        tbDisposal.CreatedBy = userInfo.UserPkid;
+                        tbDisposal.UploadForTownship = userInfo.TownshipId == null || userInfo.TownshipId == "" ? userInfo.StateDivisionId : userInfo.TownshipId;
+                        var transferId = _context.TbTransfer.Where(x => x.IsDeleted == false).OrderByDescending(x => x.TransferPkid).Select(x => x.TransferPkid).FirstOrDefault();
+                        tbDisposal.TransferId = Convert.ToInt32(transferId);
+                        var disposal = await _employeeDisposalServices.SaveEmployeeDisposal(tbDisposal, Convert.ToInt32(userId), 0, true);
+                        //var jobHistoryInfo = _context.TbJobHistory.Where(x => x.RankTypeCode == transfer.RankTypeCode && x.DepartmentCode == transfer.FromTownshipCode && x.DepartmentName == transfer.FromTownshipCode && x.IsCurrent == true).ToList();
+                        //if(jobHistoryInfo.Count>0)
+                        //{
                         TbJobHistory tbJobHistory = new TbJobHistory();
                         tbJobHistory.EmployeeCode = transfer.EmployeeCode;
                         tbJobHistory.DepartmentCode = transfer.ToTownshipCode;
@@ -147,19 +154,19 @@ namespace MADBHR.Controllers
                         tbJobHistory.CreatedBy = userInfo.UserPkid;
                         tbJobHistory.UploadForTownship = userInfo.TownshipId == null || userInfo.TownshipId == "" ? userInfo.StateDivisionId : userInfo.TownshipId;
                         var jobHistory = await _jobHistoryServices.SaveJobHistory(tbJobHistory, Convert.ToInt32(userId), 0);
-                    //}
-                   
-                    return RedirectToAction("Index");
+                        //}
 
-                    //}
-                }
-                catch (Exception e)
-                {
+                        return RedirectToAction("Index");
 
-                    await transaction.RollbackAsync();
+                        //}
+                    }
+                    catch (Exception e)
+                    {
+
+                        await transaction.RollbackAsync();
+                    }
                 }
             }
-
             return View();
         }
         public IActionResult Edit(int Id)

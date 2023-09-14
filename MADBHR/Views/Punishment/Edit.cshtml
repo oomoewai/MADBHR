@@ -1,4 +1,6 @@
-﻿@using MADBHR.Enum
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@using MADBHR.Enum
 @{
     ViewData["Title"] = "Edit Punishment";
     ViewData["Action"] = ViewEnum.Action.Edit.ToDescription();
@@ -8,26 +10,28 @@
 @section Scripts
 {
     <script>
+             const commonUrl = @Json.Serialize(@Configuration.GetSection("AppUrls").GetSection("TestUrl").Value);
+
         $(document).ready(function () {
 
-    });
-    function ChangeNumber() {
-        var serialNumber = $("#field-1").val();
-        console.log("serialnumber:", serialNumber);
-        $.ajax({
+        });
+        function ChangeNumber() {
+            var serialNumber = $("#field-1").val();
+            console.log("serialnumber:", serialNumber);
+            $.ajax({
 
-            url: `/EmployeeDisposal/GetEmployeeInformation?SerialNumber=${serialNumber}`,
-            type: 'get',
-            success: function (res) {
-                if (res) {
-                    $("#field-name").val(res.name);
-                    $("#field-rank").val(res.rankType);
+                url: commonUrl+ `/EmployeeDisposal/GetEmployeeInformation?SerialNumber=${serialNumber}`,
+                type: 'get',
+                success: function (res) {
+                    if (res) {
+                        $("#field-name").val(res.name);
+                        $("#field-rank").val(res.rankType);
+                    }
+
                 }
 
-            }
+            });
 
-        });
-
-    }
+        }
     </script>
 }
