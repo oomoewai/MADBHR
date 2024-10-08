@@ -52,7 +52,7 @@
         </div>
     </div>
 </div>
-<section class="content">
+<section>
     <div class="box">
         <header class="panel-heading">
             <h5 class="title pull-left" style="font-weight:bold">ကိုယ်ရေးအချက်အလက်များကို တိုင်းဒေသကြီးအလိုက်ကြည့်ရန်</h5>
@@ -67,12 +67,12 @@
                     <table id="example" class="table table-striped table-hover table-bordered">
                         <thead>
                             <tr>
-                                <th>စဉ်</th‌>
-                                <th>တိုင်းဒေသကြီး</th>
-                                <th>မြို့နယ်ရုံးပေါင်း</th>
-                                <th>ဝန်ထမ်းပေါင်း</th>
-                                <th>အရာထမ်းပေါင်း</th>
-                                <th>အမှုထမ်းပေါင်း</th>
+                                <th class="text-right">စဉ်</th‌>
+                                <th class="text-start">တိုင်းဒေသကြီး</th>
+                                <th class="text-right">မြို့နယ်ရုံးပေါင်း</th>
+                                <th class="text-right">ဝန်ထမ်းပေါင်း</th>
+                                <th class="text-right">အရာထမ်းပေါင်း</th>
+                                <th class="text-right">အမှုထမ်းပေါင်း</th>
                                 <th></th>
 
                             </tr>
@@ -81,12 +81,12 @@
                             @foreach (var item in Model)
                             {
                                 <tr>
-                                    <td class="text-center">@((((int)ViewBag.Page - 1) * (int)ViewBag.PageSize) + count)</td>
-                                    <td class="text-center">@item.StateDivision</td>
-                                    <td class="text-center">@item.TownshipCount</td>
-                                    <td class="text-center">@item.EmployeeCount</td>
-                                    <td class="text-center">@item.TotalUpperRank</td>
-                                    <td class="text-center">@item.TotalLowerRank</td>
+                                    <td class="text-right">@((((int)ViewBag.Page - 1) * (int)ViewBag.PageSize) + count)</td>
+                                    <td class="text-left">@item.StateDivision</td>
+                                    <td class="text-right">@item.TownshipCount</td>
+                                    <td class="text-right">@item.EmployeeCount</td>
+                                    <td class="text-right">@item.TotalUpperRank</td>
+                                    <td class="text-right">@item.TotalLowerRank</td>
                                     <td class="text-center">
                                         <a asp-controller="Employee" asp-action="AdminIndex" asp-route-StateDivisionCode="@item.StateDivisionCode" class="btn btn-xs btn-secondary">မြို့နယ်အလိုက်သေးစိတ်ကြည့်ရန်</a>
                                         @*<a asp-controller="@controller" asp-action="Edit" asp-route-Id="@item.EmployeePkid" class="btn btn-xs btn-secondary">ပြင်ရန်</a>

@@ -154,7 +154,7 @@
             </div>
         </div>
     </div>*@
-<section class="content">
+<section>
     <div class="box">
         <header class="panel-heading">
             @*<h2 class="title pull-left"></h2>*@
@@ -170,6 +170,7 @@
                         <thead>
                             <tr>
                                 <th>စဉ်</th‌>
+                                <th>ကိုယ်ပိုင်အမှတ်</th>
                                 <th>အမည်</th>
                                 <th>အဖ အမည်</th>
                                 <th>အမိ အမည်</th>
@@ -186,6 +187,7 @@
                             {
                                 <tr>
                                     <td class="text-center">@((((int)ViewBag.Page - 1) * (int)ViewBag.PageSize) + count)</td>
+                                    <td class="text-center">@item.SerialNumber</td>
                                     <td class="text-center">@item.Name</td>
                                     <td class="text-center">@item.FatherName</td>
                                     <td class="text-center">@item.MotherName</td>

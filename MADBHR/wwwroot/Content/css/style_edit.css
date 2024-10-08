@@ -35,7 +35,7 @@ div#example1_filter {
 .table > thead:first-child > tr:first-child > th {
     border-top: 0;
     white-space: nowrap;
-    text-align: center;
+    /*text-align: start;*/
 }
 
 .table > thead:first-child > tr:first-child > td {
@@ -45,4 +45,13 @@ div#example1_filter {
 button.text-red {
     background-color: transparent;
     border: none;
+}
+
+.navbar .navbar-static-top::before {
+    display: unset;
+}
+
+.navbar .navbar-static-top::after {
+    display: unset;
+
 }

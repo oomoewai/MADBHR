@@ -92,7 +92,7 @@
         </div>
     </div>
 </div>
-<section class="content">
+<section>
     <div class="box">
         <header class="panel-heading">
             <h5 class="title pull-left" style="font-weight:bold">ကိုယ်ရေးအချက်အလက်များကို မြို့နယ်အလိုက်ကြည့်ရန်</h5>
@@ -126,8 +126,9 @@
                                             <tr>
                                                 <th>
                                                     စဉ်</th‌>
-                                                    @*<th>တိုင်းဒေသကြီး</th>*@
+                                                    @*<th>တိုင်းဒေသကြီး</th>*@                                                
                                                 <th>မြို့နယ်</th>
+                                                <th>ကိုယ်ပိုင်အမှတ်</th>
                                                 <th>အမည်</th>
                                                 <th>မြို့နယ်ရုံးအမည်</th>
                                                 <th>ရာထူး</th>
@@ -152,6 +153,7 @@
                                                         <td class="text-center">@((((int)ViewBag.Page - 1) * (int)ViewBag.PageSize) + count)</td>
                                                         @*<td class="text-center">@item.StateDivision</td>*@
                                                         <td class="text-center">@item.Township</td>
+                                                        <td class="text-center">@item.SerialNumber</td>
                                                         <td class="text-center">@item.Name</td>
                                                         <td class="text-center">@item.OccupationName</td>
                                                         <td class="text-center">@item.CurrentRank</td>

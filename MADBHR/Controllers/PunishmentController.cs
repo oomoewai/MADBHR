@@ -232,6 +232,7 @@ namespace MADBHR.Controllers
             var worksheet = package.Workbook.Worksheets.Add("Data");
             worksheet.Cells[1, 1].Value = "တိုင်းဒေသကြီး";
             worksheet.Cells[1, 2].Value = "မြို့နယ်";
+            worksheet.Cells[1, 3].Value = "ကိုယ်ပိုင်အမှတ်";
             worksheet.Cells[1, 3].Value = "အမည်";
             worksheet.Cells[1, 4].Value = "ရာထူး";
             worksheet.Cells[1, 5].Value = "ဌာန";
@@ -244,6 +245,7 @@ namespace MADBHR.Controllers
             {
                 worksheet.Cells[i + 2, 1].Value = awrds[i].StateDivision;
                 worksheet.Cells[i + 2, 2].Value = awrds[i].Township;
+                worksheet.Cells[i + 2, 2].Value = awrds[i].SerialNumber;
                 worksheet.Cells[i + 2, 3].Value = awrds[i].EmployeeName;
                 worksheet.Cells[i + 2, 4].Value = awrds[i].RankType;
                 worksheet.Cells[i + 2, 5].Value = awrds[i].Department;

@@ -74,6 +74,7 @@ namespace MADBHR_Services.SqlDataAccess
                                         {
                                             TransferPkid = ResDs.Tables[0].Rows[i]["TransferPkid"] != DBNull.Value ? Convert.ToInt32(ResDs.Tables[0].Rows[i]["TransferPkid"]) : 0,
                                             EmployeeCode = ResDs.Tables[0].Rows[i]["EmployeeCode"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["EmployeeCode"].ToString() : "",
+                                            SerialNumber = ResDs.Tables[0].Rows[i]["SerialNumber"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["SerialNumber"].ToString() : "",
                                             TransferDateStr = ResDs.Tables[0].Rows[i]["TransferDateStr"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["TransferDateStr"].ToString() : "",
                                             FromTownship = ResDs.Tables[0].Rows[i]["FromTownship"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["FromTownship"].ToString() : "",
                                             ToTownship = ResDs.Tables[0].Rows[i]["ToTownship"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["ToTownship"].ToString() : "",

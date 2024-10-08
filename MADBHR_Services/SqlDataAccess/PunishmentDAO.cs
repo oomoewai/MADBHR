@@ -68,6 +68,7 @@ namespace MADBHR_Services.SqlDataAccess
                                 TbPunishment award = new TbPunishment
                                 {
                                     PunishmentPkid = ResDs.Tables[0].Rows[i]["PunishmentPkid"] != DBNull.Value ? Convert.ToInt32(ResDs.Tables[0].Rows[i]["PunishmentPkid"]) : 0,
+                                    SerialNumber = ResDs.Tables[0].Rows[i]["SerialNumber"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["SerialNumber"].ToString() : "",
                                     EmployeeCode = ResDs.Tables[0].Rows[i]["EmployeeCode"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["EmployeeCode"].ToString() : "",
                                     OrderDateStr = ResDs.Tables[0].Rows[i]["OrderDate"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["OrderDate"].ToString() : "",
                                     OrderNo = ResDs.Tables[0].Rows[i]["OrderNo"] != DBNull.Value ? ResDs.Tables[0].Rows[i]["OrderNo"].ToString() : "",

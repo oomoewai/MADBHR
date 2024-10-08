@@ -36,6 +36,7 @@ namespace MADBHR.Controllers
             ViewBag.lstLogIn = userInfo;
             ViewBag.lstLogIn = _context.TbUserLogin.Where(x => x.Status == "Enable" && x.UserPkid == Convert.ToInt32(userId)).FirstOrDefault();
             var currentJobTownships = _context.TbCurrentJobTownship.Where(x => x.Active == true).OrderBy(x => x.Township).ToList();
+
             ViewData["FromTownshipCode"] = new SelectList(currentJobTownships, "TownshipCode", "Township", tbTransfer?.FromTownshipCode);
             ViewData["ToTownshipCode"] = new SelectList(currentJobTownships, "TownshipCode", "Township", tbTransfer?.ToTownshipCode);
             var rankTypeCode = _context.TbRankType.Select(x => new { x.RankTypeCode, x.RankType }).OrderBy(x=>x.RankType).ToList();
